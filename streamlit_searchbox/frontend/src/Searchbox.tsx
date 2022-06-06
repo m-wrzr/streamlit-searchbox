@@ -10,7 +10,8 @@ import { default as SearchIconSvg } from "./magnifying-glass-solid.svg"
 
 interface State {
   search: string
-  option: string
+  option: any
+  focus: boolean
 }
 
 const SearchIcon = (
@@ -24,21 +25,23 @@ const SearchIcon = (
 )
 
 class Searchbox extends StreamlitComponentBase<State> {
-  public state = { search: "", option: "" }
+  public state = { search: "", option: null, focus: false }
 
   // new keystroke on searchbox
   private onSearchInput = (input: string, _: any): void => {
     if (input.length > 0) {
-      this.setState({ search: input, option: "" }, () =>
+      this.setState({ search: input, option: null, focus: true }, () =>
         Streamlit.setComponentValue(this.state)
       )
     }
   }
 
+  // input was selected from dropdown
   private onInputSelection = (option: any): void => {
     this.setState(
       {
-        search: option.value,
+        search: "",
+        focus: false,
         option: option.value,
       },
       () => Streamlit.setComponentValue(this.state)
@@ -50,7 +53,7 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @returns
    */
   public render = (): ReactNode => {
-    let isSearchActive = this.state.search !== this.state.option
+    let isSearchActive = this.state.search !== ""
 
     return (
       <Select
@@ -64,8 +67,10 @@ class Searchbox extends StreamlitComponentBase<State> {
         // show all options, filtering should be done in python
         filterOption={(_, __) => true}
         // always show dropdown
-        menuIsOpen={isSearchActive}
+        menuIsOpen={isSearchActive && this.state.focus}
         options={isSearchActive ? this.props.args["options"] : []}
+        onFocus={() => this.setState({ focus: true })}
+        onBlur={() => this.setState({ focus: false })}
       />
     )
   }
