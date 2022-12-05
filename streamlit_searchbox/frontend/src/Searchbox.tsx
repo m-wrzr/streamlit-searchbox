@@ -6,23 +6,13 @@ import {
 import React, { ReactNode } from "react"
 import Select from "react-select"
 
-import { default as SearchIconSvg } from "./magnifying-glass-solid.svg"
+import { getStyleConfig, getStyledIcon } from "./styling"
 
 interface State {
   search: string
   option: any
   focus: boolean
 }
-
-const SearchIcon = (
-  <img
-    width={24}
-    src={SearchIconSvg}
-    alt="Search Icon"
-    title="Search Icon"
-    style={{ marginLeft: "6px", marginRight: "6px", padding: "4px" }}
-  />
-)
 
 class Searchbox extends StreamlitComponentBase<State> {
   public state = { search: "", option: null, focus: false }
@@ -55,10 +45,14 @@ class Searchbox extends StreamlitComponentBase<State> {
   public render = (): ReactNode => {
     let isSearchActive = this.state.search !== ""
 
+    // always available, no typehint as missing relevant props
+    const streamlitTheme: any = this.props.theme!
+
     return (
       <Select
+        styles={getStyleConfig(this.props.theme!)}
         components={{
-          DropdownIndicator: () => SearchIcon,
+          DropdownIndicator: () => getStyledIcon(this.props.theme!),
         }}
         placeholder={"Search ..."}
         onInputChange={(e, a) => this.onSearchInput(e, a)}
