@@ -6,29 +6,6 @@ import {
   OptionProps,
 } from "react-select"
 
-import { ReactComponent as SearchIconSvg } from "./magnifying-glass-solid.svg"
-
-/**
- * load svg icon and fill with text color
- * @param theme
- * @returns
- */
-export function getStyledIcon(theme: any) {
-  return (
-    <div>
-      <SearchIconSvg
-        fill={theme.fadedText60}
-        width={24}
-        style={{
-          marginLeft: "6px",
-          marginRight: "6px",
-          padding: "4px",
-        }}
-      />
-    </div>
-  )
-}
-
 /**
  * parameterize react-select style with streamlit data
  * @param theme
@@ -41,10 +18,14 @@ export function getStyleConfig(theme: any): StylesConfig {
       ...styles,
       backgroundColor: theme.secondaryBackgroundColor,
       color: theme.secondaryBackgroundColor,
-      border: !isFocused ? "0px" : "1px solid " + theme.primaryColor,
+      border: !isFocused
+        ? "0px"
+        : "1px solid " + theme.secondaryBackgroundColor,
       boxShadow: "none",
       "&:hover": {
-        border: !isFocused ? "0px" : "1px solid " + theme.primaryColor,
+        border: !isFocused
+          ? "0px"
+          : "1px solid " + theme.secondaryBackgroundColor,
       },
     }
   }
@@ -65,7 +46,7 @@ export function getStyleConfig(theme: any): StylesConfig {
         : theme.backgroundColor,
       // option text
       color: theme.textColor,
-      cursor: isDisabled ? "not-allowed" : "default",
+      cursor: isDisabled ? "not-allowed" : "Search ...",
     }
   }
 

@@ -6,36 +6,76 @@ import {
 import React, { ReactNode } from "react"
 import Select from "react-select"
 
-import { getStyleConfig, getStyledIcon } from "./styling"
+import { getStyleConfig } from "./styling"
 
 interface State {
-  search: string
-  option: any
-  focus: boolean
+  menu: boolean
+}
+
+interface StreamlitReturn {
+  interaction: "submit" | "search" | "reset"
+  value: any
 }
 
 class Searchbox extends StreamlitComponentBase<State> {
-  public state = { search: "", option: null, focus: false }
+  public state = { menu: false }
+
+  selectRef: any = null
+
+  clearValue = () => {
+    console.log("clearREF")
+    this.selectRef.select.clearValue()
+  }
+
+  private updateStreamlit = (result: StreamlitReturn): void => {
+    Streamlit.setComponentValue(result)
+  }
 
   // new keystroke on searchbox
   private onSearchInput = (input: string, _: any): void => {
-    if (input.length > 0) {
-      this.setState({ search: input, option: null, focus: true }, () =>
-        Streamlit.setComponentValue(this.state)
-      )
+    // happens on selection
+    if (input.length === 0) {
+      this.setState({ menu: false })
+      return
     }
+
+    // this.setState({ menu: true })
+
+    this.updateStreamlit({
+      interaction: "search",
+      value: input,
+    } as StreamlitReturn)
   }
 
-  // input was selected from dropdown
+  // input was selected from dropdown or focus changed
   private onInputSelection = (option: any): void => {
-    this.setState(
-      {
-        search: "",
-        focus: false,
-        option: option.value,
-      },
-      () => Streamlit.setComponentValue(this.state)
-    )
+    // clear selection (X)
+    if (option === null) {
+      this.setState({
+        menu: false,
+      })
+
+      this.updateStreamlit({
+        interaction: "reset",
+        value: null,
+      } as StreamlitReturn)
+
+      return
+    }
+
+    this.updateStreamlit({
+      interaction: "submit",
+      value: option.value,
+    } as StreamlitReturn)
+
+    if (this.props.args.clear_on_submit) {
+      // TODO: null error
+      this.clearValue()
+    } else {
+      this.setState({
+        menu: false,
+      })
+    }
   }
 
   /**
@@ -43,31 +83,29 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @returns
    */
   public render = (): ReactNode => {
-    let isSearchActive = this.state.search !== ""
-
-    // always available, no typehint as missing relevant props
-    const streamlitTheme: any = this.props.theme!
-
     return (
       <Select
-        styles={getStyleConfig(this.props.theme!)}
-        components={{
-          DropdownIndicator: () => getStyledIcon(this.props.theme!),
+        // dereference on clear
+        ref={(ref) => {
+          this.selectRef = ref
         }}
-        placeholder={"Search ..."}
+        // defaults
+        styles={getStyleConfig(this.props.theme!)}
+        placeholder={this.props.args.placeholder}
+        isSearchable={true}
+        isClearable={this.props.args.clearable}
+        // handlers
         onInputChange={(e, a) => this.onSearchInput(e, a)}
         onChange={(e) => this.onInputSelection(e)}
-        isSearchable={true}
-        // show all options, filtering should be done in python
+        // OPTIONS
+        options={this.props.args.options}
         filterOption={(_, __) => true}
-        // always show dropdown
-        menuIsOpen={isSearchActive && this.state.focus}
-        options={isSearchActive ? this.props.args["options"] : []}
-        onFocus={() => this.setState({ focus: true })}
-        onBlur={() => this.setState({ focus: false })}
+        // MENU
+        onMenuOpen={() => this.setState({ menu: true })}
+        onMenuClose={() => this.setState({ menu: false })}
+        menuIsOpen={this.props.args.options && this.state.menu}
       />
     )
   }
 }
-
 export default withStreamlitConnection(Searchbox)
