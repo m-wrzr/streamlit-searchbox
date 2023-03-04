@@ -17,8 +17,8 @@ _get_react_component = components.declare_component(
 def st_searchbox(
     search_function: Callable[[str], List[any]],
     placeholder: str = "Search ...",
+    label: str = None,
     default: any = None,
-    clearable: bool = True,
     clear_on_submit: bool = False,
     key: str = "searchbox",
     **kwargs,
@@ -53,9 +53,9 @@ def st_searchbox(
     # everything here is passed to react as this.props.args
     react_state = _get_react_component(
         options=st.session_state[key]["options"],
-        clearable=clearable,
         clear_on_submit=clear_on_submit,
         placeholder=placeholder,
+        label=label,
         # react return state within streamlit session_state
         key=key_react,
         **kwargs,
