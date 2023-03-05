@@ -14,6 +14,38 @@ _get_react_component = components.declare_component(
 )
 
 
+def _process_search(
+    search_function: Callable[[str], List[any]], key: str, searchterm: str
+) -> None:
+    # nothing changed
+    if searchterm == st.session_state[key]["search"]:
+        return st.session_state[key]["result"]
+
+    st.session_state[key]["search"] = searchterm
+    search_results = search_function(searchterm)
+
+    if not search_results:
+        return
+
+    def _get_label(label: any) -> str:
+        return str(label[0]) if isinstance(label, tuple) else str(label)
+
+    def _get_value(value: any) -> any:
+        return value[1] if isinstance(value, tuple) else value
+
+    # used for react component
+    st.session_state[key]["options"] = [
+        {
+            "label": _get_label(v),
+            "value": i,
+        }
+        for i, v in enumerate(search_results)
+    ]
+
+    # used for proper return types
+    st.session_state[key]["options_real_type"] = [_get_value(v) for v in search_results]
+
+
 def st_searchbox(
     search_function: Callable[[str], List[any]],
     placeholder: str = "Search ...",
@@ -68,28 +100,16 @@ def st_searchbox(
 
     match interaction:
         case "search":
-
-            # nothing changed
-            if value == st.session_state[key]["search"]:
-                return st.session_state[key]["result"]
-
-            # TODO: doesn't work with non-react compatible types
-            # new search, update from search_function
-            st.session_state[key]["search"] = value
-            st.session_state[key]["options"] = [
-                {
-                    "label": v if isinstance(v, str) else v[0],
-                    "value": v if isinstance(v, str) else v[1],
-                }
-                for v in search_function(value)
-            ]
-
+            _process_search(search_function, key, value)
+            # TODO: check if this can be avoided
             st.experimental_rerun()
-
-        # common return cases
         case "submit":
-            st.session_state[key]["result"] = value
-            return value
+            st.session_state[key]["result"] = (
+                st.session_state[key]["options_real_type"][value]
+                if "options_real_type" in st.session_state[key]
+                else value
+            )
+            return st.session_state[key]["result"]
         case "reset":
             st.session_state[key]["result"] = default
             return default
