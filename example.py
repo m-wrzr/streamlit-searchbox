@@ -1,10 +1,12 @@
-from typing import List, Tuple
+import enum
+import random
 import time
+from typing import List, Tuple
+
 import requests
 import streamlit as st
-import random
+
 from streamlit_searchbox import st_searchbox
-import enum
 
 
 def search_wikipedia_ids(searchterm: str) -> List[Tuple[str, any]]:
@@ -109,7 +111,6 @@ st.markdown("---")
 
 st.write("search_fancy_return (no label)")
 
-# TODO: hangs on selection?
 selected_value4 = st_searchbox(
     search_fancy_return,
     clear_on_submit=True,
