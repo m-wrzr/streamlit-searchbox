@@ -28,7 +28,7 @@ class Searchbox extends StreamlitComponentBase<State> {
   public state = { menu: false }
 
   private style = new SearchboxStyle(this.props.theme!)
-  private ref: any = null
+  private ref: any = React.createRef()
 
   /**
    * new keystroke on searchbox
@@ -79,9 +79,7 @@ class Searchbox extends StreamlitComponentBase<State> {
     streamlitReturn("submit", option.value)
 
     if (this.props.args.clear_on_submit) {
-      if (this.ref !== null && this.ref.select !== null) {
-        this.ref.select.clearValue()
-      }
+      this.ref.current.select.clearValue()
     } else {
       this.setState({
         menu: false,
@@ -101,9 +99,7 @@ class Searchbox extends StreamlitComponentBase<State> {
         ) : null}
         <Select
           // dereference on clear
-          ref={(ref) => {
-            this.ref = ref
-          }}
+          ref={this.ref}
           isClearable={true}
           isSearchable={true}
           styles={this.style.select}

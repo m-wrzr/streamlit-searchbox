@@ -15,9 +15,12 @@ _get_react_component = components.declare_component(
 
 
 def _process_search(
-    search_function: Callable[[str], List[any]], key: str, searchterm: str
-) -> None:
-    # nothing changed
+    search_function: Callable[[str], List[any]],
+    key: str,
+    searchterm: str,
+    rerun: bool,
+) -> bool:
+    # nothing changed, avoid new search
     if searchterm == st.session_state[key]["search"]:
         return st.session_state[key]["result"]
 
@@ -25,7 +28,7 @@ def _process_search(
     search_results = search_function(searchterm)
 
     if not search_results:
-        return
+        return st.session_state[key]["result"]
 
     def _get_label(label: any) -> str:
         return str(label[0]) if isinstance(label, tuple) else str(label)
@@ -45,6 +48,9 @@ def _process_search(
     # used for proper return types
     st.session_state[key]["options_real_type"] = [_get_value(v) for v in search_results]
 
+    if rerun:
+        st.experimental_rerun()
+
 
 def st_searchbox(
     search_function: Callable[[str], List[any]],
@@ -52,6 +58,7 @@ def st_searchbox(
     label: str = None,
     default: any = None,
     clear_on_submit: bool = False,
+    rerun: bool = True,
     key: str = "searchbox",
     **kwargs,
 ) -> any:
@@ -100,9 +107,7 @@ def st_searchbox(
 
     match interaction:
         case "search":
-            _process_search(search_function, key, value)
-            # TODO: check if this can be avoided
-            st.experimental_rerun()
+            return _process_search(search_function, key, value, rerun)
         case "submit":
             st.session_state[key]["result"] = (
                 st.session_state[key]["options_real_type"][value]
