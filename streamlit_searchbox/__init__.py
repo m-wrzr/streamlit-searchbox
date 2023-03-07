@@ -1,25 +1,66 @@
 import os
-from typing import Callable, List, Tuple
+
+from typing import Callable, List, Dict
 
 import streamlit as st
 import streamlit.components.v1 as components
 
-# update for local testing
-_RELEASE = True
+# point to build directory
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+build_dir = os.path.join(parent_dir, "frontend/build")
+_get_react_component = components.declare_component(
+    "searchbox",
+    path=build_dir,
+)
 
-if _RELEASE:
-    # point to build directory and
-    parent_dir = os.path.dirname(os.path.abspath(__file__))
-    build_dir = os.path.join(parent_dir, "frontend/build")
-    _get_react_component = components.declare_component(
-        "searchbox",
-        path=build_dir,
-    )
+
+def _process_search(
+    search_function: Callable[[str], List[any]],
+    key: str,
+    searchterm: str,
+    rerun: bool,
+) -> bool:
+    # nothing changed, avoid new search
+    if searchterm == st.session_state[key]["search"]:
+        return st.session_state[key]["result"]
+
+    st.session_state[key]["search"] = searchterm
+    search_results = search_function(searchterm)
+
+    if not search_results:
+        return st.session_state[key]["result"]
+
+    def _get_label(label: any) -> str:
+        return str(label[0]) if isinstance(label, tuple) else str(label)
+
+    def _get_value(value: any) -> any:
+        return value[1] if isinstance(value, tuple) else value
+
+    # used for react component
+    st.session_state[key]["options"] = [
+        {
+            "label": _get_label(v),
+            "value": i,
+        }
+        for i, v in enumerate(search_results)
+    ]
+
+    # used for proper return types
+    st.session_state[key]["options_real_type"] = [_get_value(v) for v in search_results]
+
+    if rerun:
+        st.experimental_rerun()
 
 
 def st_searchbox(
     search_function: Callable[[str], List[any]],
+    placeholder: str = "Search ...",
+    label: str = None,
+    default: any = None,
+    clear_on_submit: bool = False,
+    rerun: bool = True,
     key: str = "searchbox",
+    **kwargs,
 ) -> any:
     """
     Create a new searchbox instance, that provides suggestions based on the user input
@@ -29,88 +70,54 @@ def st_searchbox(
     ----------
     search_function: Callable[[str], List[str] | List[Tuple[str, any]]]
         Function that is called to fetch new suggestions after user input.
+    default: Dict[str, any]
+        Default value that is shown in the searchbox.
     key: str
         An key that uniquely identifies this component, used to store state.
     """
-    SEARCH, OPTIONS = "search", "options"
 
-    if SEARCH not in st.session_state:
-        st.session_state[SEARCH] = ""
-        st.session_state[OPTIONS] = []
+    # key without prefix used by react component
+    key_react = f"{key}_react"
 
-    # draw react component with search_function options
-    # in case of keyboard updates, react triggers st_searchbox and we get a new state here
+    if key not in st.session_state:
+        st.session_state[key] = {
+            # updated after each selection / reset
+            "result": default,
+            # updated after each search keystroke
+            "search": "",
+            # updated after each search_function run
+            "options": [],
+        }
+
+    # everything here is passed to react as this.props.args
     react_state = _get_react_component(
-        options=st.session_state[OPTIONS],
-        key=key,
+        options=st.session_state[key]["options"],
+        clear_on_submit=clear_on_submit,
+        placeholder=placeholder,
+        label=label,
+        # react return state within streamlit session_state
+        key=key_react,
+        **kwargs,
     )
 
-    if react_state:
-        # option was selected from react, return it
-        # check specifically for None, 0 might also be valid option selection
-        if react_state.get("option", None) != None:
-            del st.session_state[SEARCH]
-            del st.session_state[OPTIONS]
+    if react_state is None:
+        return st.session_state[key]["result"]
 
-            return react_state["option"]
+    interaction, value = react_state["interaction"], react_state["value"]
 
-        # in case the searchbox has new characters, redraw the whole component and call the options function
-        # almost always true, as the functions gets triggered after a react state change, i.e. user input
-        if st.session_state[SEARCH] != react_state[SEARCH]:
-            st.session_state[SEARCH] = react_state[SEARCH]
-
-            # if only string, assume this is the desired return value
-            # make sure that labels are strings
-            to_react = lambda v: {
-                "label": v if type(v) == str else v[0],
-                "value": v if type(v) == str else v[1],
-            }
-
-            # set new options, will be passed to react in re-run
-            st.session_state[OPTIONS] = [
-                to_react(v) for v in search_function(react_state[SEARCH])
-            ]
-
-            st.experimental_rerun()
-
-    return None
-
-
-# for development: `$ streamlit run my_component/__init__.py`
-if not _RELEASE:
-    import requests
-    import streamlit as st
-    import wikipedia
-
-    # define for local testing
-    _get_react_component = components.declare_component(
-        "searchbox",
-        url="http://localhost:3001",
-    )
-
-    # function with single string list
-    def search_wikipedia(searchterm: str) -> List[str]:
-        return wikipedia.search(searchterm) if searchterm else []
-
-    # function with key:value dictionary
-    def search_wikipedia_ids(searchterm: str) -> List[Tuple[str, any]]:
-
-        # search that returns a list of wiki articles in dict form with information on title, id, etc.
-        response = requests.get(
-            "http://en.wikipedia.org/w/api.php",
-            params={
-                "list": "search",
-                "format": "json",
-                "action": "query",
-                "srlimit": 10,
-                "limit": 10,
-                "srsearch": searchterm,
-            },
-        ).json()["query"]["search"]
-
-        # first element will be shown in search, second is returned from component
-        return [(str(article["title"]), article["pageid"]) for article in response]
-
-    selected_value = st_searchbox(search_wikipedia_ids, key="wiki_searchbox")
-
-    st.markdown("You've selected: %s" % selected_value)
+    match interaction:
+        case "search":
+            return _process_search(search_function, key, value, rerun)
+        case "submit":
+            st.session_state[key]["result"] = (
+                st.session_state[key]["options_real_type"][value]
+                if "options_real_type" in st.session_state[key]
+                else value
+            )
+            return st.session_state[key]["result"]
+        case "reset":
+            st.session_state[key]["result"] = default
+            return default
+        # no new react interaction happened
+        case _:
+            return st.session_state[key]["result"]

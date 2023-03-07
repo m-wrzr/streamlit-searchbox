@@ -1,8 +1,16 @@
 # streamlit-searchbox
 
-A streamlit custom component for a autocomplete searchbox
+- [Installation](#installation)
+- [Overview](#overview)
+- [Usage](#usage)
+- [Example](#example)
+
+---
+
+A streamlit custom component providing a searchbox with autocomplete.
 
 ![Example](./assets/example.gif)
+
 
 ## Installation
 
@@ -10,19 +18,18 @@ A streamlit custom component for a autocomplete searchbox
 pip install streamlit-searchbox
 ```
 
-## Example Usage
+## Overview
+
+Create a searchbox component and pass a `search_function` that accepts a `str` searchterm. The searchbox is triggered on user input, calls the search function for new options and redraws the page via `st.experimental_rerun()`.
+
+You can either pass a list of arguments, e.g.
 
 ```python
-from typing import List
-
 import wikipedia
-
-import streamlit as st
 from streamlit_searchbox import st_searchbox
 
-
 # function with list of labels
-def search_wikipedia(searchterm) -> List[str]:
+def search_wikipedia(searchterm: str) -> List[any]:
     return wikipedia.search(searchterm) if searchterm else []
 
 
@@ -31,52 +38,61 @@ selected_value = st_searchbox(
     search_wikipedia,
     key="wiki_searchbox",
 )
-st.markdown("You've selected: %s" % selected_value)
 ```
 
-If you want the searchbox to return a value assicoated with the label, e.g. some id refer to the example below.
+This example will call the Wikipedia Api to reload suggestions. The `selected_value` will be one of the items the `search_wikipedia` function returns, the suggestions shown in the UI components are a `str` representation. In case you want to provide custom text for suggestions, pass a `Tuple`.
 
 ```python
-from typing import List, Tuple
-
-import requests
-
-import streamlit as st
-from streamlit_searchbox import st_searchbox
-
-
-
-
-# function with list of tuples (label:str, value:any)
-def search_wikipedia_ids(searchterm: str) -> List[Tuple[str, any]]:
-
-    # search that returns a list of wiki articles in dict form with information on title, id, etc.
-    response = requests.get(
-        "http://en.wikipedia.org/w/api.php",
-        params={
-            "list": "search",
-            "format": "json",
-            "action": "query",
-            "srlimit": 10,
-            "limit": 10,
-            "srsearch": searchterm,
-        },
-    ).json()["query"]["search"]
-
-    # first element will be shown in search, second is returned from component
-    return [
-        (
-            str(article["title"]),
-            article["pageid"],
-        )
-        for article in response
-    ]
-
-
-# pass search function to searchbox
-selected_value = st_searchbox(
-    search_wikipedia_ids,
-    key="wiki_searchbox",
-)
-st.markdown("You've selected: %s" % selected_value)
+def search(searchterm: str) -> List[Tuple[str, any]]:
+    ...
 ```
+
+## Usage
+
+To customize the searchbox you can pass the following arguments:
+
+```python
+search_function: Callable[[str], List[any]]
+```
+
+Function that will be called on user input
+
+```python
+placeholder: str = "Search ..."
+```
+
+Placeholder for empty searches shown within the component.
+
+```python
+label: str = None
+```
+
+Label shown above the component.
+
+```python
+default: any = None
+```
+
+Default return value in case nothing was submitted or the searchbox cleared.
+
+```python
+clear_on_submit: bool = False
+```
+
+Automatically clear the input after selection.
+
+```python
+rerun: bool = True
+```
+
+Disable experimental rerun, suggestions will only with a delay of 1 input.
+
+```python
+key: str = "searchbox"
+```
+
+Streamlit key for unique component identification.
+
+### Example
+
+An example Streamlit app can be found [here](./example.py)

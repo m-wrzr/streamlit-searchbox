@@ -68,3 +68,4 @@ package-lock.json
 .vscode/
 venv
 README.local.md
+.streamlit
