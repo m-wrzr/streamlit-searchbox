@@ -69,3 +69,4 @@ package-lock.json
 venv
 README.local.md
 .streamlit
+venv*

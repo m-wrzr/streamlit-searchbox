@@ -1,6 +1,5 @@
 import os
-
-from typing import Callable, List, Dict
+from typing import Callable, List
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -105,19 +104,20 @@ def st_searchbox(
 
     interaction, value = react_state["interaction"], react_state["value"]
 
-    match interaction:
-        case "search":
-            return _process_search(search_function, key, value, rerun)
-        case "submit":
-            st.session_state[key]["result"] = (
-                st.session_state[key]["options_real_type"][value]
-                if "options_real_type" in st.session_state[key]
-                else value
-            )
-            return st.session_state[key]["result"]
-        case "reset":
-            st.session_state[key]["result"] = default
-            return default
-        # no new react interaction happened
-        case _:
-            return st.session_state[key]["result"]
+    if interaction == "search":
+        return _process_search(search_function, key, value, rerun)
+
+    if interaction == "submit":
+        st.session_state[key]["result"] = (
+            st.session_state[key]["options_real_type"][value]
+            if "options_real_type" in st.session_state[key]
+            else value
+        )
+        return st.session_state[key]["result"]
+
+    if interaction == "reset":
+        st.session_state[key]["result"] = default
+        return default
+
+    # no new react interaction happened
+    return st.session_state[key]["result"]
