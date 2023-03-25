@@ -17,7 +17,8 @@ def search_wikipedia_ids(searchterm: str) -> List[Tuple[str, any]]:
     if not searchterm:
         return []
 
-    # search that returns a list of wiki articles in dict form with information on title, id, etc.
+    # search that returns a list of wiki articles in dict form
+    # with information on title, id, etc
     response = requests.get(
         "http://en.wikipedia.org/w/api.php",
         params={
@@ -83,7 +84,6 @@ with st.sidebar:
 c1, c2, c3 = st.columns(3)
 
 with c1:
-
     selected_value2 = st_searchbox(
         search_sth_fast,
         default=None,
