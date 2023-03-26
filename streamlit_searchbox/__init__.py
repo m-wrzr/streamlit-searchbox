@@ -29,7 +29,7 @@ def wrap_inactive_session(func):
     @functools.wraps(func)
     def inner_function(*args, **kwargs):
         try:
-            func(*args, **kwargs)
+            return func(*args, **kwargs)
         except KeyError as error:
             if kwargs.get("key", None) == error.args[0]:
                 logger.debug(f"Session Proxy unavailable for key={error.args[0]}")
@@ -44,7 +44,6 @@ def _process_search(
     search_function: Callable[[str], List[any]],
     key: str,
     searchterm: str,
-    rerun: bool,
 ) -> bool:
     # nothing changed, avoid new search
     if searchterm == st.session_state[key]["search"]:
@@ -74,8 +73,7 @@ def _process_search(
     # used for proper return types
     st.session_state[key]["options_real_type"] = [_get_value(v) for v in search_results]
 
-    if rerun:
-        st.experimental_rerun()
+    st.experimental_rerun()
 
 
 @wrap_inactive_session
@@ -85,7 +83,6 @@ def st_searchbox(
     label: str = None,
     default: any = None,
     clear_on_submit: bool = False,
-    rerun: bool = True,
     key: str = "searchbox",
     **kwargs,
 ) -> any:
@@ -133,8 +130,8 @@ def st_searchbox(
     interaction, value = react_state["interaction"], react_state["value"]
 
     if interaction == "search":
-        # won't return if rerun is True, otherise return current result
-        _process_search(search_function, key, value, rerun)
+        # triggers rerun, no ops afterwards executed
+        _process_search(search_function, key, value)
 
     if interaction == "submit":
         st.session_state[key]["result"] = (
