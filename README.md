@@ -81,11 +81,6 @@ clear_on_submit: bool = False
 
 Automatically clear the input after selection.
 
-```python
-rerun: bool = True
-```
-
-Disable experimental rerun, suggestions will only with a delay of 1 input.
 
 ```python
 key: str = "searchbox"

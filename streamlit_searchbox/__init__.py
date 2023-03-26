@@ -1,3 +1,8 @@
+"""
+module for streamlit searchbox component
+"""
+import functools
+import logging
 import os
 from typing import Callable, List
 
@@ -12,12 +17,33 @@ _get_react_component = components.declare_component(
     path=build_dir,
 )
 
+logger = logging.getLogger(__name__)
+
+
+def wrap_inactive_session(func):
+    """
+    session state isn't available anymore due to rerun (as state key can't be empty)
+    if the proxy is missing, this thread isn't really active and an early return is noop
+    """
+
+    @functools.wraps(func)
+    def inner_function(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except KeyError as error:
+            if kwargs.get("key", None) == error.args[0]:
+                logger.debug(f"Session Proxy unavailable for key: {error.args[0]}")
+                return
+
+            raise error
+
+    return inner_function
+
 
 def _process_search(
     search_function: Callable[[str], List[any]],
     key: str,
     searchterm: str,
-    rerun: bool,
 ) -> bool:
     # nothing changed, avoid new search
     if searchterm == st.session_state[key]["search"]:
@@ -47,17 +73,16 @@ def _process_search(
     # used for proper return types
     st.session_state[key]["options_real_type"] = [_get_value(v) for v in search_results]
 
-    if rerun:
-        st.experimental_rerun()
+    st.experimental_rerun()
 
 
+@wrap_inactive_session
 def st_searchbox(
     search_function: Callable[[str], List[any]],
     placeholder: str = "Search ...",
     label: str = None,
     default: any = None,
     clear_on_submit: bool = False,
-    rerun: bool = True,
     key: str = "searchbox",
     **kwargs,
 ) -> any:
@@ -65,14 +90,22 @@ def st_searchbox(
     Create a new searchbox instance, that provides suggestions based on the user input
     and returns a selected option or empty string if nothing was selected
 
-    Parameters
-    ----------
-    search_function: Callable[[str], List[str] | List[Tuple[str, any]]]
-        Function that is called to fetch new suggestions after user input.
-    default: Dict[str, any]
-        Default value that is shown in the searchbox.
-    key: str
-        An key that uniquely identifies this component, used to store state.
+    Args:
+        search_function (Callable[[str], List[any]]):
+            Function that is called to fetch new suggestions after user input.
+        placeholder (str, optional):
+            Label shown in the searchbox. Defaults to "Search ...".
+        label (str, optional):
+            Label shown above the searchbox. Defaults to None.
+        default (any, optional):
+            Return value if nothing is selected so far. Defaults to None.
+        clear_on_submit (bool, optional):
+            Remove suggestions on select. Defaults to False.
+        key (str, optional):
+            Streamlit session key. Defaults to "searchbox".
+
+    Returns:
+        any: based on user selection
     """
 
     # key without prefix used by react component
@@ -105,7 +138,8 @@ def st_searchbox(
     interaction, value = react_state["interaction"], react_state["value"]
 
     if interaction == "search":
-        return _process_search(search_function, key, value, rerun)
+        # triggers rerun, no ops afterwards executed
+        _process_search(search_function, key, value)
 
     if interaction == "submit":
         st.session_state[key]["result"] = (
