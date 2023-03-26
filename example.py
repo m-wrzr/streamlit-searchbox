@@ -1,4 +1,5 @@
 import enum
+import logging
 import random
 import time
 from typing import List, Tuple
@@ -7,6 +8,8 @@ import requests
 import streamlit as st
 
 from streamlit_searchbox import st_searchbox
+
+logging.getLogger("streamlit_searchbox").setLevel(logging.DEBUG)
 
 
 def search_wikipedia_ids(searchterm: str) -> List[Tuple[str, any]]:
