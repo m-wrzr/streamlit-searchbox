@@ -32,7 +32,7 @@ def wrap_inactive_session(func):
             return func(*args, **kwargs)
         except KeyError as error:
             if kwargs.get("key", None) == error.args[0]:
-                logger.debug(f"Session Proxy unavailable for key={error.args[0]}")
+                logger.debug(f"Session Proxy unavailable for key: {error.args[0]}")
                 return
 
             raise error
@@ -90,14 +90,22 @@ def st_searchbox(
     Create a new searchbox instance, that provides suggestions based on the user input
     and returns a selected option or empty string if nothing was selected
 
-    Parameters
-    ----------
-    search_function: Callable[[str], List[str] | List[Tuple[str, any]]]
-        Function that is called to fetch new suggestions after user input.
-    default: Dict[str, any]
-        Default value that is shown in the searchbox.
-    key: str
-        An key that uniquely identifies this component, used to store state.
+    Args:
+        search_function (Callable[[str], List[any]]):
+            Function that is called to fetch new suggestions after user input.
+        placeholder (str, optional):
+            Label shown in the searchbox. Defaults to "Search ...".
+        label (str, optional):
+            Label shown above the searchbox. Defaults to None.
+        default (any, optional):
+            Return value if nothing is selected so far. Defaults to None.
+        clear_on_submit (bool, optional):
+            Remove suggestions on select. Defaults to False.
+        key (str, optional):
+            Streamlit session key. Defaults to "searchbox".
+
+    Returns:
+        any: based on user selection
     """
 
     # key without prefix used by react component
