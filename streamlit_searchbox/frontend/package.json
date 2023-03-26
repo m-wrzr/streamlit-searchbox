@@ -1,6 +1,6 @@
 {
   "name": "streamlit_searchbox",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "dependencies": {
     "@types/jest": "^24.0.0",
