@@ -52,8 +52,8 @@ def _process_search(
     st.session_state[key]["search"] = searchterm
     search_results = search_function(searchterm)
 
-    if not search_results:
-        return st.session_state[key]["result"]
+    if search_results is None:
+        search_results = []
 
     def _get_label(label: any) -> str:
         return str(label[0]) if isinstance(label, tuple) else str(label)
