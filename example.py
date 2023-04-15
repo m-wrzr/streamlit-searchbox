@@ -63,6 +63,14 @@ def search_fancy_return(_: str):
     return [e.a, e.b, e.c]
 
 
+def search_empty_list(_: str):
+    if not st.session_state.get("search_empty_list_n", None):
+        st.session_state["search_empty_list_n"] = 1
+        return ["a", "b", "c"]
+
+    return []
+
+
 #################################
 #### application starts here ####
 #################################
@@ -120,6 +128,14 @@ selected_value4 = st_searchbox(
     key="search_fancy_return",
 )
 st.info(f"{selected_value4} {type(selected_value4)}")
+
+
+selected_value5 = st_searchbox(
+    search_empty_list,
+    clear_on_submit=True,
+    key="search_empty_list",
+)
+st.info(f"{selected_value5} {type(selected_value5)}")
 
 
 st.markdown("---")
