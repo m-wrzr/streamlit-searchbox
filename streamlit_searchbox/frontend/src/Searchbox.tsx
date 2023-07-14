@@ -4,7 +4,7 @@ import {
   withStreamlitConnection,
 } from "streamlit-component-lib"
 import React, { ReactNode } from "react"
-import Select from "react-select"
+import CreatableSelect from "react-select/creatable"
 
 import SearchboxStyle from "./styling"
 
@@ -97,7 +97,7 @@ class Searchbox extends StreamlitComponentBase<State> {
         {this.props.args.label ? (
           <div style={this.style.label}>{this.props.args.label}</div>
         ) : null}
-        <Select
+        <CreatableSelect
           // dereference on clear
           ref={this.ref}
           isClearable={true}
@@ -118,6 +118,10 @@ class Searchbox extends StreamlitComponentBase<State> {
           onMenuOpen={() => this.setState({ menu: true })}
           onMenuClose={() => this.setState({ menu: false })}
           menuIsOpen={this.props.args.options && this.state.menu}
+          createOptionPosition={"first"}
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          formatCreateLabel={(inputValue) => inputValue}
         />
       </div>
     )
