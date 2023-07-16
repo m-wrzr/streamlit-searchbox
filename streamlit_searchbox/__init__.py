@@ -51,6 +51,7 @@ def _process_search(
 
     st.session_state[key]["search"] = searchterm
     search_results = search_function(searchterm)
+    search_results.append(searchterm)
 
     if search_results is None:
         search_results = []
