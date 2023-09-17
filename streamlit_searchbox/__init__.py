@@ -4,7 +4,7 @@ module for streamlit searchbox component
 import functools
 import logging
 import os
-from typing import Callable, List
+from typing import Any, Callable, List
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -40,11 +40,34 @@ def wrap_inactive_session(func):
     return inner_function
 
 
+def _list_to_options_py(options: list[Any] | list[tuple[str, Any]]) -> list[Any]:
+    """
+    unpack search options for proper python return types
+    """
+    return [v[1] if isinstance(v, tuple) else v for v in options]
+
+
+def _list_to_options_js(
+    options: list[Any] | list[tuple[str, Any]]
+) -> list[dict[str, Any]]:
+    """
+    unpack search options for use in react component
+    """
+    return [
+        {
+            "label": str(v[0]) if isinstance(v, tuple) else str(v),
+            "value": i,
+        }
+        for i, v in enumerate(options)
+    ]
+
+
 def _process_search(
-    search_function: Callable[[str], List[any]],
+    search_function: Callable[[str], List[Any]],
     key: str,
     searchterm: str,
-) -> bool:
+    rerun_on_update: bool,
+) -> None:
     # nothing changed, avoid new search
     if searchterm == st.session_state[key]["search"]:
         return st.session_state[key]["result"]
@@ -55,37 +78,25 @@ def _process_search(
     if search_results is None:
         search_results = []
 
-    def _get_label(label: any) -> str:
-        return str(label[0]) if isinstance(label, tuple) else str(label)
+    st.session_state[key]["options_js"] = _list_to_options_js(search_results)
+    st.session_state[key]["options_py"] = _list_to_options_py(search_results)
 
-    def _get_value(value: any) -> any:
-        return value[1] if isinstance(value, tuple) else value
-
-    # used for react component
-    st.session_state[key]["options"] = [
-        {
-            "label": _get_label(v),
-            "value": i,
-        }
-        for i, v in enumerate(search_results)
-    ]
-
-    # used for proper return types
-    st.session_state[key]["options_real_type"] = [_get_value(v) for v in search_results]
-
-    st.experimental_rerun()
+    if rerun_on_update:
+        st.experimental_rerun()
 
 
 @wrap_inactive_session
 def st_searchbox(
-    search_function: Callable[[str], List[any]],
+    search_function: Callable[[str], List[Any]],
     placeholder: str = "Search ...",
-    label: str = None,
-    default: any = None,
+    label: str | None = None,
+    default: Any = None,
+    default_options: list[str] | None = None,
     clear_on_submit: bool = False,
+    rerun_on_update: bool = True,
     key: str = "searchbox",
     **kwargs,
-) -> any:
+) -> Any:
     """
     Create a new searchbox instance, that provides suggestions based on the user input
     and returns a selected option or empty string if nothing was selected
@@ -118,12 +129,16 @@ def st_searchbox(
             # updated after each search keystroke
             "search": "",
             # updated after each search_function run
-            "options": [],
+            "options_js": [],
         }
+
+        if default_options:
+            st.session_state[key]["options_js"] = _list_to_options_js(default_options)
+            st.session_state[key]["options_py"] = _list_to_options_py(default_options)
 
     # everything here is passed to react as this.props.args
     react_state = _get_react_component(
-        options=st.session_state[key]["options"],
+        options=st.session_state[key]["options_js"],
         clear_on_submit=clear_on_submit,
         placeholder=placeholder,
         label=label,
@@ -139,12 +154,12 @@ def st_searchbox(
 
     if interaction == "search":
         # triggers rerun, no ops afterwards executed
-        _process_search(search_function, key, value)
+        _process_search(search_function, key, value, rerun_on_update)
 
     if interaction == "submit":
         st.session_state[key]["result"] = (
-            st.session_state[key]["options_real_type"][value]
-            if "options_real_type" in st.session_state[key]
+            st.session_state[key]["options_py"][value]
+            if "options_py" in st.session_state[key]
             else value
         )
         return st.session_state[key]["result"]
