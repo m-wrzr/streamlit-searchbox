@@ -91,7 +91,7 @@ def st_searchbox(
     placeholder: str = "Search ...",
     label: str | None = None,
     default: Any = None,
-    default_options: list[str] | None = None,
+    default_options: List[Any] | None = None,
     clear_on_submit: bool = False,
     rerun_on_update: bool = True,
     key: str = "searchbox",

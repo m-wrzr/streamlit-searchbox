@@ -119,6 +119,11 @@ boxes = [
     ),
     dict(
         search_function=search,
+        default_options=[("inital", "i"), ("list", "l")],
+        key=f"{search.__name__}_default_options_tuple",
+    ),
+    dict(
+        search_function=search,
         key=f"{search.__name__}_rerun_disabled",
         rerun_on_update=False,
     ),
