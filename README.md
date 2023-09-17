@@ -1,9 +1,10 @@
 # streamlit-searchbox
 
-- [Installation](#installation)
-- [Overview](#overview)
-- [Usage](#usage)
-- [Example](#example)
+- [streamlit-searchbox](#streamlit-searchbox)
+  - [Installation](#installation)
+  - [Overview](#overview)
+  - [Usage](#usage)
+    - [Example](#example)
 
 ---
 
@@ -76,10 +77,22 @@ default: any = None
 Default return value in case nothing was submitted or the searchbox cleared.
 
 ```python
+default_options: list[str] | None = None
+```
+
+Default options that will be shown when first clicking on the searchbox.
+
+```python
 clear_on_submit: bool = False
 ```
 
 Automatically clear the input after selection.
+
+```python
+rerun_on_update: bool = True
+```
+
+Use `st.experimental_rerun()` to reload the app after user input and load new search suggestions. Disabling leads to delay in showing the proper search results.
 
 
 ```python
