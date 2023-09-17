@@ -130,8 +130,8 @@ boxes = [
 ]
 
 
-searchboxes, visual_ref, form_example = st.tabs(
-    ["Searchboxes", "Visual Reference", "Form Example"]
+searchboxes, visual_ref, form_example, manual_example = st.tabs(
+    ["Searchboxes", "Visual Reference", "Form Example", "Manual Example"]
 )
 
 with searchboxes:
@@ -179,3 +179,20 @@ with form_example:
         if submit:
             st.write("form submitted")
             st.write(sr)
+
+with manual_example:
+    key = f"{search.__name__}_manual"
+
+    if key in st.session_state:
+        st.session_state[key]["options_js"] = [
+            {"label": f"{st.session_state[key]['search']}_{i}", "value": i}
+            for i in range(5)
+        ]
+        st.session_state[key]["options_py"] = [i for i in range(5)]
+
+    manual = st_searchbox(
+        search_function=lambda _: [],
+        key=key,
+    )
+
+    st.write(manual)
