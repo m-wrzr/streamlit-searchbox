@@ -11,7 +11,7 @@ from streamlit_searchbox import st_searchbox
 
 logging.getLogger("streamlit_searchbox").setLevel(logging.DEBUG)
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="centered")
 
 
 def search_wikipedia_ids(searchterm: str) -> List[tuple[str, Any]]:
@@ -129,12 +129,15 @@ boxes = [
     ),
 ]
 
-searchboxes, visual_ref = st.tabs(["Searchboxes", "Visual Reference"])
+
+searchboxes, visual_ref, form_example = st.tabs(
+    ["Searchboxes", "Visual Reference", "Form Example"]
+)
 
 with searchboxes:
     # iterate over boxes in groups of 3, fit into columns
-    for box_l in [boxes[i : i + 3] for i in range(0, len(boxes), 3)]:
-        cols = st.columns(3)
+    for box_l in [boxes[i : i + 2] for i in range(0, len(boxes), 2)]:
+        cols = st.columns(2)
 
         for i, box in enumerate(box_l):
             with cols[i]:
@@ -160,3 +163,19 @@ with visual_ref:
         index=1,
         key="selectbox",
     )
+
+with form_example:
+    with st.form("myform"):
+        c1, c2 = st.columns(2)
+        with c1:
+            sr = st_searchbox(
+                search_function=search,
+                key=f"{search.__name__}_form",
+            )
+        with c2:
+            st.form_submit_button("load suggestions")
+
+        submit = st.form_submit_button("real submit")
+        if submit:
+            st.write("form submitted")
+            st.write(sr)
