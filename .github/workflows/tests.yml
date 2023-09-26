@@ -12,9 +12,10 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 16
           cache: 'npm'
           cache-dependency-path: streamlit_searchbox/frontend/package-lock.json
+
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
