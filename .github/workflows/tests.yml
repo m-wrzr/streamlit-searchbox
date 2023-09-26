@@ -15,13 +15,17 @@ jobs:
         with:
           python-version: 3.11
 
-      - name: Display Python version
-        run: python -c "import sys; print(sys.version)"
-
       - run: pip install -e ".[dev,tests]"
       - run: pip uninstall streamlit-searchbox -y
 
       - run: python -m pytest tests/
 
       - run: playwright install
+
+      - run: npm install --force
+        working-directory: ./streamlit_searchbox/frontend
+
+      - run: npm run build
+        working-directory: ./streamlit_searchbox/frontend
+
       - run: python -m pytest tests/playwright
