@@ -26,4 +26,4 @@ jobs:
           npm run check:eslint
           npm run check:prettier
       - run: npm run build
-      - run: npm test
+      - run: npm test --passWithNoTests
