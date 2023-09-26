@@ -2,33 +2,33 @@ import {
   Streamlit,
   StreamlitComponentBase,
   withStreamlitConnection,
-} from "streamlit-component-lib"
-import React, { ReactNode } from "react"
-import Select from "react-select"
+} from "streamlit-component-lib";
+import React, { ReactNode } from "react";
+import Select from "react-select";
 
-import SearchboxStyle from "./styling"
+import SearchboxStyle from "./styling";
 
 interface State {
-  menu: boolean
+  menu: boolean;
 }
 
 interface StreamlitReturn {
-  interaction: "submit" | "search" | "reset"
-  value: any
+  interaction: "submit" | "search" | "reset";
+  value: any;
 }
 
 export function streamlitReturn(interaction: string, value: any): void {
   Streamlit.setComponentValue({
     interaction: interaction,
     value: value,
-  } as StreamlitReturn)
+  } as StreamlitReturn);
 }
 
 class Searchbox extends StreamlitComponentBase<State> {
-  public state = { menu: false }
+  public state = { menu: false };
 
-  private style = new SearchboxStyle(this.props.theme!)
-  private ref: any = React.createRef()
+  private style = new SearchboxStyle(this.props.theme!);
+  private ref: any = React.createRef();
 
   /**
    * new keystroke on searchbox
@@ -39,12 +39,12 @@ class Searchbox extends StreamlitComponentBase<State> {
   private onSearchInput = (input: string, _: any): void => {
     // happens on selection
     if (input.length === 0) {
-      this.setState({ menu: false })
-      return
+      this.setState({ menu: false });
+      return;
     }
 
-    streamlitReturn("search", input)
-  }
+    streamlitReturn("search", input);
+  };
 
   /**
    * input was selected from dropdown or focus changed
@@ -54,11 +54,11 @@ class Searchbox extends StreamlitComponentBase<State> {
   private onInputSelection(option: any): void {
     // clear selection (X)
     if (option === null) {
-      this.callbackReset()
-      return
+      this.callbackReset();
+      return;
     }
 
-    this.callbackSubmit(option)
+    this.callbackSubmit(option);
   }
 
   /**
@@ -67,8 +67,8 @@ class Searchbox extends StreamlitComponentBase<State> {
   private callbackReset(): void {
     this.setState({
       menu: false,
-    })
-    streamlitReturn("reset", null)
+    });
+    streamlitReturn("reset", null);
   }
 
   /**
@@ -76,14 +76,14 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @param option
    */
   private callbackSubmit(option: any) {
-    streamlitReturn("submit", option.value)
+    streamlitReturn("submit", option.value);
 
     if (this.props.args.clear_on_submit) {
-      this.ref.current.select.clearValue()
+      this.ref.current.select.clearValue();
     } else {
       this.setState({
         menu: false,
-      })
+      });
     }
   }
 
@@ -121,7 +121,7 @@ class Searchbox extends StreamlitComponentBase<State> {
           menuIsOpen={this.props.args.options && this.state.menu}
         />
       </div>
-    )
-  }
+    );
+  };
 }
-export default withStreamlitConnection(Searchbox)
+export default withStreamlitConnection(Searchbox);

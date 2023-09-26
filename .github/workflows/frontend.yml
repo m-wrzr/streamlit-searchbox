@@ -1,0 +1,31 @@
+name: tests
+
+on: [push]
+
+jobs:
+    build:
+
+      runs-on: ubuntu-latest
+
+      defaults:
+        run:
+          working-directory: streamlit_searchbox/frontend
+
+      steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: streamlit_searchbox/frontend/package-lock.json
+
+      - run: npm ci
+
+      - name: Lint
+        run: |
+          npm run check:eslint
+          npm run check:prettier
+
+      - run: npm run build --if-present
+      - run: npm test
