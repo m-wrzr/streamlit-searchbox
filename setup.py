@@ -17,7 +17,16 @@ setuptools.setup(
         "streamlit >= 0.63",
     ],
     extras_require={
-        "tests": ["wikipedia"],
-        "dev": ["black", "isort", "ruff"],
+        "tests": [
+            "wikipedia",
+            "pytest",
+            "pytest-playwright",
+        ],
+        "dev": [
+            "black",
+            "isort",
+            "ruff",
+            "pyright",
+        ],
     },
 )
