@@ -98,6 +98,7 @@ class Searchbox extends StreamlitComponentBase<State> {
           <div style={this.style.label}>{this.props.args.label}</div>
         ) : null}
         <Select
+          inputId={this.props.args.label || "searchbox-input-id"}
           // dereference on clear
           ref={this.ref}
           isClearable={true}

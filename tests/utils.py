@@ -1,19 +1,12 @@
 from __future__ import annotations
 
 import enum
-import logging
 import random
 import time
 from typing import Any, List
 
 import requests
 import streamlit as st
-
-from streamlit_searchbox import st_searchbox
-
-logging.getLogger("streamlit_searchbox").setLevel(logging.DEBUG)
-
-st.set_page_config(layout="centered", page_title="Searchbox Demo")
 
 
 def search_wikipedia_ids(searchterm: str) -> List[tuple[str, Any]]:
@@ -69,6 +62,10 @@ def search_empty_list(_: str):
         return ["a", "b", "c"]
 
     return []
+
+
+def selection_to_text(result):
+    return f"result={result} type={type(result).__name__}"
 
 
 #################################
@@ -134,70 +131,3 @@ boxes = [
         label=f"{search.__name__}_rerun_disabled",
     ),
 ]
-
-
-searchboxes, visual_ref, form_example, manual_example = st.tabs(
-    ["Searchboxes", "Visual Reference", "Form Example", "Manual Example"]
-)
-
-with searchboxes:
-    # iterate over boxes in groups of 3, fit into columns
-    for box_l in [boxes[i : i + 2] for i in range(0, len(boxes), 2)]:
-        cols = st.columns(2)
-
-        for i, box in enumerate(box_l):
-            with cols[i]:
-                selected_value = st_searchbox(**box)
-
-                if selected_value:
-                    st.info(f"{selected_value} {type(selected_value)}")
-
-        st.markdown("---")
-
-
-with visual_ref:
-    st.multiselect(
-        "Multiselect",
-        [1, 2, 3, 4, 5],
-        default=[1, 2],
-        key="multiselect",
-    )
-    st.selectbox(
-        "Selectbox",
-        [1, 2, 3],
-        index=1,
-        key="selectbox",
-    )
-
-with form_example:
-    with st.form("myform"):
-        c1, c2 = st.columns(2)
-        with c1:
-            sr = st_searchbox(
-                search_function=search,
-                key=f"{search.__name__}_form",
-            )
-        with c2:
-            st.form_submit_button("load suggestions")
-
-        submit = st.form_submit_button("real submit")
-        if submit:
-            st.write("form submitted")
-            st.write(sr)
-
-with manual_example:
-    key = f"{search.__name__}_manual"
-
-    if key in st.session_state:
-        st.session_state[key]["options_js"] = [
-            {"label": f"{st.session_state[key]['search']}_{i}", "value": i}
-            for i in range(5)
-        ]
-        st.session_state[key]["options_py"] = [i for i in range(5)]
-
-    manual = st_searchbox(
-        search_function=lambda _: [],
-        key=key,
-    )
-
-    st.write(manual)

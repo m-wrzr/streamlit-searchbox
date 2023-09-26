@@ -40,11 +40,11 @@ target-version = "py311"
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.pyright]
-include = ["streamlit_searchbox"]
 exclude = [
-    "venv",
-    "venv38",
-    "node_modules",
-    "**/__pycache__/",
+    "build",
+    "dist",
+    "venv**",
+    "**/node_modules",
+    "**/__pycache__",
     "streamlit_searchbox/frontend",
 ]

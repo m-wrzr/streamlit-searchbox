@@ -70,3 +70,4 @@ venv
 README.local.md
 .streamlit
 venv*
+tests/screenshots/*.png
