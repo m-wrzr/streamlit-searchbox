@@ -23,6 +23,7 @@ setuptools.setup(
             "pytest-playwright",
         ],
         "dev": [
+            "pre-commit",
             "black",
             "isort",
             "ruff",
