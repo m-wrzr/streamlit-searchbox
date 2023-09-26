@@ -18,14 +18,13 @@ jobs:
       - run: pip install -e ".[dev,tests]"
       - run: pip uninstall streamlit-searchbox -y
 
-      - run: python -m pytest tests/
-
       - run: playwright install
 
       - run: npm install --force
         working-directory: ./streamlit_searchbox/frontend
-
       - run: npm run build
         working-directory: ./streamlit_searchbox/frontend
+
+      - run: python -m pytest tests/
 
       - run: python -m pytest tests/playwright
