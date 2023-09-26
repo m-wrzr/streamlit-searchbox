@@ -1,0 +1,24 @@
+name: frontend
+
+on: [push]
+
+
+jobs:
+    lint:
+      runs-on: ubuntu-latest
+
+      defaults:
+        run:
+          working-directory: streamlit_searchbox/frontend
+
+      steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup_frontend
+
+      - name: Lint
+        run: |
+          npm run check:eslint
+          npm run check:prettier
+
+      # TODO: frontend tests
+      # - run: npm test --passWithNoTests

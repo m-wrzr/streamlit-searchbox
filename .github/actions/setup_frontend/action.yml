@@ -1,0 +1,23 @@
+name: Setup Frontend
+description: Setup Node.js with fixed packages / version
+
+runs:
+  using: composite
+  steps:
+
+  - name: Use Node.js
+    uses: actions/setup-node@v3
+    with:
+      node-version: 16
+      cache: 'npm'
+      cache-dependency-path: streamlit_searchbox/frontend/package-lock.json
+
+  - name: Install dependencies
+    shell: bash --login -eo pipefail {0}
+    run: npm install --force
+    working-directory: ./streamlit_searchbox/frontend
+
+  - name: Build
+    shell: bash --login -eo pipefail {0}
+    run: npm run build
+    working-directory: ./streamlit_searchbox/frontend

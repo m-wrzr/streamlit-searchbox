@@ -53,10 +53,6 @@ node_modules/
 # Coverage directory used by tools like istanbul
 coverage/
 
-# Lockfiles
-yarn.lock
-package-lock.json
-
 ########################################################################
 # JetBrains
 ########################################################################
@@ -70,3 +66,4 @@ venv
 README.local.md
 .streamlit
 venv*
+tests/screenshots/*.png

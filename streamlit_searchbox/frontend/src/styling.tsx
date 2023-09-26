@@ -1,30 +1,30 @@
-import React from "react"
+import React from "react";
 import {
   CSSObjectWithLabel,
   StylesConfig,
   ControlProps,
   OptionProps,
-} from "react-select"
+} from "react-select";
 
-import { ReactComponent as Dropdown } from "./icons/st-arrow.svg"
-import { ReactComponent as Clear } from "./icons/st-clear.svg"
+import { ReactComponent as Dropdown } from "./icons/st-arrow.svg";
+import { ReactComponent as Clear } from "./icons/st-clear.svg";
 
 class SearchboxStyle {
-  theme: any
-  label: any
-  select: StylesConfig
+  theme: any;
+  label: any;
+  select: StylesConfig;
 
   constructor(theme: any) {
-    this.theme = theme
+    this.theme = theme;
     this.label = {
       color: theme.textColor,
       fontSize: "0.82em",
       fontWeight: 400,
       font: theme.font,
       marginBottom: "0.85rem",
-    }
+    };
 
-    this.select = buildStyleSelect(theme)
+    this.select = buildStyleSelect(theme);
   }
 
   /**
@@ -46,7 +46,7 @@ class SearchboxStyle {
           }}
         />
       </div>
-    )
+    );
   }
 
   /**
@@ -57,7 +57,7 @@ class SearchboxStyle {
   clearIndicator(props: any) {
     const {
       innerProps: { ref, ...restInnerProps },
-    } = props
+    } = props;
 
     return (
       <Clear
@@ -68,7 +68,7 @@ class SearchboxStyle {
         width={15}
         height={15}
       />
-    )
+    );
   }
 }
 
@@ -106,7 +106,7 @@ function buildStyleSelect(theme: any): any {
             ? "1px transparent"
             : "1px solid " + theme.primaryColor,
         },
-      }
+      };
     },
     // single cell in option list
     option: (
@@ -125,9 +125,9 @@ function buildStyleSelect(theme: any): any {
         // option text
         color: theme.textColor,
         cursor: isDisabled ? "not-allowed" : "Search ...",
-      }
+      };
     },
-  }
+  };
 }
 
-export default SearchboxStyle
+export default SearchboxStyle;

@@ -1,0 +1,46 @@
+name: CI
+
+on: [push]
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup_backend
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - run: pre-commit run --all-files
+
+  types:
+    needs: [pre-commit]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup_backend
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - run: pyright .
+
+  tests:
+    needs: [pre-commit, types]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup_frontend
+      - uses: ./.github/actions/setup_backend
+
+      - run: playwright install
+
+      - run: python -m pytest tests/
+      - run: python -m pytest tests/playwright.py --verbose

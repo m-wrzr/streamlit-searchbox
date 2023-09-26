@@ -1,12 +1,12 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v4.4.0
     hooks:
     -   id: check-yaml
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
 -   repo: https://github.com/psf/black
-    rev: 22.10.0
+    rev: 23.9.1
     hooks:
     -   id: black
 - repo: https://github.com/pycqa/isort
@@ -15,6 +15,6 @@ repos:
     - id: isort
       name: isort (python)
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: 'v0.0.257'
+  rev: 'v0.0.291'
   hooks:
     - id: ruff
