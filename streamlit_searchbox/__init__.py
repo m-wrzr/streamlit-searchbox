@@ -84,7 +84,7 @@ def _process_search(
     st.session_state[key]["options_py"] = _list_to_options_py(search_results)
 
     if rerun_on_update:
-        st.experimental_rerun()
+        st.rerun()
 
 
 @wrap_inactive_session
