@@ -11,6 +11,13 @@ from typing import Any, Callable, List
 import streamlit as st
 import streamlit.components.v1 as components
 
+try:
+    from streamlit import rerun as rerun  # type: ignore
+except ImportError:
+    # conditional import for streamlit version <1.27
+    from streamlit import experimental_rerun as rerun  # type: ignore
+
+
 # point to build directory
 parent_dir = os.path.dirname(os.path.abspath(__file__))
 build_dir = os.path.join(parent_dir, "frontend/build")
@@ -84,7 +91,7 @@ def _process_search(
     st.session_state[key]["options_py"] = _list_to_options_py(search_results)
 
     if rerun_on_update:
-        st.rerun()
+        rerun()
 
 
 @wrap_inactive_session
