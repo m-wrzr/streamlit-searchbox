@@ -6,6 +6,7 @@ from __future__ import annotations
 import functools
 import logging
 import os
+import time
 from typing import Any, Callable, List
 
 import streamlit as st
@@ -103,7 +104,7 @@ def st_searchbox(
     default_options: List[Any] | None = None,
     clear_on_submit: bool = False,
     rerun_on_update: bool = True,
-    key: str = "searchbox",
+    key: str = "searchbox", delay: int = None,
     **kwargs,
 ) -> Any:
     """
@@ -128,6 +129,10 @@ def st_searchbox(
         any: based on user selection
     """
 
+    # delay request (useful if you have a limit of request API)
+    if delay:
+        time.sleep(delay)
+        
     # key without prefix used by react component
     key_react = f"{key}_react"
 
