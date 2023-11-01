@@ -104,7 +104,7 @@ def st_searchbox(
     default_options: List[Any] | None = None,
     clear_on_submit: bool = False,
     rerun_on_update: bool = True,
-    key: str = "searchbox", delay: int = None,
+    key: str = "searchbox", delay: float = None,
     **kwargs,
 ) -> Any:
     """
