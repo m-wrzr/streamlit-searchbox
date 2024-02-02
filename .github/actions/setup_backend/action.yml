@@ -24,7 +24,7 @@ runs:
     shell: bash --login -eo pipefail {0}
     run: python -c "import sys; print(sys.version)"
 
-  - run: pip install streamlit==${{ inputs.streamlit-version }}"
+  - run: pip install streamlit==${{ inputs.streamlit-version }}
     shell: bash --login -eo pipefail {0}
 
   - run: pip install -e ".[dev,tests]"
