@@ -6,6 +6,7 @@ from __future__ import annotations
 import functools
 import logging
 import os
+import time
 from typing import Any, Callable, List
 
 import streamlit as st
@@ -94,6 +95,27 @@ def _process_search(
         rerun()
 
 
+def _set_defaults(
+    key: str,
+    default: Any,
+    default_options: List[Any] | None = None,
+) -> None:
+    st.session_state[key] = {
+        # updated after each selection / reset
+        "result": default,
+        # updated after each search keystroke
+        "search": "",
+        # updated after each search_function run
+        "options_js": [],
+        # key that is used by react component, use time suffix to reload after clear
+        "key_react": f"{key}_react_{str(time.time())}",
+    }
+
+    if default_options:
+        st.session_state[key]["options_js"] = _list_to_options_js(default_options)
+        st.session_state[key]["options_py"] = _list_to_options_py(default_options)
+
+
 @wrap_inactive_session
 def st_searchbox(
     search_function: Callable[[str], List[Any]],
@@ -128,22 +150,8 @@ def st_searchbox(
         any: based on user selection
     """
 
-    # key without prefix used by react component
-    key_react = f"{key}_react"
-
     if key not in st.session_state:
-        st.session_state[key] = {
-            # updated after each selection / reset
-            "result": default,
-            # updated after each search keystroke
-            "search": "",
-            # updated after each search_function run
-            "options_js": [],
-        }
-
-        if default_options:
-            st.session_state[key]["options_js"] = _list_to_options_js(default_options)
-            st.session_state[key]["options_py"] = _list_to_options_py(default_options)
+        _set_defaults(key, default, default_options)
 
     # everything here is passed to react as this.props.args
     react_state = _get_react_component(
@@ -152,7 +160,7 @@ def st_searchbox(
         placeholder=placeholder,
         label=label,
         # react return state within streamlit session_state
-        key=key_react,
+        key=st.session_state[key]["key_react"],
         **kwargs,
     )
 
@@ -174,7 +182,11 @@ def st_searchbox(
         return st.session_state[key]["result"]
 
     if interaction == "reset":
-        st.session_state[key]["result"] = default
+        _set_defaults(key, default, default_options)
+
+        if rerun_on_update:
+            rerun()
+
         return default
 
     # no new react interaction happened
