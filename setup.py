@@ -12,9 +12,9 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     include_package_data=True,
     classifiers=[],
-    python_requires=">=3.7, !=3.9.7",
+    python_requires=">=3.8, !=3.9.7",
     install_requires=[
-        "streamlit >= 0.63",
+        "streamlit >= 1.0",
     ],
     extras_require={
         "tests": [
