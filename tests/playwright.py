@@ -65,7 +65,6 @@ def streamlit_app():
             "run",
             "example_ci.py",
             "--server.fileWatcherType=none",
-            "--global.disableWatchdogWarning=true",
             "--logger.level=error",
         ]
     )
@@ -102,6 +101,8 @@ def test_streamlit_app_loads(streamlit_app):
         for b in boxes
         if b["label"]
         not in [
+            # ignore since it relies on external api calls
+            "search_wikipedia_ids",
             # ignore since it's has a different behavior
             "search_rerun_disabled",
             # TODO: make custom tests for these, initial result list makes it harder
