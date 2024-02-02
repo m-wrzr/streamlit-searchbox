@@ -8,8 +8,14 @@ import Select from "react-select";
 
 import SearchboxStyle from "./styling";
 
+type Option = {
+  value: string;
+  label: string;
+};
+
 interface State {
   menu: boolean;
+  option: Option | null;
 }
 
 interface StreamlitReturn {
@@ -25,7 +31,10 @@ export function streamlitReturn(interaction: string, value: any): void {
 }
 
 class Searchbox extends StreamlitComponentBase<State> {
-  public state = { menu: false };
+  public state = {
+    menu: false,
+    option: null,
+  };
 
   private style = new SearchboxStyle(this.props.theme!);
   private ref: any = React.createRef();
@@ -37,6 +46,13 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @returns
    */
   private onSearchInput = (input: string, _: any): void => {
+    this.setState({
+      option: {
+        value: input,
+        label: input,
+      },
+    });
+
     // happens on selection
     if (input.length === 0) {
       this.setState({ menu: false });
@@ -51,7 +67,7 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @param option
    * @returns
    */
-  private onInputSelection(option: any): void {
+  private onInputSelection(option: Option): void {
     // clear selection (X)
     if (option === null) {
       this.callbackReset();
@@ -67,6 +83,7 @@ class Searchbox extends StreamlitComponentBase<State> {
   private callbackReset(): void {
     this.setState({
       menu: false,
+      option: null,
     });
     streamlitReturn("reset", null);
   }
@@ -75,14 +92,21 @@ class Searchbox extends StreamlitComponentBase<State> {
    * submitted selection, clear optionally
    * @param option
    */
-  private callbackSubmit(option: any) {
+  private callbackSubmit(option: Option) {
     streamlitReturn("submit", option.value);
 
     if (this.props.args.clear_on_submit) {
-      this.ref.current.select.clearValue();
+      this.setState({
+        menu: false,
+        option: null,
+      });
     } else {
       this.setState({
         menu: false,
+        option: {
+          value: option.value,
+          label: option.label,
+        },
       });
     }
   }
@@ -98,6 +122,7 @@ class Searchbox extends StreamlitComponentBase<State> {
           <div style={this.style.label}>{this.props.args.label}</div>
         ) : null}
         <Select
+          value={this.state.option}
           inputId={this.props.args.label || "searchbox-input-id"}
           // dereference on clear
           ref={this.ref}
@@ -114,8 +139,12 @@ class Searchbox extends StreamlitComponentBase<State> {
           }}
           // handlers
           filterOption={(_, __) => true}
-          onChange={(e) => this.onInputSelection(e)}
-          onInputChange={(e, a) => this.onSearchInput(e, a)}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onChange={(e: any) => this.onInputSelection(e)}
+          onInputChange={(e, a) => {
+            // ignore menu close or blur/unfocus events
+            if (a.action === "input-change") this.onSearchInput(e, a);
+          }}
           onMenuOpen={() => this.setState({ menu: true })}
           onMenuClose={() => this.setState({ menu: false })}
           menuIsOpen={this.props.args.options && this.state.menu}
