@@ -23,6 +23,7 @@ interface StreamlitReturn {
   interaction: "submit" | "search" | "reset";
   value: any;
 }
+const Input = (props: any) => <components.Input {...props} isHidden={false} />;
 
 export function streamlitReturn(interaction: string, value: any): void {
   Streamlit.setComponentValue({
@@ -50,6 +51,7 @@ class Searchbox extends StreamlitComponentBase<State> {
   private callbackSearch = (input: string): void => {
     this.setState({
       inputValue: input,
+      option: null,
     });
 
     streamlitReturn("search", input);
@@ -73,27 +75,18 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @param option
    */
   private callbackSubmit(option: Option) {
-    console.log("callbackSubmit");
-    console.log("option", this.state.option, option);
-
     if (this.props.args.clear_on_submit) {
       this.setState({
         menu: false,
-        option: null,
         inputValue: "",
+        option: null,
       });
     } else {
-      console.log("keep value on submit", this.props.args.input_value);
-      console.log("option", option);
-
       this.setState({
         menu: false,
         // keep value on submit
-        option: {
-          value: option.value,
-          label: option.label,
-        },
         inputValue: option.label,
+        option: option,
       });
     }
 
@@ -105,21 +98,12 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @returns
    */
   public render = (): ReactNode => {
-    console.log(
-      "render",
-      this.state.option,
-      this.state.inputValue,
-      this.props.disabled
-    );
-    console.log(this.props);
-
-    // TODO: broken
-
-    // https://react-select.com/advanced
-    // "Below is an example of replicating the behaviour of the deprecated props from react-select v1, onSelectResetsInput and closeOnSelect"
-
-    // describes the issue with resetting input value
-    // https://github.com/JedWatson/react-select/discussions/4302
+    // always focus the input field to enable edits
+    const onFocus = () => {
+      if (this.props.args.editable_after_submit && this.state.inputValue) {
+        this.state.inputValue && this.ref.current.select.inputRef.select();
+      }
+    };
 
     return (
       <div>
@@ -128,15 +112,15 @@ class Searchbox extends StreamlitComponentBase<State> {
         )}
 
         <Select
-          {...{
-            onSelectResetsInput: false,
-          }}
-          name="stateful-select"
           // showing the disabled react-select leads to the component
           // not showing the inputValue but just an empty input field
           // we therefore need to re-render the component if we want to keep the focus
           value={this.state.option}
-          inputValue={this.state.inputValue}
+          inputValue={
+            this.props.args.editable_after_submit
+              ? this.state.inputValue
+              : undefined
+          }
           isClearable={true}
           isSearchable={true}
           styles={this.style.select}
@@ -146,10 +130,14 @@ class Searchbox extends StreamlitComponentBase<State> {
           components={{
             ClearIndicator: (props) => this.style.clearIndicator(props),
             DropdownIndicator: () => this.style.iconDropdown(this.state.menu),
-            IndicatorSeparator: () => <div></div>,
+            IndicatorSeparator: () => null,
+            Input: this.props.args.editable_after_submit
+              ? Input
+              : components.Input,
           }}
           // handlers
           filterOption={(_, __) => true}
+          onFocus={() => onFocus()}
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(option: any, a: any) => {
             switch (a.action) {
@@ -161,7 +149,6 @@ class Searchbox extends StreamlitComponentBase<State> {
                 this.callbackReset();
                 return;
             }
-            console.log("onChange", a);
           }}
           onInputChange={(
             inputValue: string,
@@ -171,11 +158,8 @@ class Searchbox extends StreamlitComponentBase<State> {
               // ignore menu close or blur/unfocus events
               case "input-change":
                 this.callbackSearch(inputValue);
-                return inputValue;
+                return;
             }
-
-            console.log("onInputChange", inputValue, action, prevInputValue);
-            return prevInputValue;
           }}
           onMenuOpen={() => this.setState({ menu: true })}
           onMenuClose={() => this.setState({ menu: false })}

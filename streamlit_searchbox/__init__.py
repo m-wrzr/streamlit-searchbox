@@ -8,7 +8,7 @@ import functools
 import logging
 import os
 import time
-from typing import Any, Callable, List, Literal
+from typing import Any, Callable, List
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -126,7 +126,7 @@ def st_searchbox(
     default_options: List[Any] | None = None,
     clear_on_submit: bool = False,
     rerun_on_update: bool = True,
-    input_value: Literal["default", "selection", "append"] = "default",
+    editable_after_submit: bool = False,
     key: str = "searchbox",
     **kwargs,
 ) -> Any:
@@ -161,7 +161,7 @@ def st_searchbox(
         clear_on_submit=clear_on_submit,
         placeholder=placeholder,
         label=label,
-        input_value=input_value,
+        editable_after_submit=editable_after_submit,
         # react return state within streamlit session_state
         key=st.session_state[key]["key_react"],
         **kwargs,
