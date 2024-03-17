@@ -140,15 +140,21 @@ boxes = [
     ),
     dict(
         search_function=search,
-        key=f"{search.__name__}_keep_current_after_submit",
+        key=f"{search.__name__}_edit_current_after_submit",
         edit_after_submit="current",
-        label=f"{search.__name__}_keep_current_after_submit",
+        label=f"{search.__name__}_edit_current_after_submit",
     ),
     dict(
         search_function=search,
-        key=f"{search.__name__}_keep_option_after_submit",
+        key=f"{search.__name__}_edit_option_after_submit",
         edit_after_submit="option",
-        label=f"{search.__name__}_keep_option_after_submit",
+        label=f"{search.__name__}_edit_option_after_submit",
+    ),
+    dict(
+        search_function=search,
+        key=f"{search.__name__}_edit_concat_after_submit",
+        edit_after_submit="concat",
+        label=f"{search.__name__}_edit_concat_after_submit",
     ),
 ]
 

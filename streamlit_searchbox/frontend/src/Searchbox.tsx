@@ -82,16 +82,26 @@ class Searchbox extends StreamlitComponentBase<State> {
         option: null,
       });
     } else {
+      let input = "";
+
+      switch (this.props.args.edit_after_submit) {
+        case "current":
+          input = this.state.inputValue;
+          break;
+
+        case "option":
+          input = option.label;
+          break;
+
+        case "concat":
+          input = this.state.inputValue + " " + option.label;
+          break;
+      }
+
       this.setState({
         menu: false,
         option: option,
-        // current
-        // option
-        // disabled
-        inputValue:
-          this.props.args.edit_after_submit === "current"
-            ? this.state.inputValue
-            : option.label,
+        inputValue: input,
       });
     }
 
@@ -154,7 +164,7 @@ class Searchbox extends StreamlitComponentBase<State> {
           }}
           onInputChange={(
             inputValue: string,
-            { action, prevInputValue }: InputActionMeta,
+            { action, prevInputValue }: InputActionMeta
           ) => {
             switch (action) {
               // ignore menu close or blur/unfocus events

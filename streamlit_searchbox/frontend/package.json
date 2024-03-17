@@ -7,7 +7,7 @@
     "react-dom": "^16.13.1",
     "react-select": "^5.8.0",
     "streamlit-component-lib": "^2.0.0"
-    },
+  },
   "devDependencies": {
     "@types/lodash": "^4.14.150",
     "@types/node": "^12.0.0",
@@ -26,8 +26,7 @@
     "fix:prettier": "prettier --write .",
     "check:eslint": "eslint 'src/**/*.{ts,tsx}'",
     "check:prettier": "prettier --check .",
-    "prettier": "prettier src/**/*.{ts,tsx} --write"
-
+    "prettier": "prettier . --write"
   },
   "eslintConfig": {
     "extends": "react-app"
