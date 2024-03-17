@@ -111,17 +111,17 @@ function buildStyleSelect(theme: any): any {
     // single cell in option list
     option: (
       styles: CSSObjectWithLabel,
-      { isDisabled, isFocused, isSelected }: OptionProps
+      { isDisabled, isFocused, isSelected }: OptionProps,
     ) => {
       return {
         ...styles,
         backgroundColor: isDisabled
           ? undefined
           : isSelected
-          ? theme.secondaryBackgroundColor
-          : isFocused
-          ? theme.secondaryBackgroundColor
-          : theme.backgroundColor,
+            ? theme.secondaryBackgroundColor
+            : isFocused
+              ? theme.secondaryBackgroundColor
+              : theme.backgroundColor,
         // option text
         color: theme.textColor,
         cursor: isDisabled ? "not-allowed" : "Search ...",

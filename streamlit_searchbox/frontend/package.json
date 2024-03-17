@@ -26,7 +26,7 @@
     "fix:prettier": "prettier --write .",
     "check:eslint": "eslint 'src/**/*.{ts,tsx}'",
     "check:prettier": "prettier --check .",
-    "prettier": "prettier src/**/*.{ts,tsx}"
+    "prettier": "prettier src/**/*.{ts,tsx} --write"
 
   },
   "eslintConfig": {

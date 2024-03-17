@@ -154,7 +154,7 @@ class Searchbox extends StreamlitComponentBase<State> {
           }}
           onInputChange={(
             inputValue: string,
-            { action, prevInputValue }: InputActionMeta
+            { action, prevInputValue }: InputActionMeta,
           ) => {
             switch (action) {
               // ignore menu close or blur/unfocus events
