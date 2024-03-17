@@ -25,8 +25,7 @@
     "fix:eslint": "eslint --fix 'src/**/*.{ts,tsx}'",
     "fix:prettier": "prettier --write .",
     "check:eslint": "eslint 'src/**/*.{ts,tsx}'",
-    "check:prettier": "prettier --check .",
-    "prettier": "prettier . --write"
+    "check:prettier": "prettier --check ."
   },
   "eslintConfig": {
     "extends": "react-app"
