@@ -4,9 +4,9 @@ import {
   withStreamlitConnection,
 } from "streamlit-component-lib";
 import React, { ReactNode } from "react";
-import Select from "react-select";
 
 import SearchboxStyle from "./styling";
+import Select, { InputActionMeta, components } from "react-select";
 
 type Option = {
   value: string;
@@ -16,12 +16,14 @@ type Option = {
 interface State {
   menu: boolean;
   option: Option | null;
+  inputValue: string;
 }
 
 interface StreamlitReturn {
   interaction: "submit" | "search" | "reset";
   value: any;
 }
+const Input = (props: any) => <components.Input {...props} isHidden={false} />;
 
 export function streamlitReturn(interaction: string, value: any): void {
   Streamlit.setComponentValue({
@@ -31,9 +33,10 @@ export function streamlitReturn(interaction: string, value: any): void {
 }
 
 class Searchbox extends StreamlitComponentBase<State> {
-  public state = {
+  public state: State = {
     menu: false,
     option: null,
+    inputValue: "",
   };
 
   private style = new SearchboxStyle(this.props.theme!);
@@ -45,37 +48,14 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @param _
    * @returns
    */
-  private onSearchInput = (input: string, _: any): void => {
+  private callbackSearch = (input: string): void => {
     this.setState({
-      option: {
-        value: input,
-        label: input,
-      },
+      inputValue: input,
+      option: null,
     });
-
-    // happens on selection
-    if (input.length === 0) {
-      this.setState({ menu: false });
-      return;
-    }
 
     streamlitReturn("search", input);
   };
-
-  /**
-   * input was selected from dropdown or focus changed
-   * @param option
-   * @returns
-   */
-  private onInputSelection(option: Option): void {
-    // clear selection (X)
-    if (option === null) {
-      this.callbackReset();
-      return;
-    }
-
-    this.callbackSubmit(option);
-  }
 
   /**
    * reset button was clicked
@@ -84,7 +64,9 @@ class Searchbox extends StreamlitComponentBase<State> {
     this.setState({
       menu: false,
       option: null,
+      inputValue: "",
     });
+
     streamlitReturn("reset", null);
   }
 
@@ -93,22 +75,37 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @param option
    */
   private callbackSubmit(option: Option) {
-    streamlitReturn("submit", option.value);
-
     if (this.props.args.clear_on_submit) {
       this.setState({
         menu: false,
+        inputValue: "",
         option: null,
       });
     } else {
+      let input = "";
+
+      switch (this.props.args.edit_after_submit) {
+        case "current":
+          input = this.state.inputValue;
+          break;
+
+        case "option":
+          input = option.label;
+          break;
+
+        case "concat":
+          input = this.state.inputValue + " " + option.label;
+          break;
+      }
+
       this.setState({
         menu: false,
-        option: {
-          value: option.value,
-          label: option.label,
-        },
+        option: option,
+        inputValue: input,
       });
     }
+
+    streamlitReturn("submit", option.value);
   }
 
   /**
@@ -116,16 +113,28 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @returns
    */
   public render = (): ReactNode => {
+    const editableAfterSubmit =
+      this.props.args.edit_after_submit !== "disabled";
+
+    // always focus the input field to enable edits
+    const onFocus = () => {
+      if (editableAfterSubmit && this.state.inputValue) {
+        this.state.inputValue && this.ref.current.select.inputRef.select();
+      }
+    };
+
     return (
       <div>
-        {this.props.args.label ? (
+        {this.props.args.label && (
           <div style={this.style.label}>{this.props.args.label}</div>
-        ) : null}
+        )}
+
         <Select
+          // showing the disabled react-select leads to the component
+          // not showing the inputValue but just an empty input field
+          // we therefore need to re-render the component if we want to keep the focus
           value={this.state.option}
-          inputId={this.props.args.label || "searchbox-input-id"}
-          // dereference on clear
-          ref={this.ref}
+          inputValue={editableAfterSubmit ? this.state.inputValue : undefined}
           isClearable={true}
           isSearchable={true}
           styles={this.style.select}
@@ -135,15 +144,34 @@ class Searchbox extends StreamlitComponentBase<State> {
           components={{
             ClearIndicator: (props) => this.style.clearIndicator(props),
             DropdownIndicator: () => this.style.iconDropdown(this.state.menu),
-            IndicatorSeparator: () => <div></div>,
+            IndicatorSeparator: () => null,
+            Input: editableAfterSubmit ? Input : components.Input,
           }}
           // handlers
           filterOption={(_, __) => true}
+          onFocus={() => onFocus()}
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onChange={(e: any) => this.onInputSelection(e)}
-          onInputChange={(e, a) => {
-            // ignore menu close or blur/unfocus events
-            if (a.action === "input-change") this.onSearchInput(e, a);
+          onChange={(option: any, a: any) => {
+            switch (a.action) {
+              case "select-option":
+                this.callbackSubmit(option);
+                return;
+
+              case "clear":
+                this.callbackReset();
+                return;
+            }
+          }}
+          onInputChange={(
+            inputValue: string,
+            { action, prevInputValue }: InputActionMeta,
+          ) => {
+            switch (action) {
+              // ignore menu close or blur/unfocus events
+              case "input-change":
+                this.callbackSearch(inputValue);
+                return;
+            }
           }}
           onMenuOpen={() => this.setState({ menu: true })}
           onMenuClose={() => this.setState({ menu: false })}

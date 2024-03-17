@@ -138,6 +138,24 @@ boxes = [
         rerun_on_update=False,
         label=f"{search.__name__}_rerun_disabled",
     ),
+    dict(
+        search_function=search,
+        key=f"{search.__name__}_edit_current_after_submit",
+        edit_after_submit="current",
+        label=f"{search.__name__}_edit_current_after_submit",
+    ),
+    dict(
+        search_function=search,
+        key=f"{search.__name__}_edit_option_after_submit",
+        edit_after_submit="option",
+        label=f"{search.__name__}_edit_option_after_submit",
+    ),
+    dict(
+        search_function=search,
+        key=f"{search.__name__}_edit_concat_after_submit",
+        edit_after_submit="concat",
+        label=f"{search.__name__}_edit_concat_after_submit",
+    ),
 ]
 
 
@@ -152,7 +170,7 @@ with searchboxes:
 
         for i, box in enumerate(box_l):
             with cols[i]:
-                selected_value = st_searchbox(**box)
+                selected_value = st_searchbox(**box)  # type: ignore
 
                 if selected_value:
                     st.info(f"{selected_value} {type(selected_value)}")

@@ -14,7 +14,7 @@ runs:
 
   - name: Install dependencies
     shell: bash --login -eo pipefail {0}
-    run: npm install --force
+    run: npm install
     working-directory: ./streamlit_searchbox/frontend
 
   - name: Build

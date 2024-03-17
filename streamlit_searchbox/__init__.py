@@ -1,13 +1,14 @@
 """
 module for streamlit searchbox component
 """
+
 from __future__ import annotations
 
 import functools
 import logging
 import os
 import time
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Literal
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -125,6 +126,7 @@ def st_searchbox(
     default_options: List[Any] | None = None,
     clear_on_submit: bool = False,
     rerun_on_update: bool = True,
+    edit_after_submit: Literal["disabled", "current", "option", "concat"] = "disabled",
     key: str = "searchbox",
     **kwargs,
 ) -> Any:
@@ -141,8 +143,14 @@ def st_searchbox(
             Label shown above the searchbox. Defaults to None.
         default (any, optional):
             Return value if nothing is selected so far. Defaults to None.
+        default_options (List[any], optional):
+            Initial list of options. Defaults to None.
         clear_on_submit (bool, optional):
             Remove suggestions on select. Defaults to False.
+        rerun_on_update (bool, optional):
+            Rerun the streamlit app after each search. Defaults to True.
+        edit_after_submit ("disabled", "current", "option", "concat", optional):
+            Edit the search term after submit. Defaults to "disabled".
         key (str, optional):
             Streamlit session key. Defaults to "searchbox".
 
@@ -159,6 +167,7 @@ def st_searchbox(
         clear_on_submit=clear_on_submit,
         placeholder=placeholder,
         label=label,
+        edit_after_submit=edit_after_submit,
         # react return state within streamlit session_state
         key=st.session_state[key]["key_react"],
         **kwargs,
