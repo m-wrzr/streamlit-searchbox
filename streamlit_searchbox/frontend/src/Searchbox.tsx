@@ -84,9 +84,14 @@ class Searchbox extends StreamlitComponentBase<State> {
     } else {
       this.setState({
         menu: false,
-        // keep value on submit
-        inputValue: option.label,
         option: option,
+        // current
+        // option
+        // disabled
+        inputValue:
+          this.props.args.edit_after_submit === "current"
+            ? this.state.inputValue
+            : option.label,
       });
     }
 
@@ -98,9 +103,12 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @returns
    */
   public render = (): ReactNode => {
+    const editableAfterSubmit =
+      this.props.args.edit_after_submit !== "disabled";
+
     // always focus the input field to enable edits
     const onFocus = () => {
-      if (this.props.args.editable_after_submit && this.state.inputValue) {
+      if (editableAfterSubmit && this.state.inputValue) {
         this.state.inputValue && this.ref.current.select.inputRef.select();
       }
     };
@@ -116,11 +124,7 @@ class Searchbox extends StreamlitComponentBase<State> {
           // not showing the inputValue but just an empty input field
           // we therefore need to re-render the component if we want to keep the focus
           value={this.state.option}
-          inputValue={
-            this.props.args.editable_after_submit
-              ? this.state.inputValue
-              : undefined
-          }
+          inputValue={editableAfterSubmit ? this.state.inputValue : undefined}
           isClearable={true}
           isSearchable={true}
           styles={this.style.select}
@@ -131,9 +135,7 @@ class Searchbox extends StreamlitComponentBase<State> {
             ClearIndicator: (props) => this.style.clearIndicator(props),
             DropdownIndicator: () => this.style.iconDropdown(this.state.menu),
             IndicatorSeparator: () => null,
-            Input: this.props.args.editable_after_submit
-              ? Input
-              : components.Input,
+            Input: editableAfterSubmit ? Input : components.Input,
           }}
           // handlers
           filterOption={(_, __) => true}

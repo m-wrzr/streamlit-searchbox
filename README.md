@@ -94,6 +94,11 @@ rerun_on_update: bool = True
 
 Use `st.experimental_rerun()` to reload the app after user input and load new search suggestions. Disabling leads to delay in showing the proper search results.
 
+```python
+editable_after_submit: bool = False
+```
+
+Do not reset the input after an option is selected but keep it editable
 
 ```python
 key: str = "searchbox"

@@ -140,9 +140,15 @@ boxes = [
     ),
     dict(
         search_function=search,
-        key=f"{search.__name__}_keep_value_on_submit",
-        editable_after_submit=True,
-        label=f"{search.__name__}_keep_value_on_submit",
+        key=f"{search.__name__}_keep_current_after_submit",
+        edit_after_submit="current",
+        label=f"{search.__name__}_keep_current_after_submit",
+    ),
+    dict(
+        search_function=search,
+        key=f"{search.__name__}_keep_option_after_submit",
+        edit_after_submit="option",
+        label=f"{search.__name__}_keep_option_after_submit",
     ),
 ]
 
