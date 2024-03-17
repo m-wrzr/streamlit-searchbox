@@ -79,64 +79,70 @@ def search_empty_list(_: str):
 # searchbox configurations, see __init__.py for details
 # will pass all kwargs to the searchbox component
 boxes = [
-    dict(
-        search_function=search_wikipedia_ids,
-        placeholder="Search Wikipedia",
-        label=search_wikipedia_ids.__name__,
-        default="SOME DEFAULT",
-        clear_on_submit=False,
-        key=search_wikipedia_ids.__name__,
-    ),
+    #     dict(
+    #         search_function=search_wikipedia_ids,
+    #         placeholder="Search Wikipedia",
+    #         label=search_wikipedia_ids.__name__,
+    #         default="SOME DEFAULT",
+    #         clear_on_submit=False,
+    #         key=search_wikipedia_ids.__name__,
+    #     ),
+    #     dict(
+    #         search_function=search,
+    #         default=None,
+    #         label=search.__name__,
+    #         clear_on_submit=False,
+    #         key=search.__name__,
+    #     ),
+    # dict(
+    #     search_function=search_rnd_delay,
+    #     default=None,
+    #     clear_on_submit=False,
+    #     label=search_rnd_delay.__name__,
+    #     key=search_rnd_delay.__name__,
+    # ),
+    #     dict(
+    #         search_function=search_enum_return,
+    #         clear_on_submit=True,
+    #         key=search_enum_return.__name__,
+    #         label=search_enum_return.__name__,
+    #     ),
+    #     dict(
+    #         search_function=search_empty_list,
+    #         clear_on_submit=True,
+    #         key=search_empty_list.__name__,
+    #         label=search_empty_list.__name__,
+    #     ),
+    # dict(
+    #    search_function=search,
+    #    default_options=["inital", "list", "of", "options"],
+    #    key=f"{search.__name__}_default_options",
+    #    label=f"{search.__name__}_default_options",
+    # ),
+    #     dict(
+    #         search_function=search,
+    #         default="initial",
+    #         default_options=["inital", "list", "of", "options"],
+    #         key=f"{search.__name__}_default_options_all",
+    #         label=f"{search.__name__}_default_options_all",
+    #     ),
+    #     dict(
+    #         search_function=search,
+    #         default_options=[("inital", "i"), ("list", "l")],
+    #         key=f"{search.__name__}_default_options_tuple",
+    #         label=f"{search.__name__}_default_options_tuple",
+    #     ),
+    #     dict(
+    #         search_function=search,
+    #         key=f"{search.__name__}_rerun_disabled",
+    #         rerun_on_update=False,
+    #         label=f"{search.__name__}_rerun_disabled",
+    #     ),
     dict(
         search_function=search,
-        default=None,
-        label=search.__name__,
-        clear_on_submit=False,
-        key=search.__name__,
-    ),
-    dict(
-        search_function=search_rnd_delay,
-        default=None,
-        clear_on_submit=False,
-        label=search_rnd_delay.__name__,
-        key=search_rnd_delay.__name__,
-    ),
-    dict(
-        search_function=search_enum_return,
-        clear_on_submit=True,
-        key=search_enum_return.__name__,
-        label=search_enum_return.__name__,
-    ),
-    dict(
-        search_function=search_empty_list,
-        clear_on_submit=True,
-        key=search_empty_list.__name__,
-        label=search_empty_list.__name__,
-    ),
-    dict(
-        search_function=search,
-        default_options=["inital", "list", "of", "options"],
-        key=f"{search.__name__}_default_options",
-        label=f"{search.__name__}_default_options",
-    ),
-    dict(
-        search_function=search,
-        default="initial",
-        default_options=["inital", "list", "of", "options"],
-        key=f"{search.__name__}_default_options_all",
-        label=f"{search.__name__}_default_options_all",
-    ),
-    dict(
-        search_function=search,
-        default_options=[("inital", "i"), ("list", "l")],
-        key=f"{search.__name__}_default_options_tuple",
-        label=f"{search.__name__}_default_options_tuple",
-    ),
-    dict(
-        search_function=search,
-        key=f"{search.__name__}_rerun_disabled",
-        rerun_on_update=False,
-        label=f"{search.__name__}_rerun_disabled",
+        key=f"{search.__name__}_keep_value_on_submit",
+        input_value="selection",
+        label=f"{search.__name__}_keep_value_on_submit",
     ),
 ]
 
@@ -152,7 +158,7 @@ with searchboxes:
 
         for i, box in enumerate(box_l):
             with cols[i]:
-                selected_value = st_searchbox(**box)
+                selected_value = st_searchbox(**box)  # type: ignore
 
                 if selected_value:
                     st.info(f"{selected_value} {type(selected_value)}")
@@ -160,49 +166,49 @@ with searchboxes:
         st.markdown("---")
 
 
-with visual_ref:
-    st.multiselect(
-        "Multiselect",
-        [1, 2, 3, 4, 5],
-        default=[1, 2],
-        key="multiselect",
-    )
-    st.selectbox(
-        "Selectbox",
-        [1, 2, 3],
-        index=1,
-        key="selectbox",
-    )
+# with visual_ref:
+#     st.multiselect(
+#         "Multiselect",
+#         [1, 2, 3, 4, 5],
+#         default=[1, 2],
+#         key="multiselect",
+#     )
+#     st.selectbox(
+#         "Selectbox",
+#         [1, 2, 3],
+#         index=1,
+#         key="selectbox",
+#     )
+#
+# with form_example:
+#     with st.form("myform"):
+#         c1, c2 = st.columns(2)
+#         with c1:
+#             sr = st_searchbox(
+#                 search_function=search,
+#                 key=f"{search.__name__}_form",
+#             )
+#         with c2:
+#             st.form_submit_button("load suggestions")
+#
+#         submit = st.form_submit_button("real submit")
+#         if submit:
+#             st.write("form submitted")
+#             st.write(sr)
 
-with form_example:
-    with st.form("myform"):
-        c1, c2 = st.columns(2)
-        with c1:
-            sr = st_searchbox(
-                search_function=search,
-                key=f"{search.__name__}_form",
-            )
-        with c2:
-            st.form_submit_button("load suggestions")
-
-        submit = st.form_submit_button("real submit")
-        if submit:
-            st.write("form submitted")
-            st.write(sr)
-
-with manual_example:
-    key = f"{search.__name__}_manual"
-
-    if key in st.session_state:
-        st.session_state[key]["options_js"] = [
-            {"label": f"{st.session_state[key]['search']}_{i}", "value": i}
-            for i in range(5)
-        ]
-        st.session_state[key]["options_py"] = [i for i in range(5)]
-
-    manual = st_searchbox(
-        search_function=lambda _: [],
-        key=key,
-    )
-
-    st.write(manual)
+# with manual_example:
+#     key = f"{search.__name__}_manual"
+#
+#     if key in st.session_state:
+#         st.session_state[key]["options_js"] = [
+#             {"label": f"{st.session_state[key]['search']}_{i}", "value": i}
+#             for i in range(5)
+#         ]
+#         st.session_state[key]["options_py"] = [i for i in range(5)]
+#
+#     manual = st_searchbox(
+#         search_function=lambda _: [],
+#         key=key,
+#     )
+#
+#     st.write(manual)
