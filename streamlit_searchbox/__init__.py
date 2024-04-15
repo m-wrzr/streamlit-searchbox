@@ -78,7 +78,7 @@ def _process_search(
     key: str,
     searchterm: str,
     rerun_on_update: bool,
-    kwargs: dict[str, Any],
+    **kwargs,
 ) -> None:
     # nothing changed, avoid new search
     if searchterm == st.session_state[key]["search"]:
@@ -180,7 +180,7 @@ def st_searchbox(
 
     if interaction == "search":
         # triggers rerun, no ops afterwards executed
-        _process_search(search_function, key, value, rerun_on_update, kwargs)
+        _process_search(search_function, key, value, rerun_on_update, **kwargs)
 
     if interaction == "submit":
         st.session_state[key]["result"] = (
