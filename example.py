@@ -71,6 +71,10 @@ def search_empty_list(_: str):
     return []
 
 
+def search_kwargs(searchterm: str, **kwargs) -> List[str]:
+    return [f"{searchterm}_{len(kwargs)}" for i in range(10)]
+
+
 #################################
 #### application starts here ####
 #################################
@@ -155,6 +159,13 @@ boxes = [
         key=f"{search.__name__}_edit_concat_after_submit",
         edit_after_submit="concat",
         label=f"{search.__name__}_edit_concat_after_submit",
+    ),
+    dict(
+        search_function=search_kwargs,
+        key=f"{search_kwargs.__name__}_kwargs",
+        label=f"{search_kwargs.__name__}_kwargs",
+        a=1,
+        b=2,
     ),
 ]
 

@@ -78,13 +78,14 @@ def _process_search(
     key: str,
     searchterm: str,
     rerun_on_update: bool,
+    kwargs: dict[str, Any],
 ) -> None:
     # nothing changed, avoid new search
     if searchterm == st.session_state[key]["search"]:
         return st.session_state[key]["result"]
 
     st.session_state[key]["search"] = searchterm
-    search_results = search_function(searchterm)
+    search_results = search_function(searchterm, **kwargs)
 
     if search_results is None:
         search_results = []
@@ -170,7 +171,6 @@ def st_searchbox(
         edit_after_submit=edit_after_submit,
         # react return state within streamlit session_state
         key=st.session_state[key]["key_react"],
-        **kwargs,
     )
 
     if react_state is None:
@@ -180,7 +180,7 @@ def st_searchbox(
 
     if interaction == "search":
         # triggers rerun, no ops afterwards executed
-        _process_search(search_function, key, value, rerun_on_update)
+        _process_search(search_function, key, value, rerun_on_update, kwargs)
 
     if interaction == "submit":
         st.session_state[key]["result"] = (
