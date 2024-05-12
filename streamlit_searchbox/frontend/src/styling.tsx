@@ -6,15 +6,18 @@ import {
   OptionProps,
 } from "react-select";
 
-import { ReactComponent as Dropdown } from "./icons/st-arrow.svg";
-import { ReactComponent as Clear } from "./icons/st-clear.svg";
-
+import {
+  DropdownIcon,
+  ClearIconCircularFilled,
+  ClearIconCross,
+  ClearIconCircularUnfilled,
+} from "./icons";
 class SearchboxStyle {
   theme: any;
   label: any;
   select: StylesConfig;
 
-  constructor(theme: any) {
+  constructor(theme: any, overrides: any) {
     this.theme = theme;
     this.label = {
       color: theme.textColor,
@@ -24,7 +27,82 @@ class SearchboxStyle {
       marginBottom: "0.85rem",
     };
 
-    this.select = buildStyleSelect(theme);
+    this.select = {
+      // overall option list
+      menuList: (styles: any) => {
+        return {
+          ...styles,
+          backgroundColor: theme.backgroundColor,
+          ...(overrides.menuList || {}),
+        };
+      },
+      singleValue: (styles: any) => ({
+        ...styles,
+        color: theme.textColor,
+        ...(overrides.singleValue || {}),
+      }),
+      // custom styles needed for default mobile paste behavior
+      // https://github.com/JedWatson/react-select/issues/4106
+      // filler text and icons
+      input: (styles: any) => ({
+        ...styles,
+        color: theme.textColor,
+        // expand input area to fill all the available area
+        gridTemplateColumns: "0 minmax(min-content, 1fr)",
+        ...(overrides.input || {}),
+      }),
+      // placeholder text
+      placeholder: (styles: any) => {
+        return {
+          ...styles,
+          pointerEvents: "none",
+          userSelect: "none",
+          MozUserSelect: "none",
+          WebkitUserSelect: "none",
+          msUserSelect: "none",
+          color: theme.fadedText60,
+          ...(overrides.placeholder || {}),
+        };
+      },
+      // searchbox and others, e.g. options window
+      control: (styles: CSSObjectWithLabel, { isFocused }: ControlProps) => {
+        return {
+          ...styles,
+          backgroundColor: theme.secondaryBackgroundColor,
+          color: theme.secondaryBackgroundColor,
+          border: !isFocused
+            ? "1px transparent"
+            : "1px solid " + theme.primaryColor,
+          boxShadow: "none",
+          "&:hover": {
+            border: !isFocused
+              ? "1px transparent"
+              : "1px solid " + theme.primaryColor,
+          },
+          ...(overrides.control || {}),
+        };
+      },
+      // single cell in option list
+      option: (
+        styles: CSSObjectWithLabel,
+        { isDisabled, isFocused, isSelected }: OptionProps,
+      ) => {
+        return {
+          ...styles,
+          backgroundColor: isDisabled
+            ? undefined
+            : isSelected
+              ? theme.secondaryBackgroundColor
+              : isFocused
+                ? theme.secondaryBackgroundColor
+                : theme.backgroundColor,
+          // option text
+          color: theme.textColor,
+          cursor: isDisabled ? "not-allowed" : "Search ...",
+          ...(overrides.option || {}),
+        };
+      },
+    };
   }
 
   /**
@@ -32,18 +110,23 @@ class SearchboxStyle {
    * @param menu
    * @returns
    */
-  iconDropdown(menu: boolean) {
+  iconDropdown(menu: boolean, overrides: any) {
     return (
-      <div>
-        <Dropdown
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginRight: "8px",
+        }}
+      >
+        <DropdownIcon
           // streamlit has fixed icon sizes at 15x15
           width={15}
           height={15}
           fill={this.theme.textColor}
-          style={{
-            marginRight: menu ? "7px" : "8px",
-            marginBottom: menu ? "0px" : "3px",
-          }}
+          transform={menu && overrides && overrides.rotate ? "rotate(180)" : ""}
+          {...overrides}
         />
       </div>
     );
@@ -54,80 +137,45 @@ class SearchboxStyle {
    * @param props
    * @returns
    */
-  clearIndicator(props: any) {
-    const {
-      innerProps: { ref, ...restInnerProps },
+  clearIndicator(props: any, overrides: any) {
+    let {
+      innerProps: { ref, ...iconProps },
     } = props;
 
-    return (
-      <Clear
-        {...restInnerProps}
-        ref={ref}
-        fill={this.theme.fadedText60}
-        // streamlit has fixed icon sizes at 15x15
-        width={15}
-        height={15}
-      />
-    );
-  }
-}
+    iconProps = {
+      ...iconProps,
+      ref: ref,
+      fill: this.theme.fadedText60,
+      // streamlit has fixed icon sizes at 15x15
+      width: 15,
+      height: 15,
+      ...overrides,
+    };
 
-function buildStyleSelect(theme: any): any {
-  return {
-    // overall option list
-    menuList: (styles: any) => ({
-      ...styles,
-      backgroundColor: theme.backgroundColor,
-    }),
-    // filler text and icons
-    input: (styles: any) => ({ ...styles, color: theme.textColor }),
-    //
-    singleValue: (styles: any) => ({
-      ...styles,
-      color: theme.textColor,
-    }),
-    // placeholder text
-    placeholder: (styles: any) => ({
-      ...styles,
-      color: theme.fadedText60,
-    }),
-    // searchbox and others, e.g. options window
-    control: (styles: CSSObjectWithLabel, { isFocused }: ControlProps) => {
-      return {
-        ...styles,
-        backgroundColor: theme.secondaryBackgroundColor,
-        color: theme.secondaryBackgroundColor,
-        border: !isFocused
-          ? "1px transparent"
-          : "1px solid " + theme.primaryColor,
-        boxShadow: "none",
-        "&:hover": {
-          border: !isFocused
-            ? "1px transparent"
-            : "1px solid " + theme.primaryColor,
-        },
-      };
-    },
-    // single cell in option list
-    option: (
-      styles: CSSObjectWithLabel,
-      { isDisabled, isFocused, isSelected }: OptionProps,
-    ) => {
-      return {
-        ...styles,
-        backgroundColor: isDisabled
-          ? undefined
-          : isSelected
-            ? theme.secondaryBackgroundColor
-            : isFocused
-              ? theme.secondaryBackgroundColor
-              : theme.backgroundColor,
-        // option text
-        color: theme.textColor,
-        cursor: isDisabled ? "not-allowed" : "Search ...",
-      };
-    },
-  };
+    if (iconProps.icon === "cross") {
+      return (
+        <ClearIconCross
+          // replace opacity single overlapping strokes will look weird
+          stroke={this.theme.textColor}
+          {...iconProps}
+        />
+      );
+    }
+
+    if (iconProps.icon === "circle-unfilled") {
+      return (
+        <ClearIconCircularUnfilled
+          // replace opacity single overlapping strokes will look weird
+          stroke={this.theme.textColor}
+          {...iconProps}
+          // icon can't be filled
+          fill="none"
+        />
+      );
+    }
+
+    return <ClearIconCircularFilled {...iconProps} />;
+  }
 }
 
 export default SearchboxStyle;

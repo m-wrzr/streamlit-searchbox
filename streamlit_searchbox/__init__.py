@@ -8,7 +8,7 @@ import functools
 import logging
 import os
 import time
-from typing import Any, Callable, List, Literal
+from typing import Any, Callable, List, Literal, TypedDict
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -118,6 +118,34 @@ def _set_defaults(
         st.session_state[key]["options_py"] = _list_to_options_py(default_options)
 
 
+class ClearStyle(TypedDict, total=False):
+    # determines which icon is used for the clear button
+    icon: Literal["circle-unfilled", "circle-filled", "cross"]
+    # further css styles for the clear button
+    # e.g. {"width": 20, "height": 20, "fill": "red", "stroke": "black"}
+
+
+class DropdownStyle(TypedDict, total=False):
+    # weither to flip the dropdown if the menu is open
+    rotate: bool
+    # further css styles for the dropdown, see ClearStyle
+
+
+class SearchboxStyle(TypedDict, total=False):
+    menuList: dict | None
+    singleValue: dict | None
+    input: dict | None
+    placeholder: dict | None
+    control: dict | None
+    option: dict | None
+
+
+class StyleOverrides(TypedDict, total=False):
+    clear: ClearStyle | None
+    dropdown: DropdownStyle | None
+    searchbox: SearchboxStyle | None
+
+
 @wrap_inactive_session
 def st_searchbox(
     search_function: Callable[[str], List[Any]],
@@ -128,6 +156,7 @@ def st_searchbox(
     clear_on_submit: bool = False,
     rerun_on_update: bool = True,
     edit_after_submit: Literal["disabled", "current", "option", "concat"] = "disabled",
+    style_overrides: StyleOverrides | None = None,
     key: str = "searchbox",
     **kwargs,
 ) -> Any:
@@ -152,6 +181,8 @@ def st_searchbox(
             Rerun the streamlit app after each search. Defaults to True.
         edit_after_submit ("disabled", "current", "option", "concat", optional):
             Edit the search term after submit. Defaults to "disabled".
+        style_overrides (StyleOverrides, optional):
+            CSS styling passed directly to the react components. Defaults to None.
         key (str, optional):
             Streamlit session key. Defaults to "searchbox".
 
@@ -169,6 +200,7 @@ def st_searchbox(
         placeholder=placeholder,
         label=label,
         edit_after_submit=edit_after_submit,
+        style_overrides=style_overrides,
         # react return state within streamlit session_state
         key=st.session_state[key]["key_react"],
     )

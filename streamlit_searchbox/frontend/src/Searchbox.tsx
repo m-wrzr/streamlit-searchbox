@@ -39,7 +39,10 @@ class Searchbox extends StreamlitComponentBase<State> {
     inputValue: "",
   };
 
-  private style = new SearchboxStyle(this.props.theme!);
+  private style = new SearchboxStyle(
+    this.props.theme,
+    this.props.args.style_overrides?.searchbox || {},
+  );
   private ref: any = React.createRef();
 
   /**
@@ -142,8 +145,16 @@ class Searchbox extends StreamlitComponentBase<State> {
           placeholder={this.props.args.placeholder}
           // component overrides
           components={{
-            ClearIndicator: (props) => this.style.clearIndicator(props),
-            DropdownIndicator: () => this.style.iconDropdown(this.state.menu),
+            ClearIndicator: (props) =>
+              this.style.clearIndicator(
+                props,
+                this.props.args.style_overrides?.clear || {},
+              ),
+            DropdownIndicator: () =>
+              this.style.iconDropdown(
+                this.state.menu,
+                this.props.args.style_overrides?.dropdown || {},
+              ),
             IndicatorSeparator: () => null,
             Input: editableAfterSubmit ? Input : components.Input,
           }}

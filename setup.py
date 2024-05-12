@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="streamlit-searchbox",
-    version="0.1.10",
+    version="0.1.11",
     author="m-wrzr",
     description="Autocomplete Searchbox",
     long_description="Streamlit searchbox that dynamically updates "
