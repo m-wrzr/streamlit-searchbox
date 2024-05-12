@@ -79,18 +79,31 @@ function buildStyleSelect(theme: any): any {
       ...styles,
       backgroundColor: theme.backgroundColor,
     }),
-    // filler text and icons
-    input: (styles: any) => ({ ...styles, color: theme.textColor }),
-    //
     singleValue: (styles: any) => ({
       ...styles,
       color: theme.textColor,
     }),
-    // placeholder text
-    placeholder: (styles: any) => ({
+    // custom styles needed for default mobile paste behavior
+    // https://github.com/JedWatson/react-select/issues/4106
+    // filler text and icons
+    input: (styles: any) => ({
       ...styles,
-      color: theme.fadedText60,
+      color: theme.textColor,
+      // expand input area to fill all the available area
+      gridTemplateColumns: "0 minmax(min-content, 1fr)",
     }),
+    // placeholder text
+    placeholder: (styles: any) => {
+      return {
+        ...styles,
+        pointerEvents: "none",
+        userSelect: "none",
+        MozUserSelect: "none",
+        WebkitUserSelect: "none",
+        msUserSelect: "none",
+        color: theme.fadedText60,
+      };
+    },
     // searchbox and others, e.g. options window
     control: (styles: CSSObjectWithLabel, { isFocused }: ControlProps) => {
       return {
