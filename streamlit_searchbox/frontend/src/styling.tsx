@@ -6,9 +6,7 @@ import {
   OptionProps,
 } from "react-select";
 
-import { ReactComponent as Dropdown } from "./icons/st-arrow.svg";
-import { ReactComponent as Clear } from "./icons/st-clear.svg";
-
+import { DropdownIcon, ClearIcon } from "./icons";
 class SearchboxStyle {
   theme: any;
   label: any;
@@ -35,7 +33,7 @@ class SearchboxStyle {
   iconDropdown(menu: boolean) {
     return (
       <div>
-        <Dropdown
+        <DropdownIcon
           // streamlit has fixed icon sizes at 15x15
           width={15}
           height={15}
@@ -60,7 +58,7 @@ class SearchboxStyle {
     } = props;
 
     return (
-      <Clear
+      <ClearIcon
         {...restInnerProps}
         ref={ref}
         fill={this.theme.fadedText60}
