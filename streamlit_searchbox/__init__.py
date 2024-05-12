@@ -131,10 +131,19 @@ class DropdownStyle(TypedDict, total=False):
     # further css styles for the dropdown, see ClearStyle
 
 
-class ReactStyles(TypedDict, total=False):
+class SearchboxStyle(TypedDict, total=False):
+    menuList: dict | None
+    singleValue: dict | None
+    input: dict | None
+    placeholder: dict | None
+    control: dict | None
+    option: dict | None
+
+
+class StyleOverrides(TypedDict, total=False):
     clear: ClearStyle | None
     dropdown: DropdownStyle | None
-    searchbox: dict | None
+    searchbox: SearchboxStyle | None
 
 
 @wrap_inactive_session
@@ -147,7 +156,7 @@ def st_searchbox(
     clear_on_submit: bool = False,
     rerun_on_update: bool = True,
     edit_after_submit: Literal["disabled", "current", "option", "concat"] = "disabled",
-    react_styles: ReactStyles | None = None,
+    style_overrides: StyleOverrides | None = None,
     key: str = "searchbox",
     **kwargs,
 ) -> Any:
@@ -172,6 +181,8 @@ def st_searchbox(
             Rerun the streamlit app after each search. Defaults to True.
         edit_after_submit ("disabled", "current", "option", "concat", optional):
             Edit the search term after submit. Defaults to "disabled".
+        style_overrides (StyleOverrides, optional):
+            CSS styling passed directly to the react components. Defaults to None.
         key (str, optional):
             Streamlit session key. Defaults to "searchbox".
 
@@ -189,7 +200,7 @@ def st_searchbox(
         placeholder=placeholder,
         label=label,
         edit_after_submit=edit_after_submit,
-        react_styles=react_styles,
+        style_overrides=style_overrides,
         # react return state within streamlit session_state
         key=st.session_state[key]["key_react"],
     )

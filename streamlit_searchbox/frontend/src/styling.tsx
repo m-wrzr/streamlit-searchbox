@@ -18,7 +18,7 @@ class SearchboxStyle {
   label: any;
   select: StylesConfig;
 
-  constructor(theme: any) {
+  constructor(theme: any, overrides: any) {
     this.theme = theme;
     this.label = {
       color: theme.textColor,
@@ -30,13 +30,17 @@ class SearchboxStyle {
 
     this.select = {
       // overall option list
-      menuList: (styles: any) => ({
-        ...styles,
-        backgroundColor: theme.backgroundColor,
-      }),
+      menuList: (styles: any) => {
+        return {
+          ...styles,
+          backgroundColor: theme.backgroundColor,
+          ...(overrides.menuList || {}),
+        };
+      },
       singleValue: (styles: any) => ({
         ...styles,
         color: theme.textColor,
+        ...(overrides.singleValue || {}),
       }),
       // custom styles needed for default mobile paste behavior
       // https://github.com/JedWatson/react-select/issues/4106
@@ -46,6 +50,7 @@ class SearchboxStyle {
         color: theme.textColor,
         // expand input area to fill all the available area
         gridTemplateColumns: "0 minmax(min-content, 1fr)",
+        ...(overrides.input || {}),
       }),
       // placeholder text
       placeholder: (styles: any) => {
@@ -57,6 +62,7 @@ class SearchboxStyle {
           WebkitUserSelect: "none",
           msUserSelect: "none",
           color: theme.fadedText60,
+          ...(overrides.placeholder || {}),
         };
       },
       // searchbox and others, e.g. options window
@@ -74,6 +80,7 @@ class SearchboxStyle {
               ? "1px transparent"
               : "1px solid " + theme.primaryColor,
           },
+          ...(overrides.control || {}),
         };
       },
       // single cell in option list
@@ -93,6 +100,7 @@ class SearchboxStyle {
           // option text
           color: theme.textColor,
           cursor: isDisabled ? "not-allowed" : "Search ...",
+          ...(overrides.option || {}),
         };
       },
     };
@@ -103,14 +111,14 @@ class SearchboxStyle {
    * @param menu
    * @returns
    */
-  iconDropdown(props: any, menu: boolean, styles: any) {
-    console.log(props);
+  iconDropdown(menu: boolean, overrides: any) {
     return (
       <div
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          marginRight: "8px",
         }}
       >
         <DropdownIcon
@@ -118,11 +126,8 @@ class SearchboxStyle {
           width={15}
           height={15}
           fill={this.theme.textColor}
-          style={{
-            marginRight: "8px",
-          }}
-          transform={menu && styles && styles.rotate ? "rotate(180)" : ""}
-          {...styles}
+          transform={menu && overrides && overrides.rotate ? "rotate(180)" : ""}
+          {...overrides}
         />
       </div>
     );
@@ -133,7 +138,7 @@ class SearchboxStyle {
    * @param props
    * @returns
    */
-  clearIndicator(props: any, styles: any) {
+  clearIndicator(props: any, overrides: any) {
     let {
       innerProps: { ref, ...iconProps },
     } = props;
@@ -145,8 +150,7 @@ class SearchboxStyle {
       // streamlit has fixed icon sizes at 15x15
       width: 15,
       height: 15,
-      // overwrite default styles if provided
-      ...styles,
+      ...overrides,
     };
 
     if (iconProps.icon === "cross") {

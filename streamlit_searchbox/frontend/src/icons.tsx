@@ -1,5 +1,10 @@
 import React from "react";
 
+/*
+This file contains the icons used in the searchbox component. See https://lucide.dev/icons
+*/
+
+// default icon
 export const DropdownIcon: React.FC<React.SVGProps<SVGSVGElement>> = (
   props,
 ) => (
@@ -8,6 +13,7 @@ export const DropdownIcon: React.FC<React.SVGProps<SVGSVGElement>> = (
   </svg>
 );
 
+// default icon
 export const ClearIconCircularFilled: React.FC<
   React.SVGProps<SVGSVGElement>
 > = (props) => (
@@ -20,23 +26,7 @@ export const ClearIconCircularFilled: React.FC<
   </svg>
 );
 
-export const ClearIconCross: React.FC<React.SVGProps<SVGSVGElement>> = (
-  props,
-) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    // default, overwritten by styles
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    {...props}
-  >
-    <path d="M18 6 6 18" stroke={props.stroke} />
-    <path d="m6 6 12 12" stroke={props.stroke} />
-  </svg>
-);
-
+// optional icon
 export const ClearIconCircularUnfilled: React.FC<
   React.SVGProps<SVGSVGElement>
 > = (props) => (
@@ -46,7 +36,7 @@ export const ClearIconCircularUnfilled: React.FC<
     height="24"
     fill="none"
     viewBox="0 0 24 24"
-    stroke-width="2"
+    stroke-width="3"
     stroke-linecap="round"
     stroke-linejoin="round"
     {...props}
@@ -54,5 +44,23 @@ export const ClearIconCircularUnfilled: React.FC<
     <circle cx="12" cy="12" r="10" />
     <path d="m15 9-6 6" />
     <path d="m9 9 6 6" />
+  </svg>
+);
+
+// optional icon
+export const ClearIconCross: React.FC<React.SVGProps<SVGSVGElement>> = (
+  props,
+) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    // default, overwritten by styles
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    {...props}
+  >
+    <path d="M18 6 6 18" stroke={props.stroke} />
+    <path d="m6 6 12 12" stroke={props.stroke} />
   </svg>
 );

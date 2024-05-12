@@ -5,6 +5,7 @@
   - [Overview](#overview)
   - [Usage](#usage)
     - [Example](#example)
+    - [Styling](#styling)
 
 ---
 
@@ -101,6 +102,12 @@ editable_after_submit: bool = False
 Do not reset the input after an option is selected but keep it editable
 
 ```python
+style_overrides: dict | None = None
+```
+
+See [section](#styling) below for more details.
+
+```python
 key: str = "searchbox"
 ```
 
@@ -109,3 +116,35 @@ Streamlit key for unique component identification.
 ### Example
 
 An example Streamlit app can be found [here](./example.py)
+
+### Styling
+
+To further customize the styling of the searchbox, you can override the default styling by passing `style_overrides` which will be directly applied in the react components. See below for an example, for more information on the available attributes, please see [styling.tsx](./streamlit_searchbox/frontend/src/styling.tsx) as well as the [react-select](https://react-select.com/styles) documentation.
+
+```json
+{
+   "clear":{
+      "width":20,
+      "height":20,
+      "icon":"cross"
+   },
+   "dropdown":{
+      "rotate":true,
+      "width":30,
+      "height":30,
+      "fill":"red"
+   },
+   "searchbox":{
+      "menuList":{
+         "backgroundColor":"transparent"
+      },
+      "singleValue":{
+         "color":"red"
+      },
+      "option":{
+         "color":"blue",
+         "backgroundColor":"yellow"
+      }
+   }
+}
+```
