@@ -12,7 +12,6 @@ import {
   ClearIconCross,
   ClearIconCircularUnfilled,
 } from "./icons";
-import { fill } from "lodash";
 class SearchboxStyle {
   theme: any;
   label: any;
