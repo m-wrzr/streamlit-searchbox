@@ -142,8 +142,17 @@ class Searchbox extends StreamlitComponentBase<State> {
           placeholder={this.props.args.placeholder}
           // component overrides
           components={{
-            ClearIndicator: (props) => this.style.clearIndicator(props),
-            DropdownIndicator: () => this.style.iconDropdown(this.state.menu),
+            ClearIndicator: (props) =>
+              this.style.clearIndicator(
+                props,
+                this.props.args.react_styles?.clear || {},
+              ),
+            DropdownIndicator: (props) =>
+              this.style.iconDropdown(
+                props,
+                this.state.menu,
+                this.props.args.react_styles?.dropdown || {},
+              ),
             IndicatorSeparator: () => null,
             Input: editableAfterSubmit ? Input : components.Input,
           }}

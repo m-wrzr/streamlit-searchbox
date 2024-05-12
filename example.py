@@ -97,6 +97,10 @@ boxes = [
         label=search.__name__,
         clear_on_submit=False,
         key=search.__name__,
+        react_styles={
+            "clear": {"width": 20, "height": 20, "icon": "cross"},
+            "dropdown": {"rotate": True, "width": 30, "height": 30, "fill": "red"},
+        },
     ),
     dict(
         search_function=search_rnd_delay,
@@ -104,6 +108,7 @@ boxes = [
         clear_on_submit=False,
         label=search_rnd_delay.__name__,
         key=search_rnd_delay.__name__,
+        react_styles={"clear": {"width": 20, "height": 20, "icon": "circle-unfilled"}},
     ),
     dict(
         search_function=search_enum_return,
@@ -122,6 +127,7 @@ boxes = [
         default_options=["inital", "list", "of", "options"],
         key=f"{search.__name__}_default_options",
         label=f"{search.__name__}_default_options",
+        react_styles={"clear": {"width": 25, "height": 25}},
     ),
     dict(
         search_function=search,
