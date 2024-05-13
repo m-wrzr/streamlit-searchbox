@@ -175,8 +175,18 @@ boxes = [
         clear_on_submit=False,
         key=f"{search.__name__}_override_style",
         style_overrides={
-            "clear": {"width": 20, "height": 20, "icon": "cross"},
-            "dropdown": {"rotate": True, "width": 30, "height": 30, "fill": "red"},
+            "clear": {
+                "width": 20,
+                "height": 20,
+                "icon": "circle-unfilled",
+                "stroke-width": 2,
+                "stroke": "red",
+            },
+            "dropdown": {
+                "rotate": True,
+                "width": 30,
+                "height": 30,
+            },
             "searchbox": {
                 "menuList": {"backgroundColor": "transparent"},
                 "singleValue": {"color": "red"},
@@ -204,6 +214,30 @@ with searchboxes:
                     st.info(f"{selected_value} {type(selected_value)}")
 
         st.markdown("---")
+
+    st_searchbox(
+        search_function=search,
+        key=f"{search.__name__}_style_manual",
+        style_overrides={
+            "clear": {
+                "width": 20,
+                "height": 20,
+                "icon": "circle-unfilled",
+                "stroke-width": 2,
+                "stroke": "red",
+            },
+            "dropdown": {
+                "rotate": True,
+                "width": 30,
+                "height": 30,
+            },
+            "searchbox": {
+                "menuList": {"backgroundColor": "transparent"},
+                "singleValue": {"color": "red", "some": "data"},
+                "option": {"color": "blue", "backgroundColor": "yellow"},
+            },
+        },
+    )
 
 
 with visual_ref:

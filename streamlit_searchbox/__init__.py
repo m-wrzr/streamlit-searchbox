@@ -118,17 +118,33 @@ def _set_defaults(
         st.session_state[key]["options_py"] = _list_to_options_py(default_options)
 
 
-class ClearStyle(TypedDict, total=False):
-    # determines which icon is used for the clear button
-    icon: Literal["circle-unfilled", "circle-filled", "cross"]
-    # further css styles for the clear button
-    # e.g. {"width": 20, "height": 20, "fill": "red", "stroke": "black"}
+ClearStyle = TypedDict(
+    "ClearStyle",
+    {
+        # determines which icon is used for the clear button
+        "icon": Literal["circle-unfilled", "circle-filled", "cross"],
+        # further css styles for the clear button
+        "width": int,
+        "height": int,
+        "fill": str,
+        "stroke": str,
+        "stroke-width": int,
+    },
+    total=False,
+)
 
-
-class DropdownStyle(TypedDict, total=False):
-    # weither to flip the dropdown if the menu is open
-    rotate: bool
-    # further css styles for the dropdown, see ClearStyle
+DropdownStyle = TypedDict(
+    "DropdownStyle",
+    {
+        # weither to flip the dropdown if the menu is open
+        "rotate": bool,
+        # further css styles for the dropdown
+        "width": int,
+        "height": int,
+        "fill": str,
+    },
+    total=False,
+)
 
 
 class SearchboxStyle(TypedDict, total=False):
