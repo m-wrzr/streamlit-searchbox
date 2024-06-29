@@ -139,6 +139,12 @@ boxes = [
     ),
     dict(
         search_function=search,
+        key=f"{search.__name__}_default_use_searchterm",
+        default_use_searchterm=True,
+        label=f"{search.__name__}_default_use_searchterm",
+    ),
+    dict(
+        search_function=search,
         key=f"{search.__name__}_rerun_disabled",
         rerun_on_update=False,
         label=f"{search.__name__}_rerun_disabled",

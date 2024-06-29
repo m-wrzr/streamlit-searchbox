@@ -78,6 +78,12 @@ default: any = None
 Default return value in case nothing was submitted or the searchbox cleared.
 
 ```python
+default_use_searchterm: bool = False
+```
+
+Use the current searchterm as a default return value.
+
+```python
 default_options: list[str] | None = None
 ```
 
