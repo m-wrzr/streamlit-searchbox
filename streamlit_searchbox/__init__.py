@@ -173,6 +173,7 @@ def st_searchbox(
     clear_on_submit: bool = False,
     rerun_on_update: bool = True,
     edit_after_submit: Literal["disabled", "current", "option", "concat"] = "disabled",
+    style_absolute: bool = False,
     style_overrides: StyleOverrides | None = None,
     key: str = "searchbox",
     **kwargs,
@@ -200,6 +201,9 @@ def st_searchbox(
             Rerun the streamlit app after each search. Defaults to True.
         edit_after_submit ("disabled", "current", "option", "concat", optional):
             Edit the search term after submit. Defaults to "disabled".
+        style_absolute (bool, optional):
+            Position the searchbox absolute on the page. This will affect all other
+            searchboxes and should be passed to every element. Defaults to False.
         style_overrides (StyleOverrides, optional):
             CSS styling passed directly to the react components. Defaults to None.
         key (str, optional):
@@ -223,6 +227,19 @@ def st_searchbox(
         # react return state within streamlit session_state
         key=st.session_state[key]["key_react"],
     )
+
+    if style_absolute:
+        # add empty markdown blocks to reserve space for the iframe
+        st.markdown("")
+        st.markdown("")
+
+        css = """
+        iframe[title="streamlit_searchbox.searchbox"] {
+            position: absolute;
+            z-index: 10;
+        }
+        """
+        st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
 
     if react_state is None:
         return st.session_state[key]["result"]

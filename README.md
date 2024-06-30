@@ -114,6 +114,12 @@ style_overrides: dict | None = None
 See [section](#styling) below for more details.
 
 ```python
+style_absolute: bool = False
+```
+
+Will position the searchbox as an absolute element. *NOTE:* this will affect all searchbox instances and should either be set for all boxes or none. See [#46](https://github.com/m-wrzr/streamlit-searchbox/issues/46) for details.
+
+```python
 key: str = "searchbox"
 ```
 
