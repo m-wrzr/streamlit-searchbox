@@ -6,6 +6,8 @@
   - [Usage](#usage)
     - [Example](#example)
     - [Styling](#styling)
+  - [Contributions](#contributions)
+    - [Contributors](#contributors)
 
 ---
 
@@ -117,7 +119,7 @@ See [section](#styling) below for more details.
 style_absolute: bool = False
 ```
 
-Will position the searchbox as an absolute element. *NOTE:* this will affect all searchbox instances and should either be set for all boxes or none. See [#46](https://github.com/m-wrzr/streamlit-searchbox/issues/46) for details.
+Will position the searchbox as an absolute element. *NOTE:* this will affect all searchbox instances and should either be set for all boxes or none. See [#46](https://github.com/m-wrzr/streamlit-searchbox/issues/46) for inital workaround by [@JoshElgar](https://github.com/JoshElgar).
 
 ```python
 key: str = "searchbox"
@@ -160,3 +162,23 @@ To further customize the styling of the searchbox, you can override the default 
    }
 }
 ```
+
+## Contributions
+
+We welcome contributions from everyone. Here are a few ways you can help:
+
+- **Reporting bugs**: If you find a bug, please report it by opening an issue.
+- **Suggesting enhancements**: If you have ideas on how to improve the project, please share them by opening an issue.
+- **Pull requests**: If you want to contribute directly to the code base, please make a pull request. Here's how you can do so:
+  1. Fork the repository.
+  2. Create a new branch (`git checkout -b feature-branch`).
+  3. Make your changes.
+  4. Commit your changes (`git commit -am 'Add some feature'`).
+  5. Push to the branch (`git push origin feature-branch`).
+  6. Create a new Pull Request.
+
+### Contributors
+
+- [@JoshElgar](https://github.com/JoshElgar) absolute positioning workaround
+- [@dopc](https://github.com/dopc) bugfix for [#15](https://github.com/m-wrzr/streamlit-searchbox/issues/15)
+- [@Jumitti](https://github.com/Jumitti) `st.rerun` compatibility
