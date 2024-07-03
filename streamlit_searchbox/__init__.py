@@ -168,10 +168,12 @@ def st_searchbox(
     placeholder: str = "Search ...",
     label: str | None = None,
     default: Any = None,
+    default_use_searchterm: bool = False,
     default_options: List[Any] | None = None,
     clear_on_submit: bool = False,
     rerun_on_update: bool = True,
     edit_after_submit: Literal["disabled", "current", "option", "concat"] = "disabled",
+    style_absolute: bool = False,
     style_overrides: StyleOverrides | None = None,
     key: str = "searchbox",
     **kwargs,
@@ -189,6 +191,8 @@ def st_searchbox(
             Label shown above the searchbox. Defaults to None.
         default (any, optional):
             Return value if nothing is selected so far. Defaults to None.
+        default_use_searchterm (bool, optional):
+            Return the current searchterm if nothing was selected. Defaults to False.
         default_options (List[any], optional):
             Initial list of options. Defaults to None.
         clear_on_submit (bool, optional):
@@ -197,6 +201,9 @@ def st_searchbox(
             Rerun the streamlit app after each search. Defaults to True.
         edit_after_submit ("disabled", "current", "option", "concat", optional):
             Edit the search term after submit. Defaults to "disabled".
+        style_absolute (bool, optional):
+            Position the searchbox absolute on the page. This will affect all other
+            searchboxes and should be passed to every element. Defaults to False.
         style_overrides (StyleOverrides, optional):
             CSS styling passed directly to the react components. Defaults to None.
         key (str, optional):
@@ -221,12 +228,28 @@ def st_searchbox(
         key=st.session_state[key]["key_react"],
     )
 
+    if style_absolute:
+        # add empty markdown blocks to reserve space for the iframe
+        st.markdown("")
+        st.markdown("")
+
+        css = """
+        iframe[title="streamlit_searchbox.searchbox"] {
+            position: absolute;
+            z-index: 10;
+        }
+        """
+        st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+
     if react_state is None:
         return st.session_state[key]["result"]
 
     interaction, value = react_state["interaction"], react_state["value"]
 
     if interaction == "search":
+        if default_use_searchterm:
+            st.session_state[key]["result"] = value
+
         # triggers rerun, no ops afterwards executed
         _process_search(search_function, key, value, rerun_on_update, **kwargs)
 
