@@ -104,10 +104,10 @@ rerun_on_update: bool = True
 Use `st.experimental_rerun()` to reload the app after user input and load new search suggestions. Disabling leads to delay in showing the proper search results.
 
 ```python
-editable_after_submit: bool = False
+edit_after_submit: Literal["disabled", "current", "option", "concat"] = "disabled"
 ```
 
-Do not reset the input after an option is selected but keep it editable
+Specify behavior for search query after an option is selected.
 
 ```python
 style_overrides: dict | None = None
