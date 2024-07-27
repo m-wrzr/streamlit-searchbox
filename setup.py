@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="streamlit-searchbox",
-    version="0.1.13",
+    version="0.1.14",
     author="m-wrzr",
     description="Autocomplete Searchbox",
     long_description="Streamlit searchbox that dynamically updates "
@@ -14,7 +14,9 @@ setuptools.setup(
     classifiers=[],
     python_requires=">=3.8, !=3.9.7",
     install_requires=[
-        "streamlit >= 1.0",
+        # version 1.37 reruns lead to constant iFrame resets
+        # version 1.35/1.36 also have reset issues but less frequent
+        "streamlit >= 1.0, != 1.37.0",
     ],
     extras_require={
         "tests": [
