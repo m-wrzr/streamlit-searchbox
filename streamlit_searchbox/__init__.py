@@ -157,6 +157,7 @@ class SearchboxStyle(TypedDict, total=False):
 
 
 class StyleOverrides(TypedDict, total=False):
+    wrapper: dict | None
     clear: ClearStyle | None
     dropdown: DropdownStyle | None
     searchbox: SearchboxStyle | None
