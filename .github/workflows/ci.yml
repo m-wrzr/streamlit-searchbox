@@ -47,6 +47,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           streamlit-version: ${{ matrix.streamlit-version }}
+          importlib-metadata-version: '8.2.0'
 
       - run: playwright install
 

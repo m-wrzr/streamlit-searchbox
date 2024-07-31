@@ -12,6 +12,8 @@ from typing import Any, Callable, List, Literal, TypedDict
 
 import streamlit as st
 import streamlit.components.v1 as components
+import importlib_metadata
+
 
 try:
     from streamlit import rerun as rerun  # type: ignore
@@ -19,6 +21,15 @@ except ImportError:
     # conditional import for streamlit version <1.27
     from streamlit import experimental_rerun as rerun  # type: ignore
 
+# Check the version of Streamlit
+def get_streamlit_version():
+    try:
+        version = importlib_metadata.version("streamlit")
+        return version
+    except importlib_metadata.PackageNotFoundError:
+        return None
+    
+print("streamlit version:", get_streamlit_version())
 
 # point to build directory
 parent_dir = os.path.dirname(os.path.abspath(__file__))
@@ -78,6 +89,7 @@ def _process_search(
     key: str,
     searchterm: str,
     rerun_on_update: bool,
+    scope: str,
     **kwargs,
 ) -> None:
     # nothing changed, avoid new search
@@ -94,7 +106,12 @@ def _process_search(
     st.session_state[key]["options_py"] = _list_to_options_py(search_results)
 
     if rerun_on_update:
-        rerun()
+        # Only pass scope if the version is >= 1.37
+        version = get_streamlit_version()
+        if version and version >= "1.37":
+            rerun(scope=scope)  # Pass scope if present
+        else:
+            rerun()
 
 
 def _set_defaults(
@@ -177,6 +194,7 @@ def st_searchbox(
     style_absolute: bool = False,
     style_overrides: StyleOverrides | None = None,
     key: str = "searchbox",
+    scope: str = "app",
     **kwargs,
 ) -> Any:
     """
@@ -209,6 +227,9 @@ def st_searchbox(
             CSS styling passed directly to the react components. Defaults to None.
         key (str, optional):
             Streamlit session key. Defaults to "searchbox".
+        scope (str, optional):
+            (Introduced in Streamlit 1.37) The scope in which to rerun the Streamlit app. 
+            Only applicable if Streamlit version >= 1.37. Defaults to "app" if provided.
 
     Returns:
         any: based on user selection
@@ -252,7 +273,7 @@ def st_searchbox(
             st.session_state[key]["result"] = value
 
         # triggers rerun, no ops afterwards executed
-        _process_search(search_function, key, value, rerun_on_update, **kwargs)
+        _process_search(search_function, key, value, rerun_on_update, scope, **kwargs)
 
     if interaction == "submit":
         st.session_state[key]["result"] = (
@@ -266,7 +287,12 @@ def st_searchbox(
         _set_defaults(key, default, default_options)
 
         if rerun_on_update:
-            rerun()
+            # Only pass scope if the version is >= 1.37
+            version = get_streamlit_version()
+            if version and version >= "1.37":
+                rerun(scope=scope)  # Pass scope if present
+            else:
+                rerun()
 
         return default
 
