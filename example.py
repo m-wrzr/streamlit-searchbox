@@ -315,15 +315,14 @@ with fragment_example:
             st.session_state.fragment_runs += 1
             # pass search function to searchbox
             st.button("Run Fragment")
-            selected_value3= st_searchbox(
+            selected_value_fragment= st_searchbox(
                 search_wikipedia_ids,
                 key="wiki_searchbox_fragment",
                 rerun_on_update=True,
                 scope="fragment"
             )
-            if selected_value3:
-                st.write(selected_value3)
-            print("selected_value3", selected_value3)
+            if selected_value_fragment:
+                st.write(selected_value_fragment)
             st.write(f"Fragment says it ran {st.session_state.fragment_runs} times.")
 
 
@@ -331,15 +330,14 @@ with fragment_example:
         st.session_state.app_runs += 1
         _fragment()
         st.button("Rerun full app")
-        selected_value2 = st_searchbox(
+        selected_value_app = st_searchbox(
                 search_wikipedia_ids,
                 key="wiki_searchbox_full_app",
                 rerun_on_update=True,
                 scope="app"
             )
-        print("selected_value2", selected_value2)
-        if selected_value2:
-            st.write(selected_value2)
+        if selected_value_app:
+            st.write(selected_value_app)
         st.write(f"Full app says it ran {st.session_state.app_runs} times.")
         st.write(f"Full app sees that fragment ran {st.session_state.fragment_runs} times.")
 
