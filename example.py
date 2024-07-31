@@ -319,7 +319,7 @@ with fragment_example:
                 search_wikipedia_ids,
                 key="wiki_searchbox_fragment",
                 rerun_on_update=True,
-                scope="fragment"
+                rerun_scope="fragment"
             )
             if selected_value_fragment:
                 st.write(selected_value_fragment)
@@ -334,7 +334,7 @@ with fragment_example:
                 search_wikipedia_ids,
                 key="wiki_searchbox_full_app",
                 rerun_on_update=True,
-                scope="app"
+                rerun_scope="app"
             )
         if selected_value_app:
             st.write(selected_value_app)
