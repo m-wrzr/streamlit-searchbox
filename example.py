@@ -8,13 +8,11 @@ from typing import Any, List
 
 import requests
 import streamlit as st
-
 from streamlit_searchbox import st_searchbox
 
 logging.getLogger("streamlit_searchbox").setLevel(logging.DEBUG)
 
 st.set_page_config(layout="centered", page_title="Searchbox Demo")
-
 
 def search_wikipedia_ids(searchterm: str) -> List[tuple[str, Any]]:
     """
@@ -203,8 +201,8 @@ boxes = [
 ]
 
 
-searchboxes, visual_ref, form_example, manual_example = st.tabs(
-    ["Searchboxes", "Visual Reference", "Form Example", "Manual Example"]
+searchboxes, visual_ref, form_example, manual_example, fragment_example = st.tabs(
+    ["Searchboxes", "Visual Reference", "Form Example", "Manual Example", "Fragment Example"]
 )
 
 with searchboxes:
@@ -292,3 +290,46 @@ with manual_example:
     )
 
     st.write(manual)
+
+with fragment_example:
+    # Only pass scope if the version is >= 1.37
+    if st.__version__ >= "1.37":
+
+
+        if "app_runs" not in st.session_state:
+            st.session_state.app_runs = 0
+            st.session_state.fragment_runs = 0
+
+        @st.fragment
+        def _fragment():
+            st.session_state.fragment_runs += 1
+            # pass search function to searchbox
+            st.button("Run Fragment")
+            selected_value_fragment= st_searchbox(
+                search_wikipedia_ids,
+                key="wiki_searchbox_fragment",
+                rerun_on_update=True,
+                rerun_scope="fragment"
+            )
+            if selected_value_fragment:
+                st.write(selected_value_fragment)
+            st.write(f"Fragment says it ran {st.session_state.fragment_runs} times.")
+
+
+
+        st.session_state.app_runs += 1
+        _fragment()
+        st.button("Rerun full app")
+        selected_value_app = st_searchbox(
+                search_wikipedia_ids,
+                key="wiki_searchbox_full_app",
+                rerun_on_update=True,
+                rerun_scope="app"
+            )
+        if selected_value_app:
+            st.write(selected_value_app)
+        st.write(f"Full app says it ran {st.session_state.app_runs} times.")
+        st.write(f"Full app sees that fragment ran {st.session_state.fragment_runs} times.")
+
+    else:
+        st.write(f"You need streamlit version >=1.37 to run this example. Current version is {version}")
