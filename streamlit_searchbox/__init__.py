@@ -12,7 +12,6 @@ from typing import Any, Callable, List, Literal, TypedDict
 
 import streamlit as st
 import streamlit.components.v1 as components
-import importlib_metadata
 
 
 try:
@@ -21,15 +20,6 @@ except ImportError:
     # conditional import for streamlit version <1.27
     from streamlit import experimental_rerun as rerun  # type: ignore
 
-# Check the version of Streamlit
-def get_streamlit_version():
-    try:
-        version = importlib_metadata.version("streamlit")
-        return version
-    except importlib_metadata.PackageNotFoundError:
-        return None
-    
-print("streamlit version:", get_streamlit_version())
 
 # point to build directory
 parent_dir = os.path.dirname(os.path.abspath(__file__))
@@ -89,7 +79,7 @@ def _process_search(
     key: str,
     searchterm: str,
     rerun_on_update: bool,
-    rerun_scope: str,
+    rerun_scope: Literal["app", "fragment"] = "app",
     **kwargs,
 ) -> None:
     # nothing changed, avoid new search
@@ -107,8 +97,8 @@ def _process_search(
 
     if rerun_on_update:
         # Only pass scope if the version is >= 1.37
-        version = get_streamlit_version()
-        if version and version >= "1.37":
+
+        if st.__version__ >= "1.37":
             rerun(scope=rerun_scope)  # Pass scope if present
         else:
             rerun()
@@ -194,7 +184,7 @@ def st_searchbox(
     style_absolute: bool = False,
     style_overrides: StyleOverrides | None = None,
     key: str = "searchbox",
-    rerun_scope: str = "app",
+    rerun_scope: Literal["app", "fragment"] = "app",
     **kwargs,
 ) -> Any:
     """
@@ -288,8 +278,7 @@ def st_searchbox(
 
         if rerun_on_update:
             # Only pass scope if the version is >= 1.37
-            version = get_streamlit_version()
-            if version and version >= "1.37":
+            if st.__version__ >= "1.37":
                 rerun(scope=rerun_scope)  # Pass scope if present
             else:
                 rerun()

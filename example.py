@@ -8,20 +8,11 @@ from typing import Any, List
 
 import requests
 import streamlit as st
-import importlib_metadata
 from streamlit_searchbox import st_searchbox
 
 logging.getLogger("streamlit_searchbox").setLevel(logging.DEBUG)
 
 st.set_page_config(layout="centered", page_title="Searchbox Demo")
-
-# Check the version of Streamlit
-def get_streamlit_version():
-    try:
-        version = importlib_metadata.version("streamlit")
-        return version
-    except importlib_metadata.PackageNotFoundError:
-        return None
 
 def search_wikipedia_ids(searchterm: str) -> List[tuple[str, Any]]:
     """
@@ -301,9 +292,8 @@ with manual_example:
     st.write(manual)
 
 with fragment_example:
-        # Only pass scope if the version is >= 1.37
-    version = get_streamlit_version()
-    if version and version >= "1.37":
+    # Only pass scope if the version is >= 1.37
+    if st.__version__ >= "1.37":
 
 
         if "app_runs" not in st.session_state:

@@ -17,7 +17,6 @@ setuptools.setup(
         # version 1.37 reruns lead to constant iFrame resets
         # version 1.35/1.36 also have reset issues but less frequent
         "streamlit >= 1.0",
-        "importlib-metadata"
     ],
     extras_require={
         "tests": [
