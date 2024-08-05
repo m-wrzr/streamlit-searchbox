@@ -217,9 +217,9 @@ def st_searchbox(
             CSS styling passed directly to the react components. Defaults to None.
         key (str, optional):
             Streamlit session key. Defaults to "searchbox".
-        rerun_scope (str, optional):
+        rerun_scope ("app", "fragment", optional):
             (Introduced in Streamlit 1.37) The scope in which to rerun the Streamlit app. 
-            Only applicable if Streamlit version >= 1.37. Defaults to "app" if provided.
+            Only applicable if Streamlit version >= 1.37. Defaults to "app".
 
     Returns:
         any: based on user selection
