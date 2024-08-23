@@ -4,6 +4,7 @@ module for streamlit searchbox component
 
 from __future__ import annotations
 
+import datetime
 import functools
 import logging
 import os
@@ -14,7 +15,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 try:
-    from streamlit import rerun as rerun  # type: ignore
+    from streamlit import rerun  # type: ignore
 except ImportError:
     # conditional import for streamlit version <1.27
     from streamlit import experimental_rerun as rerun  # type: ignore
@@ -78,13 +79,17 @@ def _process_search(
     key: str,
     searchterm: str,
     rerun_on_update: bool,
+    min_execution_time: int = 0,
     **kwargs,
 ) -> None:
     # nothing changed, avoid new search
     if searchterm == st.session_state[key]["search"]:
-        return st.session_state[key]["result"]
+        return
 
     st.session_state[key]["search"] = searchterm
+
+    ts_start = datetime.datetime.now()
+
     search_results = search_function(searchterm, **kwargs)
 
     if search_results is None:
@@ -94,6 +99,13 @@ def _process_search(
     st.session_state[key]["options_py"] = _list_to_options_py(search_results)
 
     if rerun_on_update:
+        ts_stop = datetime.datetime.now()
+        execution_time_ms = (ts_stop - ts_start).total_seconds() * 1000
+
+        # wait until minimal execution time is reached
+        if execution_time_ms < min_execution_time:
+            time.sleep((min_execution_time - execution_time_ms) / 1000)
+
         rerun()
 
 
@@ -176,6 +188,8 @@ def st_searchbox(
     edit_after_submit: Literal["disabled", "current", "option", "concat"] = "disabled",
     style_absolute: bool = False,
     style_overrides: StyleOverrides | None = None,
+    debounce: int = 0,
+    min_execution_time: int = 0,
     key: str = "searchbox",
     **kwargs,
 ) -> Any:
@@ -207,6 +221,13 @@ def st_searchbox(
             searchboxes and should be passed to every element. Defaults to False.
         style_overrides (StyleOverrides, optional):
             CSS styling passed directly to the react components. Defaults to None.
+        debounce (int, optional):
+            Time in milliseconds to wait before sending the input to the search function
+            to avoid too many requests, i.e. during fast keystrokes. Defaults to 0.
+        min_execution_time (int, optional):
+            Minimal execution time for the search function in milliseconds. This is used
+            to avoid fast consecutive reruns, where fast reruns can lead to resets
+            within the component in some streamlit versions. Defaults to 0.
         key (str, optional):
             Streamlit session key. Defaults to "searchbox".
 
@@ -225,6 +246,7 @@ def st_searchbox(
         label=label,
         edit_after_submit=edit_after_submit,
         style_overrides=style_overrides,
+        debounce=debounce,
         # react return state within streamlit session_state
         key=st.session_state[key]["key_react"],
     )
@@ -251,8 +273,14 @@ def st_searchbox(
         if default_use_searchterm:
             st.session_state[key]["result"] = value
 
-        # triggers rerun, no ops afterwards executed
-        _process_search(search_function, key, value, rerun_on_update, **kwargs)
+        _process_search(
+            search_function,
+            key,
+            value,
+            rerun_on_update,
+            min_execution_time=min_execution_time,
+            **kwargs,
+        )
 
     if interaction == "submit":
         st.session_state[key]["result"] = (

@@ -122,6 +122,18 @@ style_absolute: bool = False
 Will position the searchbox as an absolute element. *NOTE:* this will affect all searchbox instances and should either be set for all boxes or none. See [#46](https://github.com/m-wrzr/streamlit-searchbox/issues/46) for inital workaround by [@JoshElgar](https://github.com/JoshElgar).
 
 ```python
+debounce: int = 0
+```
+
+Delay executing the callback from the react component by `x` milliseconds to avoid too many / redudant requests, i.e. during fast typing.
+
+```python
+min_execution_time: int = 0
+```
+
+Delay execution after the search function finished to reach a minimum amount of `x` milliseconds. This can be used to avoid fast consecutive reruns, which can cause resets of the component in some streamlit versions `>=1.35`.
+
+```python
 key: str = "searchbox"
 ```
 

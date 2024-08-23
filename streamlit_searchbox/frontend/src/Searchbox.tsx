@@ -7,6 +7,7 @@ import React, { ReactNode } from "react";
 
 import SearchboxStyle from "./styling";
 import Select, { InputActionMeta, components } from "react-select";
+import { debounce } from "lodash";
 
 type Option = {
   value: string;
@@ -44,6 +45,18 @@ class Searchbox extends StreamlitComponentBase<State> {
     this.props.args.style_overrides?.searchbox || {},
   );
   private ref: any = React.createRef();
+
+  constructor(props: any) {
+    super(props);
+
+    // bind the search function and debounce to avoid too many requests
+    if (props.args.debounce && props.args.debounce > 0) {
+      this.callbackSearch = debounce(
+        this.callbackSearch.bind(this),
+        props.args.debounce,
+      );
+    }
+  }
 
   /**
    * new keystroke on searchbox

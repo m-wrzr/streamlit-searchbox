@@ -99,6 +99,22 @@ boxes = [
         key=search.__name__,
     ),
     dict(
+        search_function=search,
+        default=None,
+        label=f"{search.__name__}_debounce_250ms",
+        clear_on_submit=False,
+        debounce=250,
+        key=f"{search.__name__}_debounce_250ms",
+    ),
+    dict(
+        search_function=search,
+        default=None,
+        label=f"{search.__name__}_min_execution_time_500ms",
+        clear_on_submit=False,
+        min_execution_time=500,
+        key=f"{search.__name__}_min_execution_time_500ms",
+    ),
+    dict(
         search_function=search_rnd_delay,
         default=None,
         clear_on_submit=False,
