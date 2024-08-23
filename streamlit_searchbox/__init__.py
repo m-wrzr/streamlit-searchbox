@@ -13,7 +13,6 @@ from typing import Any, Callable, List, Literal, TypedDict
 import streamlit as st
 import streamlit.components.v1 as components
 
-
 try:
     from streamlit import rerun as rerun  # type: ignore
 except ImportError:
@@ -215,11 +214,12 @@ def st_searchbox(
             searchboxes and should be passed to every element. Defaults to False.
         style_overrides (StyleOverrides, optional):
             CSS styling passed directly to the react components. Defaults to None.
+        rerun_scope ("app", "fragment", optional):
+            The scope in which to rerun the Streamlit app. Only applicable if Streamlit
+            version >= 1.37. Defaults to "app".
+
         key (str, optional):
             Streamlit session key. Defaults to "searchbox".
-        rerun_scope ("app", "fragment", optional):
-            (Introduced in Streamlit 1.37) The scope in which to rerun the Streamlit app. 
-            Only applicable if Streamlit version >= 1.37. Defaults to "app".
 
     Returns:
         any: based on user selection
@@ -263,7 +263,9 @@ def st_searchbox(
             st.session_state[key]["result"] = value
 
         # triggers rerun, no ops afterwards executed
-        _process_search(search_function, key, value, rerun_on_update, rerun_scope, **kwargs)
+        _process_search(
+            search_function, key, value, rerun_on_update, rerun_scope, **kwargs
+        )
 
     if interaction == "submit":
         st.session_state[key]["result"] = (
