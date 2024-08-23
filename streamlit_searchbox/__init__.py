@@ -109,7 +109,7 @@ def _process_search(
 
         # only pass scope if the version is >= 1.37
         if st.__version__ >= "1.37":
-            rerun(scope=rerun_scope)
+            rerun(scope=rerun_scope)  # type: ignore
         else:
             rerun()
 
@@ -305,9 +305,9 @@ def st_searchbox(
         _set_defaults(key, default, default_options)
 
         if rerun_on_update:
-            # Only pass scope if the version is >= 1.37
+            # only pass scope if the version is >= 1.37
             if st.__version__ >= "1.37":
-                rerun(scope=rerun_scope)  # Pass scope if present
+                rerun(scope=rerun_scope)  # type: ignore
             else:
                 rerun()
 
