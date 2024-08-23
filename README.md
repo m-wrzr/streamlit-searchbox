@@ -194,3 +194,4 @@ We welcome contributions from everyone. Here are a few ways you can help:
 - [@JoshElgar](https://github.com/JoshElgar) absolute positioning workaround
 - [@dopc](https://github.com/dopc) bugfix for [#15](https://github.com/m-wrzr/streamlit-searchbox/issues/15)
 - [@Jumitti](https://github.com/Jumitti) `st.rerun` compatibility
+- [@salmanrazzaq-94](https://github.com/salmanrazzaq-94) `st.fragment` support
