@@ -14,7 +14,7 @@ setuptools.setup(
     classifiers=[],
     python_requires=">=3.8, !=3.9.7",
     install_requires=[
-        # version 1.37 reruns lead to constant iFrame resets
+        # version 1.37 reruns can lead to constant iFrame
         # version 1.35/1.36 also have reset issues but less frequent
         "streamlit >= 1.0",
     ],
