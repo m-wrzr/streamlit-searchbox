@@ -21,6 +21,12 @@ except ImportError:
     from streamlit import experimental_rerun as rerun  # type: ignore
 
 
+# default milliseconds for the search function to run, this is used to avoid
+# fast consecutive reruns. possibly remove this in later versions
+# see: https://github.com/streamlit/streamlit/issues/9002
+MIN_EXECUTION_TIME_DEFAULT = 250 if st.__version__ >= "1.35" else 0
+
+
 # point to build directory
 parent_dir = os.path.dirname(os.path.abspath(__file__))
 build_dir = os.path.join(parent_dir, "frontend/build")
@@ -193,8 +199,8 @@ def st_searchbox(
     edit_after_submit: Literal["disabled", "current", "option", "concat"] = "disabled",
     style_absolute: bool = False,
     style_overrides: StyleOverrides | None = None,
-    debounce: int = 0,
-    min_execution_time: int = 0,
+    debounce: int = 150,
+    min_execution_time: int = MIN_EXECUTION_TIME_DEFAULT,
     key: str = "searchbox",
     rerun_scope: Literal["app", "fragment"] = "app",
     **kwargs,
