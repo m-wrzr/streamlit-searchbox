@@ -124,7 +124,7 @@ class SearchboxStyle {
           // streamlit has fixed icon sizes at 15x15
           width={15}
           height={15}
-          fill={this.theme.textColor}
+          stroke={this.theme.textColor}
           transform={menu && overrides && overrides.rotate ? "rotate(180)" : ""}
           {...overrides}
         />

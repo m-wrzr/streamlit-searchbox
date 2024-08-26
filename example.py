@@ -99,6 +99,22 @@ boxes = [
         key=search.__name__,
     ),
     dict(
+        search_function=search,
+        default=None,
+        label=f"{search.__name__}_debounce_250ms",
+        clear_on_submit=False,
+        debounce=250,
+        key=f"{search.__name__}_debounce_250ms",
+    ),
+    dict(
+        search_function=search,
+        default=None,
+        label=f"{search.__name__}_min_execution_time_500ms",
+        clear_on_submit=False,
+        min_execution_time=500,
+        key=f"{search.__name__}_min_execution_time_500ms",
+    ),
+    dict(
         search_function=search_rnd_delay,
         default=None,
         clear_on_submit=False,
@@ -203,8 +219,14 @@ boxes = [
 ]
 
 
-searchboxes, visual_ref, form_example, manual_example = st.tabs(
-    ["Searchboxes", "Visual Reference", "Form Example", "Manual Example"]
+searchboxes, visual_ref, form_example, manual_example, fragment_example = st.tabs(
+    [
+        "Searchboxes",
+        "Visual Reference",
+        "Form Example",
+        "Manual Example",
+        "Fragment Example",
+    ]
 )
 
 with searchboxes:
@@ -292,3 +314,48 @@ with manual_example:
     )
 
     st.write(manual)
+
+with fragment_example:
+    if st.__version__ < "1.37":
+        st.write(f"streamlit >=1.37 needed for this example. version={st.__version__}")
+        st.stop()
+
+    if "app_runs" not in st.session_state:
+        st.session_state.app_runs = 0
+        st.session_state.fragment_runs = 0
+
+    @st.fragment  # type: ignore - code not reached in older streamlit versions
+    def _fragment():
+        st.session_state.fragment_runs += 1
+        st.button("Run Fragment")
+
+        selected_value_fragment = st_searchbox(
+            search_wikipedia_ids,
+            key="wiki_searchbox_fragment",
+            rerun_on_update=True,
+            rerun_scope="fragment",
+        )
+
+        if selected_value_fragment:
+            st.write(selected_value_fragment)
+
+        st.write(f"Fragment says it ran {st.session_state.fragment_runs} times.")
+
+    st.session_state.app_runs += 1
+
+    _fragment()
+
+    st.button("Rerun full app")
+
+    selected_value_app = st_searchbox(
+        search_wikipedia_ids,
+        key="wiki_searchbox_full_app",
+        rerun_on_update=True,
+        rerun_scope="app",
+    )
+
+    if selected_value_app:
+        st.write(selected_value_app)
+
+    st.write(f"Full app says it ran {st.session_state.app_runs} times.")
+    st.write(f"Full app sees that fragment ran {st.session_state.fragment_runs} times.")
