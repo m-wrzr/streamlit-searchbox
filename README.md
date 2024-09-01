@@ -158,7 +158,7 @@ edit_after_submit: Literal["disabled", "current", "option", "concat"] = "disable
 Specify behavior for search query after an option is selected.
 
 ```python
-reset_function: Callable[[], None] = None
+reset_function: Callable[[], None] | None = None
 ```
 
 Function that will be called when the combobox is reset.

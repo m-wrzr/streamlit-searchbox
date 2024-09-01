@@ -201,7 +201,7 @@ def st_searchbox(
     style_overrides: StyleOverrides | None = None,
     debounce: int = 150,
     min_execution_time: int = MIN_EXECUTION_TIME_DEFAULT,
-    reset_function: Callable[[], None] = None,
+    reset_function: Callable[[], None] | None = None,
     key: str = "searchbox",
     rerun_scope: Literal["app", "fragment"] = "app",
     **kwargs,
