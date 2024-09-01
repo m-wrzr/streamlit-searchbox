@@ -118,6 +118,7 @@ class SearchboxStyle {
           alignItems: "center",
           justifyContent: "center",
           marginRight: "8px",
+          marginLeft: "2px",
         }}
       >
         <DropdownIcon
@@ -142,21 +143,25 @@ class SearchboxStyle {
       innerProps: { ref, ...iconProps },
     } = props;
 
+    // fill / stroke color might be passed by react-select
     iconProps = {
       ...iconProps,
       ref: ref,
-      fill: this.theme.fadedText60,
       // streamlit has fixed icon sizes at 15x15
-      width: 15,
-      height: 15,
+      width: 22,
+      height: 22,
       ...overrides,
     };
+
+    // if stroke or fill in iconProps don't set hover color
+    const isColorOverride = "stroke" in iconProps || "fill" in iconProps;
 
     if (iconProps.icon === "cross") {
       return (
         <ClearIconCross
           // replace opacity single overlapping strokes will look weird
           stroke={this.theme.textColor}
+          strokeHover={isColorOverride ? undefined : this.theme.primaryColor}
           {...iconProps}
         />
       );
@@ -167,6 +172,7 @@ class SearchboxStyle {
         <ClearIconCircularUnfilled
           // replace opacity single overlapping strokes will look weird
           stroke={this.theme.textColor}
+          strokeHover={isColorOverride ? undefined : this.theme.primaryColor}
           {...iconProps}
           // icon can't be filled
           fill="none"
@@ -174,7 +180,13 @@ class SearchboxStyle {
       );
     }
 
-    return <ClearIconCircularFilled {...iconProps} />;
+    return (
+      <ClearIconCircularFilled
+        fill={this.theme.fadedText60}
+        fillHover={isColorOverride ? undefined : this.theme.textColor}
+        {...iconProps}
+      />
+    );
   }
 }
 

@@ -201,6 +201,7 @@ def st_searchbox(
     style_overrides: StyleOverrides | None = None,
     debounce: int = 150,
     min_execution_time: int = MIN_EXECUTION_TIME_DEFAULT,
+    reset_function: Callable[[], None] = None,
     key: str = "searchbox",
     rerun_scope: Literal["app", "fragment"] = "app",
     **kwargs,
@@ -243,6 +244,8 @@ def st_searchbox(
             Minimal execution time for the search function in milliseconds. This is used
             to avoid fast consecutive reruns, where fast reruns can lead to resets
             within the component in some streamlit versions. Defaults to 0.
+        reset_function (Callable[[], None], optional):
+            Function that is called after the user reset the combobox. Defaults to None.
         key (str, optional):
             Streamlit session key. Defaults to "searchbox".
 
@@ -309,6 +312,9 @@ def st_searchbox(
 
     if interaction == "reset":
         _set_defaults(key, default, default_options)
+
+        if reset_function is not None:
+            reset_function()
 
         if rerun_on_update:
             # only pass scope if the version is >= 1.37
