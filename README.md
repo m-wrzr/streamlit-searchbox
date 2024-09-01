@@ -3,9 +3,15 @@
 - [streamlit-searchbox](#streamlit-searchbox)
   - [Installation](#installation)
   - [Overview](#overview)
-  - [Usage](#usage)
-    - [Example](#example)
-    - [Styling](#styling)
+  - [Parameters](#parameters)
+    - [Required](#required)
+    - [Visual](#visual)
+    - [Defaults](#defaults)
+    - [Reruns](#reruns)
+    - [Transitions](#transitions)
+    - [Custom Styles](#custom-styles)
+  - [Example](#example)
+  - [Styling](#styling)
   - [Contributions](#contributions)
     - [Contributors](#contributors)
 
@@ -51,15 +57,28 @@ def search(searchterm: str) -> List[Tuple[str, any]]:
     ...
 ```
 
-## Usage
+## Parameters
 
 To customize the searchbox you can pass the following arguments:
+
+
+### Required
 
 ```python
 search_function: Callable[[str], List[any]]
 ```
 
 Function that will be called on user input
+
+```python
+key: str = "searchbox"
+```
+
+Streamlit key for unique component identification.
+
+---
+
+### Visual
 
 ```python
 placeholder: str = "Search ..."
@@ -72,6 +91,11 @@ label: str = None
 ```
 
 Label shown above the component.
+
+---
+
+### Defaults
+
 
 ```python
 default: any = None
@@ -91,11 +115,7 @@ default_options: list[str] | None = None
 
 Default options that will be shown when first clicking on the searchbox.
 
-```python
-clear_on_submit: bool = False
-```
-
-Automatically clear the input after selection.
+### Reruns
 
 ```python
 rerun_on_update: bool = True
@@ -104,22 +124,10 @@ rerun_on_update: bool = True
 Use `st.experimental_rerun()` to reload the app after user input and load new search suggestions. Disabling leads to delay in showing the proper search results.
 
 ```python
-edit_after_submit: Literal["disabled", "current", "option", "concat"] = "disabled"
+rerun_scope: Literal["app", "fragment"] = "app",
 ```
 
-Specify behavior for search query after an option is selected.
-
-```python
-style_overrides: dict | None = None
-```
-
-See [section](#styling) below for more details.
-
-```python
-style_absolute: bool = False
-```
-
-Will position the searchbox as an absolute element. *NOTE:* this will affect all searchbox instances and should either be set for all boxes or none. See [#46](https://github.com/m-wrzr/streamlit-searchbox/issues/46) for inital workaround by [@JoshElgar](https://github.com/JoshElgar).
+If the rerun should affect the whole app or just the fragment.
 
 ```python
 debounce: int = 0
@@ -133,17 +141,49 @@ min_execution_time: int = 0
 
 Delay execution after the search function finished to reach a minimum amount of `x` milliseconds. This can be used to avoid fast consecutive reruns, which can cause resets of the component in some streamlit versions `>=1.35`.
 
+---
+
+### Transitions
+
 ```python
-key: str = "searchbox"
+clear_on_submit: bool = False
 ```
 
-Streamlit key for unique component identification.
+Automatically clear the input after selection.
 
-### Example
+```python
+edit_after_submit: Literal["disabled", "current", "option", "concat"] = "disabled"
+```
+
+Specify behavior for search query after an option is selected.
+
+```python
+reset_function: Callable[[], None] = None
+```
+
+Function that will be called when the combobox is reset.
+
+---
+
+### Custom Styles
+
+```python
+style_overrides: dict | None = None
+```
+
+See [section](#styling) below for more details.
+
+```python
+style_absolute: bool = False
+```
+
+Will position the searchbox as an absolute element. *NOTE:* this will affect all searchbox instances and should either be set for all boxes or none. See [#46](https://github.com/m-wrzr/streamlit-searchbox/issues/46) for inital workaround by [@JoshElgar](https://github.com/JoshElgar).
+
+## Example
 
 An example Streamlit app can be found [here](./example.py)
 
-### Styling
+## Styling
 
 To further customize the styling of the searchbox, you can override the default styling by passing `style_overrides` which will be directly applied in the react components. See below for an example, for more information on the available attributes, please see [styling.tsx](./streamlit_searchbox/frontend/src/styling.tsx) as well as the [react-select](https://react-select.com/styles) documentation.
 
@@ -195,3 +235,4 @@ We welcome contributions from everyone. Here are a few ways you can help:
 - [@dopc](https://github.com/dopc) bugfix for [#15](https://github.com/m-wrzr/streamlit-searchbox/issues/15)
 - [@Jumitti](https://github.com/Jumitti) `st.rerun` compatibility
 - [@salmanrazzaq-94](https://github.com/salmanrazzaq-94) `st.fragment` support
+- [@hoggatt](https://github.com/hoggatt) `reset_function`
