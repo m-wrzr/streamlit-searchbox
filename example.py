@@ -192,6 +192,12 @@ boxes = [
     ),
     dict(
         search_function=search,
+        reset_function=lambda: print("reset function called"),
+        key=f"{search.__name__}_reset_function",
+        label=f"{search.__name__}_reset_function",
+    ),
+    dict(
+        search_function=search,
         default=None,
         label=f"{search.__name__}_override_style",
         clear_on_submit=False,
