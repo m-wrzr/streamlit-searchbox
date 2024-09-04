@@ -58,6 +58,14 @@ def wrap_inactive_session(func):
     return inner_function
 
 
+def _rerun(rerun_scope: Literal["app", "fragment"]) -> None:
+    # only pass scope if the version is >= 1.37
+    if st.__version__ >= "1.37":
+        rerun(scope=rerun_scope)  # type: ignore
+    else:
+        rerun()
+
+
 def _list_to_options_py(options: list[Any] | list[tuple[str, Any]]) -> list[Any]:
     """
     unpack search options for proper python return types
@@ -113,11 +121,7 @@ def _process_search(
         if execution_time_ms < min_execution_time:
             time.sleep((min_execution_time - execution_time_ms) / 1000)
 
-        # only pass scope if the version is >= 1.37
-        if st.__version__ >= "1.37":
-            rerun(scope=rerun_scope)  # type: ignore
-        else:
-            rerun()
+        _rerun(rerun_scope)
 
 
 def _set_defaults(
@@ -224,7 +228,7 @@ def st_searchbox(
         default_options (List[any], optional):
             Initial list of options. Defaults to None.
         clear_on_submit (bool, optional):
-            Remove suggestions on select. Defaults to False.
+            Remove suggestions on select and reset default_options. Defaults to False.
         rerun_on_update (bool, optional):
             Rerun the streamlit app after each search. Defaults to True.
         edit_after_submit ("disabled", "current", "option", "concat", optional):
@@ -308,6 +312,11 @@ def st_searchbox(
             if "options_py" in st.session_state[key]
             else value
         )
+
+        if clear_on_submit:
+            _set_defaults(key, st.session_state[key]["result"], default_options)
+            _rerun(rerun_scope)
+
         return st.session_state[key]["result"]
 
     if interaction == "reset":
@@ -317,11 +326,7 @@ def st_searchbox(
             reset_function()
 
         if rerun_on_update:
-            # only pass scope if the version is >= 1.37
-            if st.__version__ >= "1.37":
-                rerun(scope=rerun_scope)  # type: ignore
-            else:
-                rerun()
+            _rerun(rerun_scope)
 
         return default
 
