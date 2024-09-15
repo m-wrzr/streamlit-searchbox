@@ -139,6 +139,9 @@ class Searchbox extends StreamlitComponentBase<State> {
       }
     };
 
+    // option when the clear button is shown
+    const clearable = this.props.args.style_overrides?.clear?.clearable;
+
     return (
       <div style={this.props.args.style_overrides?.wrapper || {}}>
         {this.props.args.label && (
@@ -149,9 +152,19 @@ class Searchbox extends StreamlitComponentBase<State> {
           // showing the disabled react-select leads to the component
           // not showing the inputValue but just an empty input field
           // we therefore need to re-render the component if we want to keep the focus
-          value={this.state.option}
+          value={
+            this.state.option === null &&
+            this.state.inputValue &&
+            clearable === "always"
+              ? {
+                  value: null,
+                  label: null,
+                }
+              : this.state.option
+          }
+          // value={this.state.option}
           inputValue={editableAfterSubmit ? this.state.inputValue : undefined}
-          isClearable={true}
+          isClearable={clearable !== "never"}
           isSearchable={true}
           styles={this.style.select}
           options={this.props.args.options}

@@ -150,6 +150,8 @@ ClearStyle = TypedDict(
     {
         # determines which icon is used for the clear button
         "icon": Literal["circle-unfilled", "circle-filled", "cross"],
+        # determines when the clear button is shown
+        "clearable": Literal["always", "never", "after-submit"],
         # further css styles for the clear button
         "width": int,
         "height": int,
