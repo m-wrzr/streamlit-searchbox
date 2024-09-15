@@ -198,6 +198,7 @@ def st_searchbox(
     placeholder: str = "Search ...",
     label: str | None = None,
     default: Any = None,
+    *,
     default_use_searchterm: bool = False,
     default_options: List[Any] | None = None,
     clear_on_submit: bool = False,
