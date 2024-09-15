@@ -1,6 +1,6 @@
 {
   "name": "streamlit_searchbox",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "private": true,
   "dependencies": {
     "react": "^16.13.1",

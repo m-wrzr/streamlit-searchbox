@@ -58,6 +58,14 @@ def wrap_inactive_session(func):
     return inner_function
 
 
+def _rerun(rerun_scope: Literal["app", "fragment"]) -> None:
+    # only pass scope if the version is >= 1.37
+    if st.__version__ >= "1.37":
+        rerun(scope=rerun_scope)  # type: ignore
+    else:
+        rerun()
+
+
 def _list_to_options_py(options: list[Any] | list[tuple[str, Any]]) -> list[Any]:
     """
     unpack search options for proper python return types
@@ -113,11 +121,7 @@ def _process_search(
         if execution_time_ms < min_execution_time:
             time.sleep((min_execution_time - execution_time_ms) / 1000)
 
-        # only pass scope if the version is >= 1.37
-        if st.__version__ >= "1.37":
-            rerun(scope=rerun_scope)  # type: ignore
-        else:
-            rerun()
+        _rerun(rerun_scope)
 
 
 def _set_defaults(
@@ -146,6 +150,8 @@ ClearStyle = TypedDict(
     {
         # determines which icon is used for the clear button
         "icon": Literal["circle-unfilled", "circle-filled", "cross"],
+        # determines when the clear button is shown
+        "clearable": Literal["always", "never", "after-submit"],
         # further css styles for the clear button
         "width": int,
         "height": int,
@@ -192,6 +198,7 @@ def st_searchbox(
     placeholder: str = "Search ...",
     label: str | None = None,
     default: Any = None,
+    *,
     default_use_searchterm: bool = False,
     default_options: List[Any] | None = None,
     clear_on_submit: bool = False,
@@ -224,7 +231,7 @@ def st_searchbox(
         default_options (List[any], optional):
             Initial list of options. Defaults to None.
         clear_on_submit (bool, optional):
-            Remove suggestions on select. Defaults to False.
+            Remove suggestions on select and reset default_options. Defaults to False.
         rerun_on_update (bool, optional):
             Rerun the streamlit app after each search. Defaults to True.
         edit_after_submit ("disabled", "current", "option", "concat", optional):
@@ -308,6 +315,11 @@ def st_searchbox(
             if "options_py" in st.session_state[key]
             else value
         )
+
+        if clear_on_submit:
+            _set_defaults(key, st.session_state[key]["result"], default_options)
+            _rerun(rerun_scope)
+
         return st.session_state[key]["result"]
 
     if interaction == "reset":
@@ -317,11 +329,7 @@ def st_searchbox(
             reset_function()
 
         if rerun_on_update:
-            # only pass scope if the version is >= 1.37
-            if st.__version__ >= "1.37":
-                rerun(scope=rerun_scope)  # type: ignore
-            else:
-                rerun()
+            _rerun(rerun_scope)
 
         return default
 

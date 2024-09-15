@@ -192,7 +192,8 @@ To further customize the styling of the searchbox, you can override the default 
    "clear":{
       "width":20,
       "height":20,
-      "icon":"cross"
+      "icon":"cross",
+      "clearable":"always"
    },
    "dropdown":{
       "rotate":true,
