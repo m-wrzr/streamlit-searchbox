@@ -209,6 +209,7 @@ def st_searchbox(
     debounce: int = 150,
     min_execution_time: int = MIN_EXECUTION_TIME_DEFAULT,
     reset_function: Callable[[], None] | None = None,
+    submit_function: Callable[[str], None] | None = None,
     key: str = "searchbox",
     rerun_scope: Literal["app", "fragment"] = "app",
     **kwargs,
@@ -253,6 +254,8 @@ def st_searchbox(
             within the component in some streamlit versions. Defaults to 0.
         reset_function (Callable[[], None], optional):
             Function that is called after the user reset the combobox. Defaults to None.
+        submit_function (Callable[[str], None], optional):
+            Function that is called after the user submits an option from the combobox. Defaults to None.
         key (str, optional):
             Streamlit session key. Defaults to "searchbox".
 
@@ -310,11 +313,13 @@ def st_searchbox(
         )
 
     if interaction == "submit":
-        st.session_state[key]["result"] = (
-            st.session_state[key]["options_py"][value]
-            if "options_py" in st.session_state[key]
-            else value
-        )
+        submit_value = st.session_state[key]["options_py"][value] if "options_py" in st.session_state[key] else value
+
+        # Ensure submit_function only runs when value changed. Not on each fragment/app rerun
+        if st.session_state[key]["result"] != submit_value:
+            st.session_state[key]["result"] = submit_value
+            if submit_function is not None:
+                submit_function(submit_value)
 
         if clear_on_submit:
             _set_defaults(key, st.session_state[key]["result"], default_options)
