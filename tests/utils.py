@@ -72,6 +72,7 @@ def selection_to_text(result):
 #### application starts here ####
 #################################
 
+# TODO: expand to the same examples as in example.py
 
 # searchbox configurations, see __init__.py for details
 # will pass all kwargs to the searchbox component
@@ -121,11 +122,5 @@ boxes = [
         default_options=[("inital", "i"), ("list", "l")],
         key=f"{search.__name__}_default_options_tuple",
         label=f"{search.__name__}_default_options_tuple",
-    ),
-    dict(
-        search_function=search,
-        key=f"{search.__name__}_rerun_disabled",
-        rerun_on_update=False,
-        label=f"{search.__name__}_rerun_disabled",
     ),
 ]
