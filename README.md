@@ -164,10 +164,10 @@ reset_function: Callable[[], None] | None = None
 Function that will be called when the combobox is reset.
 
 ```python
-submit_function: Callable[[str], None] | None = None
+submit_function: Callable[[Any], None] | None = None
 ```
 
-Function that will be called when a new option is selected.
+Function that will be called when a new option is selected, with the selected option as argument.
 
 ---
 
@@ -243,3 +243,4 @@ We welcome contributions from everyone. Here are a few ways you can help:
 - [@Jumitti](https://github.com/Jumitti) `st.rerun` compatibility
 - [@salmanrazzaq-94](https://github.com/salmanrazzaq-94) `st.fragment` support
 - [@hoggatt](https://github.com/hoggatt) `reset_function`
+- [@bram49](https://github.com/bram49) `submit_function`
