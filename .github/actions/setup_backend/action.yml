@@ -24,7 +24,13 @@ runs:
     shell: bash --login -eo pipefail {0}
     run: python -c "import sys; print(sys.version)"
 
-  - run: pip install streamlit==${{ inputs.streamlit-version }}
+  - name: Install Streamlit
+    run: |
+      if [[ ${{ inputs.streamlit-version }} == 'latest' ]]; then
+        pip install streamlit
+      else
+        pip install streamlit==${{ inputs.streamlit-version }}
+      fi
     shell: bash --login -eo pipefail {0}
 
   - run: pip install -e ".[dev,tests]"
