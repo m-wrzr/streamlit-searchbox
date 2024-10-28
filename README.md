@@ -163,6 +163,12 @@ reset_function: Callable[[], None] | None = None
 
 Function that will be called when the combobox is reset.
 
+```python
+submit_function: Callable[[str], None] | None = None
+```
+
+Function that will be called when a new option is selected.
+
 ---
 
 ### Custom Styles
