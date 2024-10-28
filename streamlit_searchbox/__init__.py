@@ -175,6 +175,16 @@ DropdownStyle = TypedDict(
     total=False,
 )
 
+OptionStyle = TypedDict(
+    "OptionStyle",
+    {
+        "color": str,
+        "backgroundColor": str,
+        "highlightColor": str | None,
+    },
+    total=False,
+)
+
 
 class SearchboxStyle(TypedDict, total=False):
     menuList: dict | None
@@ -182,7 +192,7 @@ class SearchboxStyle(TypedDict, total=False):
     input: dict | None
     placeholder: dict | None
     control: dict | None
-    option: dict | None
+    option: OptionStyle | None
 
 
 class StyleOverrides(TypedDict, total=False):

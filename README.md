@@ -35,19 +35,25 @@ Create a searchbox component and pass a `search_function` that accepts a `str` s
 You can either pass a list of arguments, e.g.
 
 ```python
+import streamlit as st
 import wikipedia
+
 from streamlit_searchbox import st_searchbox
 
-# function with list of labels
-def search_wikipedia(searchterm: str) -> List[any]:
+
+def search_wikipedia(searchterm: str) -> list:
+    # search wikipedia for the searchterm
     return wikipedia.search(searchterm) if searchterm else []
 
 
-# pass search function to searchbox
+# pass search function and other options as needed
 selected_value = st_searchbox(
     search_wikipedia,
-    key="wiki_searchbox",
+    placeholder="Search Wikipedia... ",
+    key="my_key",
 )
+
+st.write(f"Selected value: {selected_value}")
 ```
 
 This example will call the Wikipedia Api to reload suggestions. The `selected_value` will be one of the items the `search_wikipedia` function returns, the suggestions shown in the UI components are a `str` representation. In case you want to provide custom text for suggestions, pass a `Tuple`.
@@ -195,18 +201,23 @@ To further customize the styling of the searchbox, you can override the default 
 
 ```json
 {
+   // change the clear icon
    "clear":{
       "width":20,
       "height":20,
+      // also available: circle-unfilled, circle-filled
       "icon":"cross",
+      // also available: never, after-submit
       "clearable":"always"
    },
+   // change the dropdown icon
    "dropdown":{
       "rotate":true,
       "width":30,
       "height":30,
       "fill":"red"
    },
+   // styling for the searchbox itself, mostly passed to react-select
    "searchbox":{
       "menuList":{
          "backgroundColor":"transparent"
@@ -216,7 +227,9 @@ To further customize the styling of the searchbox, you can override the default 
       },
       "option":{
          "color":"blue",
-         "backgroundColor":"yellow"
+         "backgroundColor":"yellow",
+         // highlight matching text
+         "highlightColor":"green"
       }
    }
 }

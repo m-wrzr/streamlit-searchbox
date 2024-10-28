@@ -138,7 +138,10 @@ boxes = [
         default_options=["inital", "list", "of", "options"],
         key=f"{search.__name__}_default_options",
         label=f"{search.__name__}_default_options",
-        style_overrides={"clear": {"width": 25, "height": 25}},
+        style_overrides={
+            "clear": {"width": 25, "height": 25},
+            "searchbox": {"option": {"highlight": "#f1660f"}},
+        },
     ),
     dict(
         search_function=search,
@@ -268,7 +271,11 @@ with searchboxes:
             "searchbox": {
                 "menuList": {"backgroundColor": "transparent"},
                 "singleValue": {"color": "red", "some": "data"},
-                "option": {"color": "blue", "backgroundColor": "yellow"},
+                "option": {
+                    "color": "blue",
+                    "backgroundColor": "yellow",
+                    "highlightColor": "green",
+                },
             },
         },
     )

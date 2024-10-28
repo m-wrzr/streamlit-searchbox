@@ -82,7 +82,6 @@ boxes = [
         label=search_wikipedia_ids.__name__,
         default="SOME DEFAULT",
         clear_on_submit=False,
-        clearable=True,
         key=search_wikipedia_ids.__name__,
     ),
     dict(
@@ -96,7 +95,6 @@ boxes = [
         search_function=search_rnd_delay,
         default=None,
         clear_on_submit=False,
-        clearable=True,
         label=search_rnd_delay.__name__,
         key=search_rnd_delay.__name__,
     ),
