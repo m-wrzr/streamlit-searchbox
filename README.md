@@ -199,7 +199,7 @@ An example Streamlit app can be found [here](./example.py)
 
 To further customize the styling of the searchbox, you can override the default styling by passing `style_overrides` which will be directly applied in the react components. See below for an example, for more information on the available attributes, please see [styling.tsx](./streamlit_searchbox/frontend/src/styling.tsx) as well as the [react-select](https://react-select.com/styles) documentation.
 
-```json
+```javascript
 {
    // change the clear icon
    "clear":{
