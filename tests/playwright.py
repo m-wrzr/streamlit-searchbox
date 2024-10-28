@@ -137,7 +137,7 @@ def get_status(label: str) -> StatusType:
     ],
 )
 def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page):
-    if status == "skip" or "default_options" not in label:
+    if status == "skip":
         pytest.skip(f"skipping {label} - not supported")
 
     page.goto("localhost:8501")
