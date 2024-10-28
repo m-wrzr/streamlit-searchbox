@@ -21,8 +21,8 @@ runs:
       python-version: ${{ inputs.python-version }}
 
   - name: Display Python version
-    shell: bash --login -eo pipefail {0}
     run: python -c "import sys; print(sys.version)"
+    shell: bash --login -eo pipefail {0}
 
   - name: Install Streamlit
     run: |

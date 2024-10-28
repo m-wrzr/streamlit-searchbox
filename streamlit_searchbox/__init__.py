@@ -74,7 +74,7 @@ def _list_to_options_py(options: list[Any] | list[tuple[str, Any]]) -> list[Any]
 
 
 def _list_to_options_js(
-    options: list[Any] | list[tuple[str, Any]]
+    options: list[Any] | list[tuple[str, Any]],
 ) -> list[dict[str, Any]]:
     """
     unpack search options for use in react component
@@ -180,7 +180,7 @@ OptionStyle = TypedDict(
     {
         "color": str,
         "backgroundColor": str,
-        "highlightColor": str | None,
+        "highlightColor": str,
     },
     total=False,
 )

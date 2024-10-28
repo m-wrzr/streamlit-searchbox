@@ -51,4 +51,11 @@ jobs:
       - run: playwright install
 
       - run: python -m pytest tests/
+
+      # run playwright tests & save screenshots
       - run: python -m pytest tests/playwright.py --verbose
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: tests/screenshots/

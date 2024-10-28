@@ -20,16 +20,16 @@ setuptools.setup(
     ],
     extras_require={
         "tests": [
-            "wikipedia",
-            "pytest",
-            "pytest-playwright",
+            "wikipedia==1.4.0",
+            "pytest==8.3.2",
+            # NOTE: run `playwright install` to install the browser drivers
+            "playwright==1.46.0",
+            "pytest-playwright==0.5.1",
         ],
         "dev": [
-            "pre-commit",
-            "black",
-            "isort",
-            "ruff",
-            "pyright",
+            "pre-commit==4.0.1",
+            "ruff==0.7.1",
+            "pyright==1.1.377",
         ],
     },
 )
