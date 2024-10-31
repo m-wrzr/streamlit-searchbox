@@ -1,1 +1,2 @@
 recursive-include streamlit_searchbox/frontend/build *
+recursive-exclude tests *
