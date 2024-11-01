@@ -87,27 +87,21 @@ boxes = [
     ),
     dict(
         search_function=search,
-        default=None,
         label=search.__name__,
-        clear_on_submit=True,
         key=search.__name__,
     ),
     dict(
         search_function=search_rnd_delay,
-        default=None,
-        clear_on_submit=False,
         label=search_rnd_delay.__name__,
         key=search_rnd_delay.__name__,
     ),
     dict(
         search_function=search_enum_return,
-        clear_on_submit=True,
         key=search_enum_return.__name__,
         label=search_enum_return.__name__,
     ),
     dict(
         search_function=search_empty_list,
-        clear_on_submit=True,
         key=search_empty_list.__name__,
         label=search_empty_list.__name__,
     ),

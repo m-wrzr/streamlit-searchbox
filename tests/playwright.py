@@ -188,7 +188,14 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
     ###### 3. search for term x and select first option ######
 
     search_term = "x"
-    search_result = search_function(search_term)[0]
+    # NOTE: do not use first result, otherwise the highlighting will always be correct
+    #       and it's unclear if the selection locator is working as intended
+    search_result = search_function(search_term)[1]
+
+    if not isinstance(search_result, tuple):
+        search_text = str(search_result)
+    else:
+        search_text = str(search_result[0])
 
     loc_searchbox.focus()
     loc_searchbox.fill(search_term)
@@ -202,17 +209,12 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
 
     ###### 4. check if the option is displayed ######
 
-    if not isinstance(search_result, tuple):
-        search_text = str(search_result)
-    else:
-        search_text = str(search_result[0])
+    l_option = frame(page, i).locator(f"[role='option'] >> text={search_text}")
 
-    l_option = frame(page, i).wait_for_selector(f"text={search_text}", state="attached")
+    if l_option.count() == 0:
+        assert False, f"option not found: {search_text}"
 
-    assert l_option is not None
-
-    l_option.focus()
-    l_option.press("Enter")
+    l_option.click()
 
     wait_for_streamlit(page)
 
