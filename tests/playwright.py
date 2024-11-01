@@ -45,7 +45,7 @@ def wait_for_reload(page: Page) -> None:
     )
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def streamlit_app():
     def is_server_running():
         try:
