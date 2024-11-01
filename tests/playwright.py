@@ -45,7 +45,7 @@ def wait_for_reload(page: Page) -> None:
     )
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def streamlit_app():
     def is_server_running():
         try:
@@ -140,6 +140,8 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
     if status == "skip":
         pytest.skip(f"skipping {label} - not supported")
 
+    ###### 1. go to the Streamlit app and check for the header ######
+
     page.goto("localhost:8501")
 
     expect(page).to_have_title(re.compile("Searchbox Demo"))
@@ -148,46 +150,59 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
 
     screenshot(page, label)
 
+    ###### 2. find the correct iframe and searchbox ######
+
     # find frame with searchbox, otherwise content isn't available
     frame: Frame = [
         frame for frame in page.frames if "streamlit_searchbox" in frame.url
     ][i]
 
     loc_label = frame.locator(f"div:has-text('{label}')")
+    loc_searchbox = frame.locator("input[type='text']")
 
-    if loc_label.count() == 0:
+    if loc_label.count() == 0 or loc_searchbox.count() == 0:
         assert False, f"searchbox not found: {label}"
 
+    # can't search for some search_functions, so skip
     if status == "partial":
         return
 
-    # get the proper element
-    loc_searchbox = frame.locator("input[type='text']")
+    ###### 3. search for term x and select first option ######
 
     search_term = "x"
-
     search_result = search_function(search_term)[0]
 
     loc_searchbox.fill(search_term)
+
+    screenshot(page, label)
+
     loc_searchbox.press("Enter")
 
     wait_for_reload(page)
 
+    ###### 4. check if the option is displayed ######
+
     screenshot(page, label)
 
-    l_option = frame.get_by_text(
-        str(search_result if not isinstance(search_result, tuple) else search_result[0])
-    ).first
+    if not isinstance(search_result, tuple):
+        search_text = str(search_result)
+    else:
+        search_text = str(search_result[0])
+
+    l_option = frame.wait_for_selector(f"text={search_text}", state="attached")
+
+    assert l_option is not None
+
     l_option.focus()
     l_option.press("Enter")
 
     screenshot(page, label)
 
+    ###### 5. check if the result is displayed in main page ######
+
     wait_for_reload(page)
 
-    screenshot(page, label)
-
-    # loads result as streamlit fragment, so get from page instead of iframe
+    # results are be displayed in main page, since it's not part of the searchbox iframe
     assert (
         page.get_by_text(
             selection_to_text(
