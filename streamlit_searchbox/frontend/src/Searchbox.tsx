@@ -183,6 +183,12 @@ class Searchbox extends StreamlitComponentBase<State> {
               ),
             IndicatorSeparator: () => null,
             Input: editableAfterSubmit ? Input : components.Input,
+            Option: (props) =>
+              this.style.optionHighlighted(
+                props,
+                this.props.args.style_overrides?.searchbox?.option
+                  ?.highlightColor || undefined,
+              ),
           }}
           // handlers
           filterOption={(_, __) => true}

@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.10", "3.12"]
+        python-version: ["3.9", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.10", "3.12"]
+        python-version: ["3.9", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -37,8 +37,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.10", "3.12"]
-        streamlit-version: ["1.25", "1.30", "1.31", "1.36"]
+        python-version: ["3.9", "3.12"]
+        streamlit-version: ["1.25", "1.36", "latest"]
 
     steps:
       - uses: actions/checkout@v4
@@ -51,4 +51,11 @@ jobs:
       - run: playwright install
 
       - run: python -m pytest tests/
+
+      # run playwright tests & save screenshots
       - run: python -m pytest tests/playwright.py --verbose
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-${{ matrix.python-version }}-${{ matrix.streamlit-version }}
+          path: tests/screenshots/

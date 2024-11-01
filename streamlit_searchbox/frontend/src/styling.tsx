@@ -4,6 +4,7 @@ import {
   StylesConfig,
   ControlProps,
   OptionProps,
+  components,
 } from "react-select";
 
 import {
@@ -12,6 +13,7 @@ import {
   ClearIconCross,
   ClearIconCircularUnfilled,
 } from "./icons";
+
 class SearchboxStyle {
   theme: any;
   label: any;
@@ -188,6 +190,35 @@ class SearchboxStyle {
       />
     );
   }
+
+  optionHighlighted = (props: any, highlightColor: string | undefined) => {
+    if (!highlightColor || highlightColor === "") {
+      return <components.Option {...props} />;
+    }
+
+    const { children, selectProps } = props;
+    const inputValue = selectProps.inputValue as string;
+
+    // split into parts that match or don't match the inputValue
+    const parts =
+      typeof children === "string"
+        ? children.split(new RegExp(`(${inputValue})`, "gi"))
+        : [];
+
+    return (
+      <components.Option {...props}>
+        {parts.map((part, index) =>
+          part.toLowerCase() === inputValue.toLowerCase() ? (
+            <span key={index} style={{ backgroundColor: highlightColor }}>
+              {part}
+            </span>
+          ) : (
+            part // no match
+          ),
+        )}
+      </components.Option>
+    );
+  };
 }
 
 export default SearchboxStyle;

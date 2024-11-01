@@ -72,6 +72,7 @@ def selection_to_text(result):
 #### application starts here ####
 #################################
 
+# TODO: expand to the same examples as in example.py
 
 # searchbox configurations, see __init__.py for details
 # will pass all kwargs to the searchbox component
@@ -82,33 +83,25 @@ boxes = [
         label=search_wikipedia_ids.__name__,
         default="SOME DEFAULT",
         clear_on_submit=False,
-        clearable=True,
         key=search_wikipedia_ids.__name__,
     ),
     dict(
         search_function=search,
-        default=None,
         label=search.__name__,
-        clear_on_submit=True,
         key=search.__name__,
     ),
     dict(
         search_function=search_rnd_delay,
-        default=None,
-        clear_on_submit=False,
-        clearable=True,
         label=search_rnd_delay.__name__,
         key=search_rnd_delay.__name__,
     ),
     dict(
         search_function=search_enum_return,
-        clear_on_submit=True,
         key=search_enum_return.__name__,
         label=search_enum_return.__name__,
     ),
     dict(
         search_function=search_empty_list,
-        clear_on_submit=True,
         key=search_empty_list.__name__,
         label=search_empty_list.__name__,
     ),
@@ -123,11 +116,5 @@ boxes = [
         default_options=[("inital", "i"), ("list", "l")],
         key=f"{search.__name__}_default_options_tuple",
         label=f"{search.__name__}_default_options_tuple",
-    ),
-    dict(
-        search_function=search,
-        key=f"{search.__name__}_rerun_disabled",
-        rerun_on_update=False,
-        label=f"{search.__name__}_rerun_disabled",
     ),
 ]

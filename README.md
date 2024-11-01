@@ -35,19 +35,25 @@ Create a searchbox component and pass a `search_function` that accepts a `str` s
 You can either pass a list of arguments, e.g.
 
 ```python
+import streamlit as st
 import wikipedia
+
 from streamlit_searchbox import st_searchbox
 
-# function with list of labels
-def search_wikipedia(searchterm: str) -> List[any]:
+
+def search_wikipedia(searchterm: str) -> list:
+    # search wikipedia for the searchterm
     return wikipedia.search(searchterm) if searchterm else []
 
 
-# pass search function to searchbox
+# pass search function and other options as needed
 selected_value = st_searchbox(
     search_wikipedia,
-    key="wiki_searchbox",
+    placeholder="Search Wikipedia... ",
+    key="my_key",
 )
+
+st.write(f"Selected value: {selected_value}")
 ```
 
 This example will call the Wikipedia Api to reload suggestions. The `selected_value` will be one of the items the `search_wikipedia` function returns, the suggestions shown in the UI components are a `str` representation. In case you want to provide custom text for suggestions, pass a `Tuple`.
@@ -163,6 +169,12 @@ reset_function: Callable[[], None] | None = None
 
 Function that will be called when the combobox is reset.
 
+```python
+submit_function: Callable[[Any], None] | None = None
+```
+
+Function that will be called when a new option is selected, with the selected option as argument.
+
 ---
 
 ### Custom Styles
@@ -187,20 +199,25 @@ An example Streamlit app can be found [here](./example.py)
 
 To further customize the styling of the searchbox, you can override the default styling by passing `style_overrides` which will be directly applied in the react components. See below for an example, for more information on the available attributes, please see [styling.tsx](./streamlit_searchbox/frontend/src/styling.tsx) as well as the [react-select](https://react-select.com/styles) documentation.
 
-```json
+```javascript
 {
+   // change the clear icon
    "clear":{
       "width":20,
       "height":20,
+      // also available: circle-unfilled, circle-filled
       "icon":"cross",
+      // also available: never, after-submit
       "clearable":"always"
    },
+   // change the dropdown icon
    "dropdown":{
       "rotate":true,
       "width":30,
       "height":30,
       "fill":"red"
    },
+   // styling for the searchbox itself, mostly passed to react-select
    "searchbox":{
       "menuList":{
          "backgroundColor":"transparent"
@@ -210,7 +227,9 @@ To further customize the styling of the searchbox, you can override the default 
       },
       "option":{
          "color":"blue",
-         "backgroundColor":"yellow"
+         "backgroundColor":"yellow",
+         // highlight matching text
+         "highlightColor":"green"
       }
    }
 }
@@ -237,3 +256,4 @@ We welcome contributions from everyone. Here are a few ways you can help:
 - [@Jumitti](https://github.com/Jumitti) `st.rerun` compatibility
 - [@salmanrazzaq-94](https://github.com/salmanrazzaq-94) `st.fragment` support
 - [@hoggatt](https://github.com/hoggatt) `reset_function`
+- [@bram49](https://github.com/bram49) `submit_function`

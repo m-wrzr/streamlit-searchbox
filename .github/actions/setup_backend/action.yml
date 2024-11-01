@@ -5,26 +5,40 @@ inputs:
   python-version:
     description: 'Python version to use'
     required: true
-    default: '3.11'
+    default: '3.12'
   streamlit-version:
     description: 'Streamlit version to use'
     required: true
-    default: '1.31'
+    default: '1.36'
 
 runs:
   using: composite
   steps:
 
   - name: Set up Python ${{ inputs.python-version }}
-    uses: actions/setup-python@v4
+    uses: actions/setup-python@v5
     with:
       python-version: ${{ inputs.python-version }}
 
-  - name: Display Python version
-    shell: bash --login -eo pipefail {0}
-    run: python -c "import sys; print(sys.version)"
+  - name: Cache Python dependencies
+    uses: actions/cache@v4
+    with:
+      path: ~/.cache/pip
+      key: ${{ runner.os }}-pip-${{ hashFiles('setup.py') }}
+      restore-keys: |
+        ${{ runner.os }}-pip-
 
-  - run: pip install streamlit==${{ inputs.streamlit-version }}
+  - name: Display Python version
+    run: python -c "import sys; print(sys.version)"
+    shell: bash --login -eo pipefail {0}
+
+  - name: Install Streamlit
+    run: |
+      if [[ ${{ inputs.streamlit-version }} == 'latest' ]]; then
+        pip install streamlit
+      else
+        pip install streamlit==${{ inputs.streamlit-version }}
+      fi
     shell: bash --login -eo pipefail {0}
 
   - run: pip install -e ".[dev,tests]"

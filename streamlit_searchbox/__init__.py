@@ -74,7 +74,7 @@ def _list_to_options_py(options: list[Any] | list[tuple[str, Any]]) -> list[Any]
 
 
 def _list_to_options_js(
-    options: list[Any] | list[tuple[str, Any]]
+    options: list[Any] | list[tuple[str, Any]],
 ) -> list[dict[str, Any]]:
     """
     unpack search options for use in react component
@@ -175,6 +175,16 @@ DropdownStyle = TypedDict(
     total=False,
 )
 
+OptionStyle = TypedDict(
+    "OptionStyle",
+    {
+        "color": str,
+        "backgroundColor": str,
+        "highlightColor": str,
+    },
+    total=False,
+)
+
 
 class SearchboxStyle(TypedDict, total=False):
     menuList: dict | None
@@ -182,7 +192,7 @@ class SearchboxStyle(TypedDict, total=False):
     input: dict | None
     placeholder: dict | None
     control: dict | None
-    option: dict | None
+    option: OptionStyle | None
 
 
 class StyleOverrides(TypedDict, total=False):
@@ -209,6 +219,7 @@ def st_searchbox(
     debounce: int = 150,
     min_execution_time: int = MIN_EXECUTION_TIME_DEFAULT,
     reset_function: Callable[[], None] | None = None,
+    submit_function: Callable[[Any], None] | None = None,
     key: str = "searchbox",
     rerun_scope: Literal["app", "fragment"] = "app",
     **kwargs,
@@ -253,6 +264,9 @@ def st_searchbox(
             within the component in some streamlit versions. Defaults to 0.
         reset_function (Callable[[], None], optional):
             Function that is called after the user reset the combobox. Defaults to None.
+        submit_function (Callable[[any], None], optional):
+            Function that is called after the user submits a new/unique option from the
+            combobox. Defaults to None.
         key (str, optional):
             Streamlit session key. Defaults to "searchbox".
 
@@ -310,11 +324,17 @@ def st_searchbox(
         )
 
     if interaction == "submit":
-        st.session_state[key]["result"] = (
+        submit_value = (
             st.session_state[key]["options_py"][value]
             if "options_py" in st.session_state[key]
             else value
         )
+
+        # ensure submit_function only runs when value changed
+        if st.session_state[key]["result"] != submit_value:
+            st.session_state[key]["result"] = submit_value
+            if submit_function is not None:
+                submit_function(submit_value)
 
         if clear_on_submit:
             _set_defaults(key, st.session_state[key]["result"], default_options)
