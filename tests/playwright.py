@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import glob
+import os
 import re
 import subprocess
 import time
@@ -12,6 +14,7 @@ from playwright.sync_api import Frame, Page, expect
 from tests.utils import boxes, selection_to_text
 
 _SCREENSHOT_COUNTER: dict[str, int] = {}
+_SCREENSHOT_FOLDER = "tests/screenshots"
 
 
 def screenshot(page: Page, caller_name: str, suffix: str | None = None) -> None:
@@ -21,28 +24,38 @@ def screenshot(page: Page, caller_name: str, suffix: str | None = None) -> None:
 
     _SCREENSHOT_COUNTER[caller_name] = _SCREENSHOT_COUNTER.get(caller_name, 0)
 
-    folder = "tests/screenshots"
     suffix = "" if suffix is None else f"-{suffix}"
 
     name = f"{caller_name}-{_SCREENSHOT_COUNTER[caller_name]}{suffix}"
 
     page.screenshot(
-        path=f"{folder}/{name}.png",
+        path=f"{_SCREENSHOT_FOLDER}/{name}.png",
         full_page=True,
     )
 
     _SCREENSHOT_COUNTER[caller_name] += 1
 
 
-def wait_for_reload(page: Page) -> None:
+def wait_for_streamlit(page: Page) -> None:
     """
     wait until loading spinner is gone
     """
+    time.sleep(0.5)
+
     page.wait_for_selector(
         "[data-testid='stStatusWidget']",
         timeout=5000,
         state="detached",
     )
+
+
+@pytest.fixture(scope="module", autouse=True)
+def cleanup():
+    # delete old screenshots
+    for file in glob.glob(os.path.join(_SCREENSHOT_FOLDER, "*.png")):
+        os.remove(file)
+
+    yield
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -146,9 +159,9 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
 
     expect(page).to_have_title(re.compile("Searchbox Demo"))
 
-    wait_for_reload(page)
+    wait_for_streamlit(page)
 
-    screenshot(page, label)
+    screenshot(page, label, suffix="inital")
 
     ###### 2. find the correct iframe and searchbox ######
 
@@ -175,14 +188,14 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
     loc_searchbox.focus()
     loc_searchbox.fill(search_term)
 
-    screenshot(page, label)
+    screenshot(page, label, suffix="before_search")
     loc_searchbox.press("Enter")
 
     # wait for options to appear
-    wait_for_reload(page)
+    wait_for_streamlit(page)
     time.sleep(0.5)
 
-    screenshot(page, label)
+    screenshot(page, label, suffix="options_displayed")
 
     ###### 4. check if the option is displayed ######
 
@@ -198,9 +211,9 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
     l_option.focus()
     l_option.press("Enter")
 
-    wait_for_reload(page)
+    wait_for_streamlit(page)
 
-    screenshot(page, label)
+    screenshot(page, label, suffix="option_selected")
 
     ###### 5. check if the result is displayed in main page ######
 
