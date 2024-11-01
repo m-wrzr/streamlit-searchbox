@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.19] - 2024-11-01
+
+- remove `tests` folder from distributions
+
 ## [0.1.18] - 2024-10-28
 
 - added `submit_function` that is called on a new submission
 - added `highlighColor` for option styling that highlights matching text
-- removed python `3.8` from ci
+- updates to ci and playwright tests
 
 ## [0.1.17] - 2024-09-15
 

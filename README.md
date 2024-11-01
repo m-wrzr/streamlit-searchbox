@@ -257,3 +257,4 @@ We welcome contributions from everyone. Here are a few ways you can help:
 - [@salmanrazzaq-94](https://github.com/salmanrazzaq-94) `st.fragment` support
 - [@hoggatt](https://github.com/hoggatt) `reset_function`
 - [@bram49](https://github.com/bram49) `submit_function`
+- [@ytausch](https://github.com/ytausch) remove `tests` folder from distributions
