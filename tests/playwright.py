@@ -172,17 +172,19 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
     search_term = "x"
     search_result = search_function(search_term)[0]
 
+    loc_searchbox.focus()
     loc_searchbox.fill(search_term)
 
     screenshot(page, label)
-
     loc_searchbox.press("Enter")
 
+    # wait for options to appear
     wait_for_reload(page)
-
-    ###### 4. check if the option is displayed ######
+    time.sleep(0.5)
 
     screenshot(page, label)
+
+    ###### 4. check if the option is displayed ######
 
     if not isinstance(search_result, tuple):
         search_text = str(search_result)
@@ -196,22 +198,15 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
     l_option.focus()
     l_option.press("Enter")
 
+    wait_for_reload(page)
+
     screenshot(page, label)
 
     ###### 5. check if the result is displayed in main page ######
 
-    wait_for_reload(page)
-
-    # results are be displayed in main page, since it's not part of the searchbox iframe
-    assert (
-        page.get_by_text(
-            selection_to_text(
-                search_result
-                if not isinstance(search_result, tuple)
-                else search_result[1]
-            )
-        ).count()
-        == 1
+    text_displayed = selection_to_text(
+        search_result if not isinstance(search_result, tuple) else search_result[1]
     )
 
-    screenshot(page, label)
+    # results are be displayed in main page, since it's not part of the searchbox iframe
+    assert page.get_by_text(text_displayed).count() == 1

@@ -5,11 +5,11 @@ inputs:
   python-version:
     description: 'Python version to use'
     required: true
-    default: '3.11'
+    default: '3.12'
   streamlit-version:
     description: 'Streamlit version to use'
     required: true
-    default: '1.31'
+    default: '1.36'
 
 runs:
   using: composite
@@ -19,6 +19,14 @@ runs:
     uses: actions/setup-python@v4
     with:
       python-version: ${{ inputs.python-version }}
+
+  - name: Cache Python dependencies
+    uses: actions/cache@v4
+    with:
+      path: ~/.cache/pip
+      key: ${{ runner.os }}-pip-${{ hashFiles('setup.py') }}
+      restore-keys: |
+        ${{ runner.os }}-pip-
 
   - name: Display Python version
     run: python -c "import sys; print(sys.version)"
