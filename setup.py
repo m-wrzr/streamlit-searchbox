@@ -9,7 +9,7 @@ setuptools.setup(
     + "and provides a list of suggestions based on a provided function",
     long_description_content_type="text/plain",
     url="https://github.com/m-wrzr/streamlit-searchbox",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(exclude=("tests",)),
     include_package_data=True,
     classifiers=[],
     python_requires=">=3.9, !=3.9.7",
