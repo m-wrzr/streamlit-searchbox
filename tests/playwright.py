@@ -140,6 +140,14 @@ def get_status(label: str) -> StatusType:
     raise NotImplementedError(f"status for {label} not implemented")
 
 
+def frame(page: Page, i: int) -> Frame:
+    """
+    get the i-th iframe within the streamlit page
+    since the streamlit does a lot of reloads, elements might go in/out of the DOM
+    """
+    return [frame for frame in page.frames if "streamlit_searchbox" in frame.url][i]
+
+
 # iterate over all searchboxes in separate streamlit app
 @pytest.mark.parametrize(
     "search_function,label,i, status",
@@ -166,12 +174,9 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
     ###### 2. find the correct iframe and searchbox ######
 
     # find frame with searchbox, otherwise content isn't available
-    frame: Frame = [
-        frame for frame in page.frames if "streamlit_searchbox" in frame.url
-    ][i]
 
-    loc_label = frame.locator(f"div:has-text('{label}')")
-    loc_searchbox = frame.locator("input[type='text']")
+    loc_label = frame(page, i).locator(f"div:has-text('{label}')")
+    loc_searchbox = frame(page, i).locator("input[type='text']")
 
     if loc_label.count() == 0 or loc_searchbox.count() == 0:
         assert False, f"searchbox not found: {label}"
@@ -191,9 +196,7 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
     screenshot(page, label, suffix="before_search")
     loc_searchbox.press("Enter")
 
-    # wait for options to appear
     wait_for_streamlit(page)
-    time.sleep(0.5)
 
     screenshot(page, label, suffix="options_displayed")
 
@@ -204,7 +207,7 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
     else:
         search_text = str(search_result[0])
 
-    l_option = frame.wait_for_selector(f"text={search_text}", state="attached")
+    l_option = frame(page, i).wait_for_selector(f"text={search_text}", state="attached")
 
     assert l_option is not None
 
