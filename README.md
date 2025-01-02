@@ -146,7 +146,7 @@ If the rerun should affect the whole app or just the fragment.
 debounce: int = 0
 ```
 
-Delay executing the callback from the react component by `x` milliseconds to avoid too many / redudant requests, i.e. during fast typing.
+Delay executing the callback from the react component by `x` milliseconds to avoid too many / redudant requests, i.e. during fast typing. `NOTE:` this is only applied if `edit_after_submit='disabled'`.
 
 ```python
 min_execution_time: int = 0
