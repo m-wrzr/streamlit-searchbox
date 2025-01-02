@@ -37,26 +37,39 @@ class Searchbox extends StreamlitComponentBase<State> {
   public state: State = {
     menu: false,
     option: null,
-    inputValue: "",
+    inputValue: this.props.args.default_searchterm || "",
   };
 
-  private style = new SearchboxStyle(
-    this.props.theme,
-    this.props.args.style_overrides?.searchbox || {},
-  );
   private ref: any = React.createRef();
 
   constructor(props: any) {
     super(props);
 
     // bind the search function and debounce to avoid too many requests
+    // this should be bound to the streamlit state, since we still want to
+    // keep proper track of the `inputValue` state
     if (props.args.debounce && props.args.debounce > 0) {
-      this.callbackSearch = debounce(
-        this.callbackSearch.bind(this),
+      this.callbackSearchReturn = debounce(
+        this.callbackSearchReturn.bind(this),
         props.args.debounce,
       );
     }
   }
+
+  private getStyleFromTheme = (): SearchboxStyle => {
+    return new SearchboxStyle(
+      this.props.theme,
+      this.props.args.style_overrides?.searchbox || {},
+    );
+  };
+
+  private isInputTrackingActive = (): boolean => {
+    return this.props.args.edit_after_submit !== "disabled";
+  };
+
+  private callbackSearchReturn = (input: string): void => {
+    streamlitReturn("search", input);
+  };
 
   /**
    * new keystroke on searchbox
@@ -70,7 +83,7 @@ class Searchbox extends StreamlitComponentBase<State> {
       option: null,
     });
 
-    streamlitReturn("search", input);
+    this.callbackSearchReturn(input);
   };
 
   /**
@@ -129,15 +142,14 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @returns
    */
   public render = (): ReactNode => {
-    const editableAfterSubmit =
-      this.props.args.edit_after_submit !== "disabled";
-
     // always focus the input field to enable edits
     const onFocus = () => {
-      if (editableAfterSubmit && this.state.inputValue) {
+      if (this.isInputTrackingActive() && this.state.inputValue) {
         this.state.inputValue && this.ref.current.select.inputRef.select();
       }
     };
+
+    const style = this.getStyleFromTheme();
 
     // option when the clear button is shown
     const clearable = this.props.args.style_overrides?.clear?.clearable;
@@ -145,7 +157,7 @@ class Searchbox extends StreamlitComponentBase<State> {
     return (
       <div style={this.props.args.style_overrides?.wrapper || {}}>
         {this.props.args.label && (
-          <div style={this.style.label}>{this.props.args.label}</div>
+          <div style={style.label}>{this.props.args.label}</div>
         )}
 
         <Select
@@ -162,29 +174,36 @@ class Searchbox extends StreamlitComponentBase<State> {
                 }
               : this.state.option
           }
-          // value={this.state.option}
-          inputValue={editableAfterSubmit ? this.state.inputValue : undefined}
+          inputValue={
+            // for edit_after_submit we want to disable the tracking
+            // since the inputValue is equal to the value
+            this.isInputTrackingActive() ||
+            // only use this for the initial default value
+            this.props.args.default_searchterm === this.state.inputValue
+              ? this.state.inputValue
+              : undefined
+          }
           isClearable={clearable !== "never"}
           isSearchable={true}
-          styles={this.style.select}
+          styles={style.select}
           options={this.props.args.options}
           placeholder={this.props.args.placeholder}
           // component overrides
           components={{
             ClearIndicator: (props) =>
-              this.style.clearIndicator(
+              style.clearIndicator(
                 props,
                 this.props.args.style_overrides?.clear || {},
               ),
             DropdownIndicator: () =>
-              this.style.iconDropdown(
+              style.iconDropdown(
                 this.state.menu,
                 this.props.args.style_overrides?.dropdown || {},
               ),
             IndicatorSeparator: () => null,
-            Input: editableAfterSubmit ? Input : components.Input,
+            Input: this.isInputTrackingActive() ? Input : components.Input,
             Option: (props) =>
-              this.style.optionHighlighted(
+              style.optionHighlighted(
                 props,
                 this.props.args.style_overrides?.searchbox?.option
                   ?.highlightColor || undefined,

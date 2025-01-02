@@ -109,6 +109,13 @@ default: any = None
 
 Default return value in case nothing was submitted or the searchbox cleared.
 
+
+```python
+default_searchterm: str = ''
+```
+
+Default searchterm value when the searchbox is initialized.
+
 ```python
 default_use_searchterm: bool = False
 ```
@@ -161,7 +168,7 @@ Automatically clear the input after selection.
 edit_after_submit: Literal["disabled", "current", "option", "concat"] = "disabled"
 ```
 
-Specify behavior for search query after an option is selected.
+Specify behavior for search query after an option is selected. By setting `edit_after_submit` to `option` you can use the searchbox similar to an autocomplete.
 
 ```python
 reset_function: Callable[[], None] | None = None
