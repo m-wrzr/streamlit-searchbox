@@ -40,10 +40,6 @@ class Searchbox extends StreamlitComponentBase<State> {
     inputValue: "",
   };
 
-  private style = new SearchboxStyle(
-    this.props.theme,
-    this.props.args.style_overrides?.searchbox || {},
-  );
   private ref: any = React.createRef();
 
   constructor(props: any) {
@@ -57,6 +53,13 @@ class Searchbox extends StreamlitComponentBase<State> {
       );
     }
   }
+
+  private getStyleFromTheme = (): SearchboxStyle => {
+    return new SearchboxStyle(
+      this.props.theme,
+      this.props.args.style_overrides?.searchbox || {},
+    );
+  };
 
   /**
    * new keystroke on searchbox
@@ -139,13 +142,15 @@ class Searchbox extends StreamlitComponentBase<State> {
       }
     };
 
+    const style = this.getStyleFromTheme();
+
     // option when the clear button is shown
     const clearable = this.props.args.style_overrides?.clear?.clearable;
 
     return (
       <div style={this.props.args.style_overrides?.wrapper || {}}>
         {this.props.args.label && (
-          <div style={this.style.label}>{this.props.args.label}</div>
+          <div style={style.label}>{this.props.args.label}</div>
         )}
 
         <Select
@@ -166,25 +171,25 @@ class Searchbox extends StreamlitComponentBase<State> {
           inputValue={editableAfterSubmit ? this.state.inputValue : undefined}
           isClearable={clearable !== "never"}
           isSearchable={true}
-          styles={this.style.select}
+          styles={style.select}
           options={this.props.args.options}
           placeholder={this.props.args.placeholder}
           // component overrides
           components={{
             ClearIndicator: (props) =>
-              this.style.clearIndicator(
+              style.clearIndicator(
                 props,
                 this.props.args.style_overrides?.clear || {},
               ),
             DropdownIndicator: () =>
-              this.style.iconDropdown(
+              style.iconDropdown(
                 this.state.menu,
                 this.props.args.style_overrides?.dropdown || {},
               ),
             IndicatorSeparator: () => null,
             Input: editableAfterSubmit ? Input : components.Input,
             Option: (props) =>
-              this.style.optionHighlighted(
+              style.optionHighlighted(
                 props,
                 this.props.args.style_overrides?.searchbox?.option
                   ?.highlightColor || undefined,
