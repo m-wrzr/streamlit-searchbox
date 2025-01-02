@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   pre-commit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: ["3.9", "3.11", "3.12"]
@@ -19,7 +19,7 @@ jobs:
 
   types:
     needs: [pre-commit]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: ["3.9", "3.11", "3.12"]
@@ -34,7 +34,7 @@ jobs:
 
   tests:
     needs: [pre-commit, types]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: ["3.9", "3.12"]
