@@ -46,9 +46,11 @@ class Searchbox extends StreamlitComponentBase<State> {
     super(props);
 
     // bind the search function and debounce to avoid too many requests
+    // this should be bound to the streamlit state, since we still want to
+    // keep proper track of the `inputValue` state
     if (props.args.debounce && props.args.debounce > 0) {
-      this.callbackSearch = debounce(
-        this.callbackSearch.bind(this),
+      this.callbackSearchReturn = debounce(
+        this.callbackSearchReturn.bind(this),
         props.args.debounce,
       );
     }
@@ -59,6 +61,14 @@ class Searchbox extends StreamlitComponentBase<State> {
       this.props.theme,
       this.props.args.style_overrides?.searchbox || {},
     );
+  };
+
+  private isInputTrackingActive = (): boolean => {
+    return this.props.args.edit_after_submit !== "disabled";
+  };
+
+  private callbackSearchReturn = (input: string): void => {
+    streamlitReturn("search", input);
   };
 
   /**
@@ -73,7 +83,7 @@ class Searchbox extends StreamlitComponentBase<State> {
       option: null,
     });
 
-    streamlitReturn("search", input);
+    this.callbackSearchReturn(input);
   };
 
   /**
@@ -132,12 +142,9 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @returns
    */
   public render = (): ReactNode => {
-    const editableAfterSubmit =
-      this.props.args.edit_after_submit !== "disabled";
-
     // always focus the input field to enable edits
     const onFocus = () => {
-      if (editableAfterSubmit && this.state.inputValue) {
+      if (this.isInputTrackingActive() && this.state.inputValue) {
         this.state.inputValue && this.ref.current.select.inputRef.select();
       }
     };
@@ -170,7 +177,7 @@ class Searchbox extends StreamlitComponentBase<State> {
           inputValue={
             // for edit_after_submit we want to disable the tracking
             // since the inputValue is equal to the value
-            editableAfterSubmit ||
+            this.isInputTrackingActive() ||
             // only use this for the initial default value
             this.props.args.default_searchterm === this.state.inputValue
               ? this.state.inputValue
@@ -194,7 +201,7 @@ class Searchbox extends StreamlitComponentBase<State> {
                 this.props.args.style_overrides?.dropdown || {},
               ),
             IndicatorSeparator: () => null,
-            Input: editableAfterSubmit ? Input : components.Input,
+            Input: this.isInputTrackingActive() ? Input : components.Input,
             Option: (props) =>
               style.optionHighlighted(
                 props,
