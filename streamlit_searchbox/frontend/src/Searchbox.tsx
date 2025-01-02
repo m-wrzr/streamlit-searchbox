@@ -37,7 +37,7 @@ class Searchbox extends StreamlitComponentBase<State> {
   public state: State = {
     menu: false,
     option: null,
-    inputValue: "",
+    inputValue: this.props.args.default_searchterm || "",
   };
 
   private ref: any = React.createRef();
@@ -167,8 +167,15 @@ class Searchbox extends StreamlitComponentBase<State> {
                 }
               : this.state.option
           }
-          // value={this.state.option}
-          inputValue={editableAfterSubmit ? this.state.inputValue : undefined}
+          inputValue={
+            // for edit_after_submit we want to disable the tracking
+            // since the inputValue is equal to the value
+            editableAfterSubmit ||
+            // only use this for the initial default value
+            this.props.args.default_searchterm === this.state.inputValue
+              ? this.state.inputValue
+              : undefined
+          }
           isClearable={clearable !== "never"}
           isSearchable={true}
           styles={style.select}

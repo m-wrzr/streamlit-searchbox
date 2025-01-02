@@ -127,13 +127,14 @@ def _process_search(
 def _set_defaults(
     key: str,
     default: Any,
+    default_searchterm: str = "",
     default_options: List[Any] | None = None,
 ) -> None:
     st.session_state[key] = {
         # updated after each selection / reset
         "result": default,
         # updated after each search keystroke
-        "search": "",
+        "search": default_searchterm,
         # updated after each search_function run
         "options_js": [],
         # key that is used by react component, use time suffix to reload after clear
@@ -209,6 +210,7 @@ def st_searchbox(
     label: str | None = None,
     default: Any = None,
     *,
+    default_searchterm: str = "",
     default_use_searchterm: bool = False,
     default_options: List[Any] | None = None,
     clear_on_submit: bool = False,
@@ -237,6 +239,8 @@ def st_searchbox(
             Label shown above the searchbox. Defaults to None.
         default (any, optional):
             Return value if nothing is selected so far. Defaults to None.
+        default_searchterm (str, optional):
+            Inital searchterm when the searchbox is created. Defaults to "".
         default_use_searchterm (bool, optional):
             Return the current searchterm if nothing was selected. Defaults to False.
         default_options (List[any], optional):
@@ -275,7 +279,12 @@ def st_searchbox(
     """
 
     if key not in st.session_state:
-        _set_defaults(key, default, default_options)
+        _set_defaults(
+            key,
+            default,
+            default_searchterm,
+            default_options,
+        )
 
     # everything here is passed to react as this.props.args
     react_state = _get_react_component(
@@ -286,6 +295,7 @@ def st_searchbox(
         edit_after_submit=edit_after_submit,
         style_overrides=style_overrides,
         debounce=debounce,
+        default_searchterm=default_searchterm,
         # react return state within streamlit session_state
         key=st.session_state[key]["key_react"],
     )
@@ -337,13 +347,23 @@ def st_searchbox(
                 submit_function(submit_value)
 
         if clear_on_submit:
-            _set_defaults(key, st.session_state[key]["result"], default_options)
+            _set_defaults(
+                key,
+                st.session_state[key]["result"],
+                default_searchterm,
+                default_options,
+            )
             _rerun(rerun_scope)
 
         return st.session_state[key]["result"]
 
     if interaction == "reset":
-        _set_defaults(key, default, default_options)
+        _set_defaults(
+            key,
+            default,
+            default_searchterm,
+            default_options,
+        )
 
         if reset_function is not None:
             reset_function()
