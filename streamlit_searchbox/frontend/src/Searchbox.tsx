@@ -46,13 +46,11 @@ class Searchbox extends StreamlitComponentBase<State> {
     super(props);
 
     // bind the search function and debounce to avoid too many requests
-    if (
-      props.args.debounce &&
-      props.args.debounce > 0 &&
-      !this.isInputTrackingActive()
-    ) {
-      this.callbackSearch = debounce(
-        this.callbackSearch.bind(this),
+    // this should be bound to the streamlit state, since we still want to
+    // keep proper track of the `inputValue` state
+    if (props.args.debounce && props.args.debounce > 0) {
+      this.callbackSearchReturn = debounce(
+        this.callbackSearchReturn.bind(this),
         props.args.debounce,
       );
     }
@@ -69,6 +67,10 @@ class Searchbox extends StreamlitComponentBase<State> {
     return this.props.args.edit_after_submit !== "disabled";
   };
 
+  private callbackSearchReturn = (input: string): void => {
+    streamlitReturn("search", input);
+  };
+
   /**
    * new keystroke on searchbox
    * @param input
@@ -81,7 +83,7 @@ class Searchbox extends StreamlitComponentBase<State> {
       option: null,
     });
 
-    streamlitReturn("search", input);
+    this.callbackSearchReturn(input);
   };
 
   /**
