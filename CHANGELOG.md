@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.20] - 2025-01-XX
+
+- TODO:
+
 ## [0.1.19] - 2024-11-01
 
 - remove `tests` folder from distributions
