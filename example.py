@@ -135,6 +135,8 @@ boxes = [
     ),
     dict(
         search_function=search,
+        default="initial",
+        default_searchterm="initial",
         default_options=["inital", "list", "of", "options"],
         key=f"{search.__name__}_default_options",
         label=f"{search.__name__}_default_options",
