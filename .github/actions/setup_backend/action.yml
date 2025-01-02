@@ -15,10 +15,6 @@ runs:
   using: composite
   steps:
 
-  - name: Install linux dependencies
-    run: apt-get install zlib1g-dev
-    shell: bash --login -eo pipefail {0}
-
   - name: Set up Python ${{ inputs.python-version }}
     uses: actions/setup-python@v5
     with:
