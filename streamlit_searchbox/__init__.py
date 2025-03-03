@@ -9,6 +9,7 @@ import functools
 import logging
 import os
 import time
+import warnings
 from typing import Any, Callable, List, Literal, TypedDict
 
 import streamlit as st
@@ -24,8 +25,11 @@ except ImportError:
 # default milliseconds for the search function to run, this is used to avoid
 # fast consecutive reruns. possibly remove this in later versions
 # see: https://github.com/streamlit/streamlit/issues/9002
-MIN_EXECUTION_TIME_DEFAULT = 250 if st.__version__ >= "1.35" else 0
-
+# NOTE: DEPRECATED, remove in future versions
+MIN_EXECUTION_TIME_DEFAULT = (
+    250 if st.__version__ >= "1.35" and st.__version__ < "1.39" else 0
+)
+warnings.simplefilter("once", DeprecationWarning)
 
 # point to build directory
 parent_dir = os.path.dirname(os.path.abspath(__file__))
@@ -261,11 +265,12 @@ def st_searchbox(
             version >= 1.37. Defaults to "app".
         debounce (int, optional):
             Time in milliseconds to wait before sending the input to the search function
-            to avoid too many requests, i.e. during fast keystrokes. Defaults to 0.
+            to avoid too many requests, i.e. during fast keystrokes. Defaults to 150.
         min_execution_time (int, optional):
-            Minimal execution time for the search function in milliseconds. This is used
-            to avoid fast consecutive reruns, where fast reruns can lead to resets
-            within the component in some streamlit versions. Defaults to 0.
+            Deprecated: Minimal execution time for the search function in milliseconds.
+            This is used to avoid fast consecutive reruns, where fast reruns can lead to
+            resets within the component in some streamlit versions.
+            Defaults to 0 or 250 depending on the streamlit version.
         reset_function (Callable[[], None], optional):
             Function that is called after the user reset the combobox. Defaults to None.
         submit_function (Callable[[any], None], optional):
@@ -277,6 +282,13 @@ def st_searchbox(
     Returns:
         any: based on user selection
     """
+
+    if min_execution_time > 0 and min_execution_time != MIN_EXECUTION_TIME_DEFAULT:
+        warnings.warn(
+            "min_execution_time is deprecated and will be removed in the future.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
 
     if key not in st.session_state:
         _set_defaults(

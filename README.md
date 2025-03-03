@@ -145,7 +145,7 @@ rerun_scope: Literal["app", "fragment"] = "app",
 If the rerun should affect the whole app or just the fragment.
 
 ```python
-debounce: int = 0
+debounce: int = 150
 ```
 
 Delay executing the callback from the react component by `x` milliseconds to avoid too many / redudant requests, i.e. during fast typing.
@@ -154,7 +154,7 @@ Delay executing the callback from the react component by `x` milliseconds to avo
 min_execution_time: int = 0
 ```
 
-Delay execution after the search function finished to reach a minimum amount of `x` milliseconds. This can be used to avoid fast consecutive reruns, which can cause resets of the component in some streamlit versions `>=1.35`.
+`DEPRECATED` Delay execution after the search function finished to reach a minimum amount of `x` milliseconds. This can be used to avoid fast consecutive reruns, which can cause resets of the component in some streamlit versions `>=1.35` and `<1.39`.
 
 ---
 
