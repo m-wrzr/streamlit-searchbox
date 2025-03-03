@@ -5,10 +5,10 @@ module for streamlit searchbox component
 from __future__ import annotations
 
 import datetime
-import functools
 import logging
 import os
 import time
+import warnings
 from typing import Any, Callable, List, Literal, TypedDict
 
 import streamlit as st
@@ -24,8 +24,10 @@ except ImportError:
 # default milliseconds for the search function to run, this is used to avoid
 # fast consecutive reruns. possibly remove this in later versions
 # see: https://github.com/streamlit/streamlit/issues/9002
-MIN_EXECUTION_TIME_DEFAULT = 250 if st.__version__ >= "1.35" else 0
-
+# NOTE: DEPRECATED, remove in future versions
+MIN_EXECUTION_TIME_DEFAULT = (
+    250 if st.__version__ >= "1.35" and st.__version__ < "1.39" else 0
+)
 
 # point to build directory
 parent_dir = os.path.dirname(os.path.abspath(__file__))
@@ -36,26 +38,6 @@ _get_react_component = components.declare_component(
 )
 
 logger = logging.getLogger(__name__)
-
-
-def wrap_inactive_session(func):
-    """
-    session state isn't available anymore due to rerun (as state key can't be empty)
-    if the proxy is missing, this thread isn't really active and an early return is noop
-    """
-
-    @functools.wraps(func)
-    def inner_function(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except KeyError as error:
-            if kwargs.get("key", None) == error.args[0]:
-                logger.debug(f"Session Proxy unavailable for key: {error.args[0]}")
-                return
-
-            raise error
-
-    return inner_function
 
 
 def _rerun(rerun_scope: Literal["app", "fragment"]) -> None:
@@ -203,7 +185,6 @@ class StyleOverrides(TypedDict, total=False):
     searchbox: SearchboxStyle | None
 
 
-@wrap_inactive_session
 def st_searchbox(
     search_function: Callable[[str], List[Any]],
     placeholder: str = "Search ...",
@@ -261,11 +242,12 @@ def st_searchbox(
             version >= 1.37. Defaults to "app".
         debounce (int, optional):
             Time in milliseconds to wait before sending the input to the search function
-            to avoid too many requests, i.e. during fast keystrokes. Defaults to 0.
+            to avoid too many requests, i.e. during fast keystrokes. Defaults to 150.
         min_execution_time (int, optional):
-            Minimal execution time for the search function in milliseconds. This is used
-            to avoid fast consecutive reruns, where fast reruns can lead to resets
-            within the component in some streamlit versions. Defaults to 0.
+            Deprecated: Minimal execution time for the search function in milliseconds.
+            This is used to avoid fast consecutive reruns, where fast reruns can lead to
+            resets within the component in some streamlit versions.
+            Defaults to 0 or 250 depending on the streamlit version.
         reset_function (Callable[[], None], optional):
             Function that is called after the user reset the combobox. Defaults to None.
         submit_function (Callable[[any], None], optional):
@@ -277,6 +259,13 @@ def st_searchbox(
     Returns:
         any: based on user selection
     """
+
+    if min_execution_time > 0 and min_execution_time != MIN_EXECUTION_TIME_DEFAULT:
+        warnings.warn(
+            "min_execution_time is deprecated and will be removed in the future.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
 
     if key not in st.session_state:
         _set_defaults(

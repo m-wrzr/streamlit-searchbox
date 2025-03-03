@@ -2,9 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.20] - 2025-01-XX
+## [0.1.21] - 2025-03-03
 
-- TODO:
+- deprecate `min_execution_time`
+
+## [0.1.20] - 2025-01-02
+
+- support live theme changes for searchbox color
+- added `default_searchterm`
+- fixed an interaction between `debounce` and `inputValue`
 
 ## [0.1.19] - 2024-11-01
 
