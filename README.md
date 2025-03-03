@@ -59,9 +59,11 @@ st.write(f"Selected value: {selected_value}")
 This example will call the Wikipedia Api to reload suggestions. The `selected_value` will be one of the items the `search_wikipedia` function returns, the suggestions shown in the UI components are a `str` representation. In case you want to provide custom text for suggestions, pass a `Tuple`.
 
 ```python
-def search(searchterm: str) -> List[Tuple[str, any]]:
+def search(searchterm: str, **kwargs) -> List[Tuple[str, any]]:
     ...
 ```
+
+You can also pass additional keyword arguments to a `search` function in case you need more context by adding them to `st_searchbox(search, a=1, b=2)`.
 
 ## Parameters
 
