@@ -5,7 +5,6 @@ module for streamlit searchbox component
 from __future__ import annotations
 
 import datetime
-import functools
 import logging
 import os
 import time
@@ -29,7 +28,6 @@ except ImportError:
 MIN_EXECUTION_TIME_DEFAULT = (
     250 if st.__version__ >= "1.35" and st.__version__ < "1.39" else 0
 )
-warnings.simplefilter("once", DeprecationWarning)
 
 # point to build directory
 parent_dir = os.path.dirname(os.path.abspath(__file__))
@@ -40,26 +38,6 @@ _get_react_component = components.declare_component(
 )
 
 logger = logging.getLogger(__name__)
-
-
-def wrap_inactive_session(func):
-    """
-    session state isn't available anymore due to rerun (as state key can't be empty)
-    if the proxy is missing, this thread isn't really active and an early return is noop
-    """
-
-    @functools.wraps(func)
-    def inner_function(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except KeyError as error:
-            if kwargs.get("key", None) == error.args[0]:
-                logger.debug(f"Session Proxy unavailable for key: {error.args[0]}")
-                return
-
-            raise error
-
-    return inner_function
 
 
 def _rerun(rerun_scope: Literal["app", "fragment"]) -> None:
@@ -207,7 +185,6 @@ class StyleOverrides(TypedDict, total=False):
     searchbox: SearchboxStyle | None
 
 
-@wrap_inactive_session
 def st_searchbox(
     search_function: Callable[[str], List[Any]],
     placeholder: str = "Search ...",
