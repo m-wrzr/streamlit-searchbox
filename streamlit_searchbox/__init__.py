@@ -205,6 +205,7 @@ def st_searchbox(
     submit_function: Callable[[Any], None] | None = None,
     key: str = "searchbox",
     rerun_scope: Literal["app", "fragment"] = "app",
+    help: str = None,
     **kwargs,
 ) -> Any:
     """
@@ -286,6 +287,7 @@ def st_searchbox(
         debounce=debounce,
         default_searchterm=default_searchterm,
         # react return state within streamlit session_state
+        help=help,
         key=st.session_state[key]["key_react"],
     )
 
