@@ -100,6 +100,12 @@ label: str = None
 
 Label shown above the component.
 
+```python
+help: str = None
+```
+
+Shows a help icon with a popover. Only shown when the label is visible.
+
 ---
 
 ### Defaults
