@@ -121,6 +121,13 @@ class SearchboxStyle {
       <span style={{
         float: "right"
       }}>
+        <div
+          style={{
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
         <StatefulTooltip
           content={<div
                      style={{
@@ -161,7 +168,7 @@ class SearchboxStyle {
             },
             Inner: {
               style: {
-                backgroundColor: this.theme.backgroundColor,
+                backgroundColor: this.theme.secondaryBackgroundColor,
                 color: this.theme.textColor,
                 fontSize: "0.82em",
                 fontWeight: "400",
@@ -176,15 +183,14 @@ class SearchboxStyle {
             },
           }} 
         > 
-          <HelpCircleIcon 
-            style={{
-              stroke: "rgba(49, 51, 63, 0.6)",
-              strokeWidth: "2.25",
-              width: "16px",
-              height: "16px",
-            }}
-	  />
+	  <HelpCircleIcon
+            size={16}
+            stroke={this.theme.fadedText60}
+            strokeWidth={2.25}
+            {...overrides}
+          />
         </StatefulTooltip>
+        </div>
       </span>
     )
   }

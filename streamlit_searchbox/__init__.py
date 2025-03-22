@@ -205,7 +205,7 @@ def st_searchbox(
     submit_function: Callable[[Any], None] | None = None,
     key: str = "searchbox",
     rerun_scope: Literal["app", "fragment"] = "app",
-    help: str = None,
+    help: str | None = None,
     **kwargs,
 ) -> Any:
     """
@@ -254,6 +254,8 @@ def st_searchbox(
         submit_function (Callable[[any], None], optional):
             Function that is called after the user submits a new/unique option from the
             combobox. Defaults to None.
+        help (str, optional):
+            Show a help tooltip, only visible if a label is provided. Defaults to None.
         key (str, optional):
             Streamlit session key. Defaults to "searchbox".
 
