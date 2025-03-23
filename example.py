@@ -219,6 +219,15 @@ boxes = [
             },
         },
     ),
+    dict(
+        search_function=search_wikipedia_ids,
+        placeholder="Search Wikipedia",
+        label="search with help text",
+        default="SOME DEFAULT",
+        help="help text",
+        clear_on_submit=False,
+        key=f"{search.__name__}_help_icon",
+    ),
 ]
 
 

@@ -6,6 +6,10 @@ import {
   OptionProps,
   components,
 } from "react-select";
+import { HelpCircle as HelpCircleIcon } from "react-feather"
+import {
+  StatefulTooltip,
+} from "baseui/tooltip"
 
 import {
   DropdownIcon,
@@ -105,6 +109,90 @@ class SearchboxStyle {
         };
       },
     };
+  }
+
+  /**
+   * Help icon and tooltip
+   * @param menu
+   * @returns
+   */
+  iconHelp(help: string, overrides: any) {
+    return (
+      <span style={{
+        float: "right"
+      }}>
+        <div
+          style={{
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+        <StatefulTooltip
+          content={<div
+                     style={{
+                       boxSizing: "border-box",
+                       font: this.theme.font,
+                       fontFamily: "Source Sans Pro, sans-serif",
+                       fontSize: "0.82em",
+                       overflow: "auto",
+                       padding: "1em",
+                     }}
+                   >
+                   {help}
+                   </div>
+          }
+          placement={"auto"}
+          showArrow={false}
+          popoverMargin={10}
+          onMouseEnterDelay={1}
+          overrides={{
+            Body: {
+              style: {
+                // This is annoying, but a bunch of warnings get logged when the
+                // shorthand version `borderRadius` is used here since the long
+                // names are used by BaseWeb and mixing the two is apparently
+                // bad :(
+                borderTopLeftRadius: "100px",
+                borderTopRightRadius: "100px",
+                borderBottomLeftRadius: "100px",
+                borderBottomRightRadius: "100px",
+
+                paddingTop: "0 !important",
+                paddingBottom: "0 !important",
+                paddingLeft: "0 !important",
+                paddingRight: "0 !important",
+
+                backgroundColor: "transparent",
+              },
+            },
+            Inner: {
+              style: {
+                backgroundColor: this.theme.secondaryBackgroundColor,
+                color: this.theme.textColor,
+                fontSize: "0.82em",
+                fontWeight: "400",
+
+                // See the long comment about `borderRadius`. The same applies here
+                // to `padding`.
+                paddingTop: "0 !important",
+                paddingBottom: "0 !important",
+                paddingLeft: "0 !important",
+                paddingRight: "0 !important",
+              },
+            },
+          }} 
+        > 
+	  <HelpCircleIcon
+            size={16}
+            stroke={this.theme.fadedText60}
+            strokeWidth={2.25}
+            {...overrides}
+          />
+        </StatefulTooltip>
+        </div>
+      </span>
+    )
   }
 
   /**
