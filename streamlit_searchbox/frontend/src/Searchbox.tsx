@@ -157,13 +157,13 @@ class Searchbox extends StreamlitComponentBase<State> {
     return (
       <div style={this.props.args.style_overrides?.wrapper || {}}>
         {this.props.args.label && (
-          <div style={style.label}>{this.props.args.label}
-           {this.props.args.help && (
-	     style.iconHelp(
-               this.props.args.help,
-               this.props.args.style_overrides?.help
-             )
-           )}
+          <div style={style.label}>
+            {this.props.args.label}
+            {this.props.args.help &&
+              style.iconHelp(
+                this.props.args.help,
+                this.props.args.style_overrides?.help,
+              )}
           </div>
         )}
 
