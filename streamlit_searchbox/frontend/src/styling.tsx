@@ -134,7 +134,6 @@ class SearchboxStyle {
                 style={{
                   boxSizing: "border-box",
                   font: this.theme.font,
-                  fontFamily: "Source Sans Pro, sans-serif",
                   fontSize: "0.82em",
                   overflow: "auto",
                   padding: "1em",

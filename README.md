@@ -95,13 +95,13 @@ placeholder: str = "Search ..."
 Placeholder for empty searches shown within the component.
 
 ```python
-label: str = None
+label: str | None = None
 ```
 
 Label shown above the component.
 
 ```python
-help: str = None
+help: str | None = None
 ```
 
 Shows a help icon with a popover. Only shown when the label is visible.
@@ -273,3 +273,4 @@ We welcome contributions from everyone. Here are a few ways you can help:
 - [@hoggatt](https://github.com/hoggatt) `reset_function`
 - [@bram49](https://github.com/bram49) `submit_function`
 - [@ytausch](https://github.com/ytausch) remove `tests` folder from distributions
+- [@hansthen](https://github.com/hansthen) `help` tooltip
