@@ -1,6 +1,6 @@
 {
   "name": "streamlit_searchbox",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "private": true,
   "dependencies": {
     "baseui": "^12.2.0",
