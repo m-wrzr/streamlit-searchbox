@@ -56,11 +56,20 @@ selected_value = st_searchbox(
 st.write(f"Selected value: {selected_value}")
 ```
 
-This example will call the Wikipedia Api to reload suggestions. The `selected_value` will be one of the items the `search_wikipedia` function returns, the suggestions shown in the UI components are a `str` representation. In case you want to provide custom text for suggestions, pass a `Tuple`.
+This example will call the Wikipedia Api to reload suggestions. The `selected_value` will be one of the items the `search_wikipedia` function returns, the suggestions shown in the UI components are a `str` representation. In case you want to provide custom text for suggestions or retain more information from the search, you can also return a `tuple` from your search function.
 
 ```python
-def search(searchterm: str, **kwargs) -> List[Tuple[str, any]]:
-    ...
+def search(searchterm: str) -> list[tuple[str, dict]]:
+    return [
+        (
+            result["title"],  # display in the search box itself
+            result,  # returned on item selection
+        )
+        for result in requests.get(f"http://some.endpoint?term={searchterm}").json()
+    ]
+
+selected_value = st_searchbox(search, ...)
+st.json(selected_value)
 ```
 
 You can also pass additional keyword arguments to a `search` function in case you need more context by adding them to `st_searchbox(search, a=1, b=2)`.
