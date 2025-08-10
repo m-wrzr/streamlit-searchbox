@@ -169,6 +169,8 @@ OptionStyle = TypedDict(
 )
 
 
+# NOTE: please refer to https://react-select.com/components and the react-select docs
+#       for more information on what style parameters are available
 class SearchboxStyle(TypedDict, total=False):
     menuList: dict | None
     singleValue: dict | None
@@ -176,6 +178,7 @@ class SearchboxStyle(TypedDict, total=False):
     placeholder: dict | None
     control: dict | None
     option: OptionStyle | None
+    # show or hide the "No Options" message
     optionEmpty: Literal["hidden"] | None
 
 
