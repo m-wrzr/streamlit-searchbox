@@ -134,7 +134,7 @@ boxes = [
         label=f"{search.__name__}_default_options",
         style_overrides={
             "clear": {"width": 25, "height": 25},
-            "searchbox": {"option": {"highlight": "#f1660f"}},
+            "searchbox": {"option": {"highlight": "#f1660f"}, "optionEmpty": "hidden"},
         },
     ),
     dict(

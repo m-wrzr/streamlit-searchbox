@@ -148,7 +148,7 @@ ClearStyle = TypedDict(
 DropdownStyle = TypedDict(
     "DropdownStyle",
     {
-        # weither to flip the dropdown if the menu is open
+        # weather to flip the dropdown if the menu is open
         "rotate": bool,
         # further css styles for the dropdown
         "width": int,
@@ -169,6 +169,8 @@ OptionStyle = TypedDict(
 )
 
 
+# NOTE: please refer to https://react-select.com/components and the react-select docs
+#       for more information on what style parameters are available
 class SearchboxStyle(TypedDict, total=False):
     menuList: dict | None
     singleValue: dict | None
@@ -176,6 +178,8 @@ class SearchboxStyle(TypedDict, total=False):
     placeholder: dict | None
     control: dict | None
     option: OptionStyle | None
+    # show or hide the "No Options" message
+    optionEmpty: Literal["hidden"] | None
 
 
 class StyleOverrides(TypedDict, total=False):
@@ -222,7 +226,7 @@ def st_searchbox(
         default (any, optional):
             Return value if nothing is selected so far. Defaults to None.
         default_searchterm (str, optional):
-            Inital searchterm when the searchbox is created. Defaults to "".
+            Initial searchterm when the searchbox is created. Defaults to "".
         default_use_searchterm (bool, optional):
             Return the current searchterm if nothing was selected. Defaults to False.
         default_options (List[any], optional):
