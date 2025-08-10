@@ -18,18 +18,19 @@ setuptools.setup(
         # version 1.35/1.36 also have reset issues but less frequent
         "streamlit >= 1.0",
     ],
+    # install via 'pip install ".[dev,tests]"'
     extras_require={
         "tests": [
             "wikipedia==1.4.0",
-            "pytest==8.3.2",
+            "pytest==8.4.1",
             # NOTE: run `playwright install` to install the browser drivers
-            "playwright==1.46.0",
-            "pytest-playwright==0.5.1",
+            "playwright==1.54.0",
+            "pytest-playwright==0.7.0",
         ],
         "dev": [
-            "pre-commit==4.0.1",
-            "ruff==0.7.1",
-            "pyright==1.1.377",
+            "pre-commit==4.3.0",
+            "ruff==0.12.8",
+            "pyright==1.1.403",
         ],
     },
 )
