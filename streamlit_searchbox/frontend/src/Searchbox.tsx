@@ -215,6 +215,11 @@ class Searchbox extends StreamlitComponentBase<State> {
                 this.props.args.style_overrides?.searchbox?.option
                   ?.highlightColor || undefined,
               ),
+            NoOptionsMessage:
+              this.props.args.style_overrides?.searchbox?.optionEmpty ===
+              "hidden"
+                ? () => null
+                : components.NoOptionsMessage,
           }}
           // handlers
           filterOption={(_, __) => true}

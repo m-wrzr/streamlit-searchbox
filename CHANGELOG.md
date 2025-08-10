@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.23] - 2025-08-10
+
+- add `optionEmpty` parameter to `style_overrides/searchbox` to hide the "No Options" popup
+
 ## [0.1.22] - 2025-03-23
 
 - add `help` parameter for showing a info tooltip
