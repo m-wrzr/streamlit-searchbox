@@ -31,7 +31,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 include = ["streamlit_searchbox*"]
-exclude = ["streamlit_searchbox/frontend/node_modules/flattened"]  # exclude packages matching these glob patterns (empty by default)
 
 [tool.ruff]
 

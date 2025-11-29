@@ -4,14 +4,14 @@ on:
   pull_request:
 
 jobs:
-    lint:
-      runs-on: ubuntu-22.04
+  lint:
+    runs-on: ubuntu-22.04
 
-      defaults:
-        run:
-          working-directory: streamlit_searchbox/frontend
+    defaults:
+      run:
+        working-directory: streamlit_searchbox/frontend
 
-      steps:
+    steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup_frontend
 
@@ -19,6 +19,3 @@ jobs:
         run: |
           npm run check:eslint
           npm run check:prettier
-
-      # TODO: frontend tests
-      # - run: npm test --passWithNoTests

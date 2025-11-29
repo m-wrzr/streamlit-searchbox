@@ -40,6 +40,7 @@ setup:
 wheel:
 	$(MAKE) setup
 	rm -rf build dist *.egg-info
+	rm -rf streamlit_searchbox/frontend/node_modules/flatted/python
 	uv build
 
 # NOTE: publish to testpypi / __token__
