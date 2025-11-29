@@ -27,7 +27,7 @@ All notable changes to this project will be documented in this file.
 ## [0.1.18] - 2024-10-28
 
 - added `submit_function` that is called on a new submission
-- added `highlighColor` for option styling that highlights matching text
+- added `highlightColor` for option styling that highlights matching text
 - updates to ci and playwright tests
 
 ## [0.1.17] - 2024-09-15

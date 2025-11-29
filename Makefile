@@ -5,23 +5,30 @@ build:
 
 ### Python commands
 
+sync:
+	uv sync --group tests
+
 py.install:
-	pip install ".[dev,tests]"
+	uv pip install ".[dev,tests]"
 
 types:
-	pyright .
+	uv run pyright .
 
 lint:
-	ruff check .
+	uv run ruff check .
 
 format:
-	ruff format .
+	uv run ruff format .
 
 pre-commit:
-	pre-commit install
-	pre-commit run --all-files
+	uv run pre-commit install
+	uv run pre-commit run --all-files
 
 ### Distribution
+
+setup:
+	uv tool install build
+	uv tool install twine
 
 # NOTE: before building and publishing the wheel you should:
 # 1. bump the versions in `setup.py` and `package.json`
@@ -31,11 +38,11 @@ pre-commit:
 # 3. build the new wheel
 
 wheel:
+	$(MAKE) setup
 	rm -rf build dist *.egg-info
-	python -m pip install --upgrade setuptools wheel twine
-	python setup.py sdist bdist_wheel
+	uv build
 
-# NOTE: publish to testpypi with __token__ user first
+# NOTE: publish to testpypi / __token__
 #       in new repo install:
 #       pip install -i https://test.pypi.org/simple/ streamlit-searchbox==0.0.X
 publish:
