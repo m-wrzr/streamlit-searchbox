@@ -1,3 +1,37 @@
+[project]
+name = "streamlit-searchbox"
+version = "0.1.23rc5"
+description = "Autocomplete Searchbox that dynamically updates suggestions based on a provided function."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  # version >1.37 reruns can lead to constant iFrame resets
+  # version 1.35/1.36 also have reset issues but less frequent
+  "streamlit >= 1.0",
+]
+authors = [
+  {name = "m-wrzr"}
+]
+
+[dependency-groups]
+dev = [
+  # NOTE: run `uv playwright install` to install the browser drivers
+  "playwright==1.56.0",
+  "pre-commit==4.5.0",
+  "pyright==1.1.407",
+  "pytest==9.0.1",
+  "pytest-playwright==0.7.2",
+  "ruff==0.14.7",
+  "wikipedia==1.4.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["streamlit_searchbox*"]
+
 [tool.ruff]
 
 exclude = [
@@ -5,32 +39,32 @@ exclude = [
     ".eggs",
     ".git",
     ".ruff_cache",
-    ".svn",
-    ".tox",
     ".venv",
     "__pycache__",
     "_build",
     "buck-out",
     "build",
     "dist",
-    "node_modules",
+    "streamlit_searchbox/frontend/node_modules",
     "venv",
-    "scripts",
 ]
 
 line-length = 88
 target-version = "py311"
 
-[tool.ruff.lint]
-# Allow unused variables when underscore-prefixed.
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-
 [tool.pyright]
+
 exclude = [
     "build",
     "dist",
+    ".venv",
+    ".vscode",
+    ".ruff_cache",
+    ".pytest_cache",
+    ".github",
     "venv**",
     "**/node_modules",
     "**/__pycache__",
+    "tests_local/**",
     "streamlit_searchbox/frontend",
 ]

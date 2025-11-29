@@ -36,6 +36,9 @@ def search_wikipedia_ids(searchterm: str) -> List[tuple[str, Any]]:
             "limit": 10,
             "srsearch": searchterm,
         },
+        headers={
+            "User-Agent": "StreamlitSearchboxExample/1.0 (https://github.com/m-wrzr/streamlit-searchbox)"
+        },
         timeout=5,
     ).json()["query"]["search"]
 
@@ -129,7 +132,7 @@ boxes = [
         search_function=search,
         default="initial",
         default_searchterm="initial",
-        default_options=["inital", "list", "of", "options"],
+        default_options=["initial", "list", "of", "options"],
         key=f"{search.__name__}_default_options",
         label=f"{search.__name__}_default_options",
         style_overrides={
@@ -140,13 +143,13 @@ boxes = [
     dict(
         search_function=search,
         default="initial",
-        default_options=["inital", "list", "of", "options"],
+        default_options=["initial", "list", "of", "options"],
         key=f"{search.__name__}_default_options_all",
         label=f"{search.__name__}_default_options_all",
     ),
     dict(
         search_function=search,
-        default_options=[("inital", "i"), ("list", "l")],
+        default_options=[("initial", "i"), ("list", "l")],
         key=f"{search.__name__}_default_options_tuple",
         label=f"{search.__name__}_default_options_tuple",
     ),

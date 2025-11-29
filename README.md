@@ -163,7 +163,7 @@ If the rerun should affect the whole app or just the fragment.
 debounce: int = 150
 ```
 
-Delay executing the callback from the react component by `x` milliseconds to avoid too many / redudant requests, i.e. during fast typing.
+Delay executing the callback from the react component by `x` milliseconds to avoid too many / redundant requests, i.e. during fast typing.
 
 ```python
 min_execution_time: int = 0
@@ -213,7 +213,7 @@ See [section](#styling) below for more details.
 style_absolute: bool = False
 ```
 
-Will position the searchbox as an absolute element. *NOTE:* this will affect all searchbox instances and should either be set for all boxes or none. See [#46](https://github.com/m-wrzr/streamlit-searchbox/issues/46) for inital workaround by [@JoshElgar](https://github.com/JoshElgar).
+Will position the searchbox as an absolute element. *NOTE:* this will affect all searchbox instances and should either be set for all boxes or none. See [#46](https://github.com/m-wrzr/streamlit-searchbox/issues/46) for initial workaround by [@JoshElgar](https://github.com/JoshElgar).
 
 ## Example
 

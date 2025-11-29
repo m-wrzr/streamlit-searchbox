@@ -6,7 +6,7 @@ repos:
   - id: end-of-file-fixer
   - id: trailing-whitespace
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.12.8
+  rev: v0.14.1
   hooks:
   - id: ruff
     name: lint with ruff
@@ -15,3 +15,7 @@ repos:
     args: [--select, I, --fix]
   - id: ruff-format
     name: format with ruff
+- repo: https://github.com/streetsidesoftware/cspell-cli
+  rev: v9.2.0
+  hooks:
+    - id: cspell

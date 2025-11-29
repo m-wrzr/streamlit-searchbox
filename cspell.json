@@ -1,0 +1,68 @@
+{
+    "version": "0.2",
+    "ignorePaths": [
+        "venv*",
+        ".venv",
+        ".gitignore",
+        "tests_local/*",
+        ".vscode/*",
+        "streamlit_searchbox/frontend/build/*",
+        "streamlit_searchbox/frontend/public/bootstrap.min.css"
+    ],
+    "dictionaryDefinitions": [],
+    "dictionaries": [
+        "en-US",
+        "de-DE"
+    ],
+    "words": [
+        "autouse",
+        "baseui",
+        "bdist",
+        "bram",
+        "direnv",
+        "dopc",
+        "hansthen",
+        "hoggatt",
+        "Jumitti",
+        "keepts",
+        "keyerror",
+        "kwargs",
+        "myform",
+        "pageid",
+        "pipefail",
+        "pyarrow",
+        "pycache",
+        "pyproject",
+        "pyright",
+        "pytest",
+        "salmanrazzaq",
+        "sdist",
+        "searchboxes",
+        "searchterm",
+        "selectbox",
+        "setuptools",
+        "srlimit",
+        "srsearch",
+        "stlimit",
+        "streamlit",
+        "stsearch",
+        "styletron",
+        "testpypi",
+        "venv",
+        "webfonts",
+        "wrzr",
+        "ytausch"
+    ],
+    "ignoreWords": [],
+    "import": [],
+    "languageSettings": [
+        {
+            // use with Python files
+            "languageId": "python",
+            // Exclude code.
+            "ignoreRegExpList": [
+                "/^\\s*from.*import/gm"
+            ]
+        }
+    ]
+}

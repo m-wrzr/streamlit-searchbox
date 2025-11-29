@@ -5,23 +5,27 @@ build:
 
 ### Python commands
 
-py.install:
-	pip install ".[dev,tests]"
+run:
+	uv run streamlit run example.py
 
 types:
-	pyright .
+	uv run pyright .
 
 lint:
-	ruff check .
+	uv run ruff check .
 
 format:
-	ruff format .
+	uv run ruff format .
 
 pre-commit:
-	pre-commit install
-	pre-commit run --all-files
+	uv run pre-commit install
+	uv run pre-commit run --all-files
 
 ### Distribution
+
+setup:
+	uv tool install build
+	uv tool install twine
 
 # NOTE: before building and publishing the wheel you should:
 # 1. bump the versions in `setup.py` and `package.json`
@@ -31,18 +35,22 @@ pre-commit:
 # 3. build the new wheel
 
 wheel:
+	$(MAKE) setup
 	rm -rf build dist *.egg-info
-	python -m pip install --upgrade setuptools wheel twine
-	python setup.py sdist bdist_wheel
+	rm -rf streamlit_searchbox/frontend/node_modules/flatted/python
+	uv build
 
-# NOTE: publish to testpypi with __token__ user first
+# NOTE: publish to testpypi / __token__
 #       in new repo install:
 #       pip install -i https://test.pypi.org/simple/ streamlit-searchbox==0.0.X
+#
+#       in pyproject.toml you can specify:
+#       version = "0.1.23rc5"
 publish:
-	python -m twine upload --repository testpypi dist/*
+	uv run twine upload --repository testpypi dist/*
 
 # NOTE: make sure you removed old dist files before. also see:
 #       https://docs.streamlit.io/library/components/publish
 #       https://packaging.python.org/en/latest/tutorials/packaging-projects/#next-steps
 publish.real:
-	python -m twine upload dist/*
+	uv run twine upload dist/*

@@ -169,7 +169,7 @@ def test_e2e(search_function, label: str, i: int, status: StatusType, page: Page
 
     wait_for_streamlit(page)
 
-    screenshot(page, label, suffix="inital")
+    screenshot(page, label, suffix="initial")
 
     ###### 2. find the correct iframe and searchbox ######
 
