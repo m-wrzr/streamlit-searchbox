@@ -1,5 +1,5 @@
-name: Setup Backend
-description: Setup Python with requirements (no component)
+name: Setup Backend (with uv)
+description: Setup Python with uv (no component)
 
 inputs:
   python-version:
@@ -15,34 +15,34 @@ runs:
   using: composite
   steps:
 
-  - name: Set up Python ${{ inputs.python-version }}
-    uses: actions/setup-python@v5
-    with:
-      python-version: ${{ inputs.python-version }}
+  - name: Install uv
+    uses: astral-sh/setup-uv@v7
 
-  - name: Cache Python dependencies
-    uses: actions/cache@v4
-    with:
-      path: ~/.cache/pip
-      key: ${{ runner.os }}-pip-${{ hashFiles('setup.py') }}
-      restore-keys: |
-        ${{ runner.os }}-pip-
+  - name: Sync dependencies
+    run: uv sync
+    shell: bash
+
+  - name: Install Python ${{ inputs.python-version }} with uv
+    run: uv python install ${{ inputs.python-version }}
+    shell: bash
+
+  - name: Pin Python version inside project
+    run: uv python pin ${{ inputs.python-version }}
+    shell: bash
 
   - name: Display Python version
-    run: python -c "import sys; print(sys.version)"
-    shell: bash --login -eo pipefail {0}
+    run: uv run python -c "import sys; print(sys.version)"
+    shell: bash
 
   - name: Install Streamlit
     run: |
       if [[ ${{ inputs.streamlit-version }} == 'latest' ]]; then
-        pip install streamlit
+        uv add --dev streamlit
       else
-        pip install streamlit==${{ inputs.streamlit-version }}
+        uv add --dev streamlit==${{ inputs.streamlit-version }}
       fi
-    shell: bash --login -eo pipefail {0}
+    shell: bash
 
-  - run: pip install -e ".[dev,tests]"
-    shell: bash --login -eo pipefail {0}
-
-  - run: pip uninstall streamlit-searchbox -y
-    shell: bash --login -eo pipefail {0}
+  - name: Confirm imports
+    run: uv run python -c "import streamlit_searchbox"
+    shell: bash

@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: pre-commit run --all-files
+      - run: uv run pre-commit run --all-files
 
   types:
     needs: [pre-commit]
@@ -31,7 +31,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: pyright .
+      - run: uv run pyright .
 
   tests:
     needs: [pre-commit, types]
@@ -49,12 +49,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
           streamlit-version: ${{ matrix.streamlit-version }}
 
-      - run: playwright install
+      - run: uv run playwright install
 
-      - run: python -m pytest tests/
+      - run: uv run pytest tests/
 
       # run playwright tests & save screenshots
-      - run: python -m pytest tests/playwright.py --verbose
+      - run: uv run pytest tests/playwright.py --verbose
 
       - uses: actions/upload-artifact@v4
         with:

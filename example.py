@@ -36,6 +36,9 @@ def search_wikipedia_ids(searchterm: str) -> List[tuple[str, Any]]:
             "limit": 10,
             "srsearch": searchterm,
         },
+        headers={
+            "User-Agent": "StreamlitSearchboxExample/1.0 (https://github.com/m-wrzr/streamlit-searchbox)"
+        },
         timeout=5,
     ).json()["query"]["search"]
 

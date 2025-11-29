@@ -1,6 +1,6 @@
 [project]
 name = "streamlit-searchbox"
-version = "0.1.23"
+version = "0.1.23rc5"
 description = "Autocomplete Searchbox that dynamically updates suggestions based on a provided function."
 readme = "README.md"
 requires-python = ">=3.10"

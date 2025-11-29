@@ -51,7 +51,8 @@
         "pageid",
         "selectbox",
         "srsearch",
-        "myform"
+        "myform",
+        "pyproject"
     ],
     "ignoreWords": [],
     "import": [],

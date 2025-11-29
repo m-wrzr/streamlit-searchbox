@@ -5,11 +5,8 @@ build:
 
 ### Python commands
 
-sync:
-	uv sync --group tests
-
-py.install:
-	uv pip install ".[dev,tests]"
+run:
+	uv run streamlit run example.py
 
 types:
 	uv run pyright .
@@ -46,11 +43,14 @@ wheel:
 # NOTE: publish to testpypi / __token__
 #       in new repo install:
 #       pip install -i https://test.pypi.org/simple/ streamlit-searchbox==0.0.X
+#
+#       in pyproject.toml you can specify:
+#       version = "0.1.23rc5"
 publish:
-	python -m twine upload --repository testpypi dist/*
+	uv run twine upload --repository testpypi dist/*
 
 # NOTE: make sure you removed old dist files before. also see:
 #       https://docs.streamlit.io/library/components/publish
 #       https://packaging.python.org/en/latest/tutorials/packaging-projects/#next-steps
 publish.real:
-	python -m twine upload dist/*
+	uv run twine upload dist/*
