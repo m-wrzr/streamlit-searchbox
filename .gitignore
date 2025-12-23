@@ -68,3 +68,4 @@ README.local.md
 venv*
 tests/screenshots/*.png
 tests_local
+icon.png

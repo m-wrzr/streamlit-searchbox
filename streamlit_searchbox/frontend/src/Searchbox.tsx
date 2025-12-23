@@ -40,8 +40,6 @@ class Searchbox extends StreamlitComponentBase<State> {
     inputValue: this.props.args.default_searchterm || "",
   };
 
-  private ref: any = React.createRef();
-
   constructor(props: any) {
     super(props);
 
@@ -142,13 +140,6 @@ class Searchbox extends StreamlitComponentBase<State> {
    * @returns
    */
   public render = (): ReactNode => {
-    // always focus the input field to enable edits
-    const onFocus = () => {
-      if (this.isInputTrackingActive() && this.state.inputValue) {
-        this.state.inputValue && this.ref.current.select.inputRef.select();
-      }
-    };
-
     const style = this.getStyleFromTheme();
 
     // option when the clear button is shown
@@ -223,7 +214,6 @@ class Searchbox extends StreamlitComponentBase<State> {
           }}
           // handlers
           filterOption={(_, __) => true}
-          onFocus={() => onFocus()}
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(option: any, a: any) => {
             switch (a.action) {

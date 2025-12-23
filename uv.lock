@@ -1332,7 +1332,7 @@ wheels = [
 
 [[package]]
 name = "streamlit-searchbox"
-version = "0.1.23rc5"
+version = "0.1.24"
 source = { editable = "." }
 dependencies = [
     { name = "streamlit" },

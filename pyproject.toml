@@ -1,12 +1,13 @@
 [project]
 name = "streamlit-searchbox"
-version = "0.1.23rc5"
+version = "0.1.24"
 description = "Autocomplete Searchbox that dynamically updates suggestions based on a provided function."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
   # version >1.37 reruns can lead to constant iFrame resets
   # version 1.35/1.36 also have reset issues but less frequent
+  # TODO: increase required version to what is used in the tests, e.g. 25?
   "streamlit >= 1.0",
 ]
 authors = [
